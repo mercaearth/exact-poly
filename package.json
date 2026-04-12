@@ -1,0 +1,25 @@
+{
+  "name": "exact-poly",
+  "version": "0.1.0",
+  "description": "Integer polygon geometry library (Rust/WASM) — exact arithmetic, no float errors",
+  "main": "pkg/exact_poly.js",
+  "types": "pkg/exact_poly.d.ts",
+  "files": [
+    "pkg/"
+  ],
+  "scripts": {
+    "build": "wasm-pack build --target bundler --release",
+    "build:dev": "wasm-pack build --target bundler",
+    "test": "cargo test"
+  },
+  "keywords": [
+    "polygon",
+    "geometry",
+    "wasm",
+    "integer",
+    "exact-arithmetic",
+    "convex-decomposition",
+    "on-chain"
+  ],
+  "license": "MIT"
+}

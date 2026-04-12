@@ -1,0 +1,17 @@
+{
+  "name": "exact-poly",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "exact_poly_bg.wasm",
+    "exact_poly.js",
+    "exact_poly_bg.js",
+    "exact_poly.d.ts"
+  ],
+  "main": "exact_poly.js",
+  "types": "exact_poly.d.ts",
+  "sideEffects": [
+    "./exact_poly.js",
+    "./snippets/*"
+  ]
+}
