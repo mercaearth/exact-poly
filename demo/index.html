@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>exact-poly Demo</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <div class="header-row">
+          <h1>exact-poly <span class="subtitle">Integer Polygon Geometry</span></h1>
+          <button class="btn btn-config" id="config-toggle">Config</button>
+        </div>
+        <div id="config-panel" class="config-panel" style="display:none;">
+          <div class="config-grid">
+            <label>Preset</label>
+            <select id="config-preset">
+              <option value="merca">Merca (on-chain)</option>
+              <option value="permissive">Permissive (no limits)</option>
+              <option value="custom">Custom</option>
+            </select>
+
+            <label>Max parts</label>
+            <input type="number" id="config-max-parts" min="1" />
+
+            <label>Max vertices/part</label>
+            <input type="number" id="config-max-verts" min="3" />
+
+            <label>Min edge length&#178;</label>
+            <input type="number" id="config-min-edge" min="0" />
+
+            <label>Min compactness (ppm)</label>
+            <input type="number" id="config-min-compact" min="0" />
+
+            <label>Area divisor</label>
+            <input type="number" id="config-area-div" min="1" />
+          </div>
+        </div>
+      </header>
+      <nav id="tabs"></nav>
+      <main id="content"></main>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
