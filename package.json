@@ -4,6 +4,15 @@
   "description": "Integer polygon geometry library (Rust/WASM) — exact arithmetic, no float errors",
   "main": "pkg/exact_poly.js",
   "types": "pkg/exact_poly.d.ts",
+  "exports": {
+    ".": {
+      "types": "./pkg/exact_poly.d.ts",
+      "import": "./pkg/exact_poly.js",
+      "default": "./pkg/exact_poly.js"
+    },
+    "./exact_poly_bg.js": "./pkg/exact_poly_bg.js",
+    "./exact_poly_bg.wasm": "./pkg/exact_poly_bg.wasm"
+  },
   "files": [
     "pkg/"
   ],
