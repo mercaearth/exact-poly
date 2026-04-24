@@ -1,0 +1,25 @@
+Task 17: Create src/wasm/ directory structure and move shared helpers
+======================================================================
+
+Created files:
+  src/wasm/mod.rs      - declares pub mod helpers; pub mod types;
+  src/wasm/types.rs    - WasmDecomposeResult, WasmIndexPair structs
+  src/wasm/helpers.rs  - 9 helper functions (pub(crate)):
+    invalid_input, parse_flat_ring, flatten_ring, flatten_parts,
+    parse_flat_parts, serialize, parse_u128_str, parse_config,
+    has_zero_length_edge
+
+Updated src/lib.rs:
+  - Added `pub mod wasm;`
+  - Added `use wasm::helpers::*;`
+  - Added `use wasm::types::{WasmDecomposeResult, WasmIndexPair};`
+  - Removed struct definitions (now in wasm/types.rs)
+  - Removed helper function definitions (now in wasm/helpers.rs)
+  - All #[wasm_bindgen] exports remain in lib.rs (T18 moves those)
+
+Verification:
+  cargo test: 270 passed, 0 failed
+  wasm-pack build --target bundler --release: success
+  .d.ts exports: 59 functions (unchanged)
+
+lib.rs reduced from 662 to 586 lines (76 lines of boilerplate extracted).
