@@ -1,9 +1,4 @@
 //! Convex parts area overlap detection.
-//!
-//! Distinguishes area overlap from edge sharing (adjacent parts).
-//! Adjacent parts share edges but have NO area overlap.
-//!
-//! Reference: deploy/app/src/lib/overlap.ts
 
 /// True if two convex polygons share area (not just edges).
 /// Adjacent parts that share an edge have opposite interior sides → return false.

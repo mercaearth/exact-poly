@@ -1,8 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export function add_i64(a: bigint, b: bigint): bigint;
-
 export function area_display_from_twice_area(twice_area: string, config?: any | null): bigint;
 
 export function areas_conserved_values(original: string, part_areas: any): boolean;
@@ -31,8 +29,6 @@ export function convex_parts_overlap(a_flat: BigInt64Array, b_flat: BigInt64Arra
 
 export function cross2d(ax: bigint, ay: bigint, bx: bigint, by: bigint, cx: bigint, cy: bigint): string;
 
-export function cross_sign(ax: bigint, ay: bigint, bx: bigint, by: bigint, cx: bigint, cy: bigint): string;
-
 export function decompose_polygon(ring_flat: BigInt64Array, allow_steiner: boolean, collect_trace?: boolean | null, minimize_parts?: boolean | null, config?: any | null): any;
 
 export function ear_clip_triangulate_polygon(ring_flat: BigInt64Array): any;
@@ -51,8 +47,6 @@ export function has_exact_shared_edge(a_flat: BigInt64Array, b_flat: BigInt64Arr
 
 export function is_ccw_ring(ring_flat: BigInt64Array): boolean;
 
-export function is_collinear(cross: string): boolean;
-
 export function is_collinear_pts(ax: bigint, ay: bigint, bx: bigint, by: bigint, px: bigint, py: bigint): boolean;
 
 export function is_convex_ring(ring_flat: BigInt64Array): boolean;
@@ -61,15 +55,11 @@ export function is_left(ax: bigint, ay: bigint, bx: bigint, by: bigint, px: bigi
 
 export function is_left_or_on(ax: bigint, ay: bigint, bx: bigint, by: bigint, px: bigint, py: bigint): boolean;
 
-export function is_left_turn(cross: string): boolean;
-
 export function is_reflex(prev_x: bigint, prev_y: bigint, curr_x: bigint, curr_y: bigint, next_x: bigint, next_y: bigint): boolean;
 
 export function is_right(ax: bigint, ay: bigint, bx: bigint, by: bigint, px: bigint, py: bigint): boolean;
 
 export function is_right_or_on(ax: bigint, ay: bigint, bx: bigint, by: bigint, px: bigint, py: bigint): boolean;
-
-export function is_right_turn(cross: string): boolean;
 
 export function is_simple_ring(ring_flat: BigInt64Array): boolean;
 
@@ -109,13 +99,7 @@ export function segments_intersect(a1x: bigint, a1y: bigint, a2x: bigint, a2y: b
 
 export function segments_properly_intersect(a1x: bigint, a1y: bigint, a2x: bigint, a2y: bigint, b1x: bigint, b1y: bigint, b2x: bigint, b2y: bigint): boolean;
 
-export function sign_i128(value: string): number;
-
 export function signed_area_2x_ring(ring_flat: BigInt64Array): string;
-
-export function sub_u64(a: bigint, b: bigint): string;
-
-export function twice_area(ring_flat: BigInt64Array): string;
 
 export function twice_area_ring(ring_flat: BigInt64Array): string;
 

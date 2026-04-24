@@ -4,7 +4,7 @@
 
 /// Protocol-specific configuration for polygon validation.
 /// Passed to validation and decomposition functions.
-/// Use `ProtocolConfig::merca()` for on-chain defaults.
+/// Use `ProtocolConfig::merca()` for explicit on-chain Merca rules.
 /// Use `ProtocolConfig::permissive()` for demos/testing with no validation limits.
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct ProtocolConfig {
@@ -47,7 +47,7 @@ impl ProtocolConfig {
 
 impl Default for ProtocolConfig {
     fn default() -> Self {
-        Self::merca()
+        Self::permissive()
     }
 }
 

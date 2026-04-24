@@ -1,9 +1,6 @@
 //! Fundamental integer geometry primitives.
 //! All coordinates are i64 (fixed-point). All intermediate computations use i128.
 //! ZERO floating point. ZERO epsilon. Exact integer arithmetic throughout.
-//!
-//! Ground truth: deploy/app/src/lib/overlap.ts (bigint implementation)
-//! On-chain reference: deploy/onchain/protocol/sources/math/signed.move
 
 /// Orientation of three points.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

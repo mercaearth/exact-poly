@@ -1,14 +1,4 @@
 /**
- * @param {bigint} a
- * @param {bigint} b
- * @returns {bigint}
- */
-export function add_i64(a, b) {
-    const ret = wasm.add_i64(a, b);
-    return ret;
-}
-
-/**
  * @param {string} twice_area
  * @param {any | null} [config]
  * @returns {bigint}
@@ -182,28 +172,6 @@ export function cross2d(ax, ay, bx, by, cx, cy) {
 }
 
 /**
- * @param {bigint} ax
- * @param {bigint} ay
- * @param {bigint} bx
- * @param {bigint} by
- * @param {bigint} cx
- * @param {bigint} cy
- * @returns {string}
- */
-export function cross_sign(ax, ay, bx, by, cx, cy) {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.cross_sign(ax, ay, bx, by, cx, cy);
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
-
-/**
  * @param {BigInt64Array} ring_flat
  * @param {boolean} allow_steiner
  * @param {boolean | null} [collect_trace]
@@ -343,20 +311,6 @@ export function is_ccw_ring(ring_flat) {
 }
 
 /**
- * @param {string} cross
- * @returns {boolean}
- */
-export function is_collinear(cross) {
-    const ptr0 = passStringToWasm0(cross, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.is_collinear(ptr0, len0);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return ret[0] !== 0;
-}
-
-/**
  * @param {bigint} ax
  * @param {bigint} ay
  * @param {bigint} bx
@@ -413,20 +367,6 @@ export function is_left_or_on(ax, ay, bx, by, px, py) {
 }
 
 /**
- * @param {string} cross
- * @returns {boolean}
- */
-export function is_left_turn(cross) {
-    const ptr0 = passStringToWasm0(cross, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.is_left_turn(ptr0, len0);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return ret[0] !== 0;
-}
-
-/**
  * @param {bigint} prev_x
  * @param {bigint} prev_y
  * @param {bigint} curr_x
@@ -466,20 +406,6 @@ export function is_right(ax, ay, bx, by, px, py) {
 export function is_right_or_on(ax, ay, bx, by, px, py) {
     const ret = wasm.is_right_or_on(ax, ay, bx, by, px, py);
     return ret !== 0;
-}
-
-/**
- * @param {string} cross
- * @returns {boolean}
- */
-export function is_right_turn(cross) {
-    const ptr0 = passStringToWasm0(cross, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.is_right_turn(ptr0, len0);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return ret[0] !== 0;
 }
 
 /**
@@ -787,20 +713,6 @@ export function segments_properly_intersect(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b
 }
 
 /**
- * @param {string} value
- * @returns {number}
- */
-export function sign_i128(value) {
-    const ptr0 = passStringToWasm0(value, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
-    const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.sign_i128(ptr0, len0);
-    if (ret[2]) {
-        throw takeFromExternrefTable0(ret[1]);
-    }
-    return ret[0];
-}
-
-/**
  * @param {BigInt64Array} ring_flat
  * @returns {string}
  */
@@ -811,49 +723,6 @@ export function signed_area_2x_ring(ring_flat) {
         const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
         const ret = wasm.signed_area_2x_ring(ptr0, len0);
-        var ptr2 = ret[0];
-        var len2 = ret[1];
-        if (ret[3]) {
-            ptr2 = 0; len2 = 0;
-            throw takeFromExternrefTable0(ret[2]);
-        }
-        deferred3_0 = ptr2;
-        deferred3_1 = len2;
-        return getStringFromWasm0(ptr2, len2);
-    } finally {
-        wasm.__wbindgen_free(deferred3_0, deferred3_1, 1);
-    }
-}
-
-/**
- * @param {bigint} a
- * @param {bigint} b
- * @returns {string}
- */
-export function sub_u64(a, b) {
-    let deferred1_0;
-    let deferred1_1;
-    try {
-        const ret = wasm.sub_u64(a, b);
-        deferred1_0 = ret[0];
-        deferred1_1 = ret[1];
-        return getStringFromWasm0(ret[0], ret[1]);
-    } finally {
-        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-    }
-}
-
-/**
- * @param {BigInt64Array} ring_flat
- * @returns {string}
- */
-export function twice_area(ring_flat) {
-    let deferred3_0;
-    let deferred3_1;
-    try {
-        const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
-        const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.twice_area(ptr0, len0);
         var ptr2 = ret[0];
         var len2 = ret[1];
         if (ret[3]) {

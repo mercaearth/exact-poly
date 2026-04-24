@@ -1,9 +1,4 @@
 //! Exact vertex partition — uses only original polygon vertices, no Steiner points.
-//!
-//! Prefers diagonals between reflex vertices for better decomposition quality.
-//! Falls back gracefully: returns None if no valid exact-vertex decomposition found.
-//!
-//! Reference: deploy/app/src/lib/decompose.ts::searchExactVertexPartition
 
 use crate::primitives::{
     is_left, is_left_or_on, is_reflex, point_on_segment, segments_properly_intersect,

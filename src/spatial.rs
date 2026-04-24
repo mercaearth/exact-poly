@@ -1,7 +1,4 @@
 //! Point-in-polygon and segment intersection for convex polygons.
-//!
-//! All algorithms use exact integer arithmetic.
-//! Reference implementations: deploy/app/src/lib/overlap.ts (bigint)
 
 use crate::primitives::{cross2d, point_on_segment};
 

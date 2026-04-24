@@ -1,0 +1,10 @@
+Task 20: removed dead/internal WASM exports.
+
+Removed from src/wasm/signed.rs: add_i64, sub_u64, sign_i128, is_left_turn, is_right_turn, is_collinear, cross_sign.
+Removed from src/wasm/area.rs: twice_area (kept twice_area_ring).
+
+Verification:
+- cargo test: 270 passed
+- wasm-pack build --target bundler --release: passed
+- lsp_diagnostics on src/wasm: 0 errors
+- pkg/exact_poly.d.ts grep for removed exports: 0 matches

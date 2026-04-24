@@ -54,7 +54,7 @@ pub(crate) fn parse_config(
     config_js: Option<JsValue>,
 ) -> Result<crate::types::ProtocolConfig, JsValue> {
     match config_js {
-        None => Ok(crate::types::ProtocolConfig::merca()),
+        None => Ok(crate::types::ProtocolConfig::permissive()),
         Some(js) => serde_wasm_bindgen::from_value(js)
             .map_err(|e| JsValue::from_str(&format!("invalid config: {e}"))),
     }
