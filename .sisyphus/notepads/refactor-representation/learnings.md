@@ -1,0 +1,5 @@
+- Baseline confirms the current Rust suite is 222 tests with 0 failures.
+- WASM and demo builds both succeed before any refactor work.
+- The public declarations still contain 23 `any` usages.
+- `grep 'any'` is too broad for d.ts verification because it matches identifiers like `point_inside_any_part`; use `grep ': any\| any '` to detect actual TypeScript `any` types.
+- `typescript_custom_section` must keep exported function names and discriminant strings as plain text; escaping substrings inside identifiers or variant names changes the generated API contract.

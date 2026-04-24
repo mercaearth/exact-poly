@@ -1,0 +1,59 @@
+======================================================================
+  exact-poly 0.2.0 Manual QA Report
+  Date: Fri Apr 24 2026
+======================================================================
+
+--- STEP 1: cargo test --release ---
+RESULT: PASS
+  test result: ok. 270 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+  test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out (doc tests)
+
+--- STEP 2: wasm-pack build --target bundler --release ---
+RESULT: PASS
+  [INFO]: ✨ Done in 0.42s
+  [INFO]: 📦 Your wasm pkg is ready to publish at /Users/fefa4ka/Documents/My/merca/exact-poly/pkg.
+
+--- STEP 3: demo build (npm install + npm run build) ---
+RESULT: PASS
+  dist/index.html                            1.69 kB │ gzip:   0.66 kB
+  dist/assets/exact_poly_bg-DUfbB8rQ.wasm  259.02 kB │ gzip: 106.99 kB
+  dist/assets/index-q5AKzdVG.css             7.39 kB │ gzip:   1.81 kB
+  dist/assets/index-BOumLxwB.js            108.26 kB │ gzip:  20.42 kB
+  ✓ built in 211ms
+
+--- STEP 4: TypeScript errors (npx tsc --noEmit) ---
+RESULT: PASS
+  0 errors
+
+--- STEP 5: Exported functions count ---
+RESULT: PASS
+  51 exported functions (threshold: 40+)
+
+--- STEP 6: Renamed exports (without _ring suffix) ---
+RESULT: PASS
+  export function is_ccw(ring_flat: BigInt64Array): boolean;
+  export function is_convex(ring_flat: BigInt64Array): boolean;
+  export function twice_area(ring_flat: BigInt64Array): string;
+
+--- STEP 7: Dead exports removed ---
+RESULT: PASS
+  0 matches for add_i64, cross_sign, is_left_turn, is_right_turn
+
+--- STEP 8: TypeScript interfaces ---
+RESULT: PASS
+  6 matches for DecomposeResult, TopologyError, ValidationReport
+
+--- STEP 9: Version check ---
+RESULT: PASS
+  "version": "0.2.0"
+
+======================================================================
+VERDICT: APPROVE
+All 9 checks passed. The 0.2.0 refactoring is verified:
+- 270 Rust tests pass
+- WASM builds successfully
+- Demo compiles with 0 TypeScript errors
+- 51 clean exports, renamed correctly, dead code removed
+- TypeScript interfaces present
+- Version correctly set to 0.2.0
+======================================================================
