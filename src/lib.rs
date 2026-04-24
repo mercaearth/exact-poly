@@ -337,9 +337,7 @@ pub fn sat_overlap(a_flat: &[i64], b_flat: &[i64]) -> Result<bool, JsValue> {
             "SAT polygons must not contain zero-length edges",
         ));
     }
-    let (a_xs, a_ys) = split_xy(&a);
-    let (b_xs, b_ys) = split_xy(&b);
-    Ok(crate::sat::sat_overlaps(&a_xs, &a_ys, &b_xs, &b_ys))
+    Ok(crate::sat::sat_overlaps(&a, &b))
 }
 
 #[wasm_bindgen]
@@ -351,11 +349,7 @@ pub fn sat_overlap_with_aabb(a_flat: &[i64], b_flat: &[i64]) -> Result<bool, JsV
             "SAT polygons must not contain zero-length edges",
         ));
     }
-    let (a_xs, a_ys) = split_xy(&a);
-    let (b_xs, b_ys) = split_xy(&b);
-    Ok(crate::sat::sat_overlaps_with_aabb(
-        &a_xs, &a_ys, &b_xs, &b_ys,
-    ))
+    Ok(crate::sat::sat_overlaps_with_aabb(&a, &b))
 }
 
 #[wasm_bindgen]
@@ -364,10 +358,8 @@ pub fn point_strictly_inside_convex_ring(
     py: i64,
     ring_flat: &[i64],
 ) -> Result<bool, JsValue> {
-    let (xs, ys) = split_xy_from_flat(ring_flat)?;
-    Ok(crate::spatial::point_strictly_inside_convex(
-        px, py, &xs, &ys,
-    ))
+    let ring = parse_flat_ring(ring_flat)?;
+    Ok(crate::spatial::point_strictly_inside_convex(px, py, &ring))
 }
 
 #[wasm_bindgen]
@@ -376,8 +368,8 @@ pub fn point_on_polygon_boundary_ring(
     py: i64,
     ring_flat: &[i64],
 ) -> Result<bool, JsValue> {
-    let (xs, ys) = split_xy_from_flat(ring_flat)?;
-    Ok(crate::spatial::point_on_polygon_boundary(px, py, &xs, &ys))
+    let ring = parse_flat_ring(ring_flat)?;
+    Ok(crate::spatial::point_on_polygon_boundary(px, py, &ring))
 }
 
 #[wasm_bindgen]
@@ -386,10 +378,8 @@ pub fn point_inside_or_on_boundary_ring(
     py: i64,
     ring_flat: &[i64],
 ) -> Result<bool, JsValue> {
-    let (xs, ys) = split_xy_from_flat(ring_flat)?;
-    Ok(crate::spatial::point_inside_or_on_boundary(
-        px, py, &xs, &ys,
-    ))
+    let ring = parse_flat_ring(ring_flat)?;
+    Ok(crate::spatial::point_inside_or_on_boundary(px, py, &ring))
 }
 
 #[wasm_bindgen]
@@ -405,20 +395,18 @@ pub fn collinear_segments_overlap_area_rings(
     a_ring_flat: &[i64],
     b_ring_flat: &[i64],
 ) -> Result<bool, JsValue> {
-    let (a_xs, a_ys) = split_xy_from_flat(a_ring_flat)?;
-    let (b_xs, b_ys) = split_xy_from_flat(b_ring_flat)?;
+    let a_ring = parse_flat_ring(a_ring_flat)?;
+    let b_ring = parse_flat_ring(b_ring_flat)?;
     Ok(crate::spatial::collinear_segments_overlap_area(
-        a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y, &a_xs, &a_ys, &b_xs, &b_ys,
+        a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y, &a_ring, &b_ring,
     ))
 }
 
 #[wasm_bindgen]
 pub fn has_exact_shared_edge(a_flat: &[i64], b_flat: &[i64]) -> Result<bool, JsValue> {
-    let (a_xs, a_ys) = split_xy_from_flat(a_flat)?;
-    let (b_xs, b_ys) = split_xy_from_flat(b_flat)?;
-    Ok(crate::shared_edge::has_exact_shared_edge(
-        &a_xs, &a_ys, &b_xs, &b_ys,
-    ))
+    let a = parse_flat_ring(a_flat)?;
+    let b = parse_flat_ring(b_flat)?;
+    Ok(crate::shared_edge::has_exact_shared_edge(&a, &b))
 }
 
 #[wasm_bindgen]
@@ -445,9 +433,9 @@ pub fn segments_contact(
 /// - `"none"`: no collinear contact at all.
 #[wasm_bindgen]
 pub fn classify_contact(a_flat: &[i64], b_flat: &[i64]) -> Result<String, JsValue> {
-    let (a_xs, a_ys) = split_xy_from_flat(a_flat)?;
-    let (b_xs, b_ys) = split_xy_from_flat(b_flat)?;
-    let kind = crate::shared_edge::classify_contact(&a_xs, &a_ys, &b_xs, &b_ys);
+    let a = parse_flat_ring(a_flat)?;
+    let b = parse_flat_ring(b_flat)?;
+    let kind = crate::shared_edge::classify_contact(&a, &b);
     Ok(match kind {
         crate::shared_edge::ContactKind::SharedEdge => "shared_edge",
         crate::shared_edge::ContactKind::PartialContact => "partial_contact",

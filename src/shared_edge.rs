@@ -12,13 +12,11 @@ use crate::primitives::cross2d;
 /// Ensures edge A→B and B→A are treated as the same edge.
 ///
 /// Matches polygon.move::normalize_edge + point_precedes.
-fn normalize_edge(x1: i64, y1: i64, x2: i64, y2: i64) -> ((i64, i64), (i64, i64)) {
-    let p1 = (x1, y1);
-    let p2 = (x2, y2);
-    if p1 <= p2 {
-        (p1, p2)
+fn normalize_edge(a: [i64; 2], b: [i64; 2]) -> ([i64; 2], [i64; 2]) {
+    if a <= b {
+        (a, b)
     } else {
-        (p2, p1)
+        (b, a)
     }
 }
 
@@ -27,17 +25,17 @@ fn normalize_edge(x1: i64, y1: i64, x2: i64, y2: i64) -> ((i64, i64), (i64, i64)
 /// possibly in reverse order.
 ///
 /// Matches polygon.move::has_exact_shared_edge() + edges_match_exactly().
-pub fn has_exact_shared_edge(a_xs: &[i64], a_ys: &[i64], b_xs: &[i64], b_ys: &[i64]) -> bool {
-    let na = a_xs.len();
-    let nb = b_xs.len();
+pub fn has_exact_shared_edge(a: &[[i64; 2]], b: &[[i64; 2]]) -> bool {
+    let na = a.len();
+    let nb = b.len();
 
     for i in 0..na {
         let j = (i + 1) % na;
-        let edge_a = normalize_edge(a_xs[i], a_ys[i], a_xs[j], a_ys[j]);
+        let edge_a = normalize_edge(a[i], a[j]);
 
         for k in 0..nb {
             let l = (k + 1) % nb;
-            let edge_b = normalize_edge(b_xs[k], b_ys[k], b_xs[l], b_ys[l]);
+            let edge_b = normalize_edge(b[k], b[l]);
 
             if edge_a == edge_b {
                 return true;
@@ -126,19 +124,19 @@ pub enum ContactKind {
 /// Note: Move also performs `aabbs_may_contact` + SAT overlap checks before
 /// this point, but those are orthogonal (overlap → `EPartOverlap`). This
 /// function only classifies boundary contact.
-pub fn classify_contact(a_xs: &[i64], a_ys: &[i64], b_xs: &[i64], b_ys: &[i64]) -> ContactKind {
-    if has_exact_shared_edge(a_xs, a_ys, b_xs, b_ys) {
+pub fn classify_contact(a: &[[i64; 2]], b: &[[i64; 2]]) -> ContactKind {
+    if has_exact_shared_edge(a, b) {
         return ContactKind::SharedEdge;
     }
 
-    let na = a_xs.len();
-    let nb = b_xs.len();
+    let na = a.len();
+    let nb = b.len();
     for i in 0..na {
         let j = (i + 1) % na;
         for k in 0..nb {
             let l = (k + 1) % nb;
             if segments_contact(
-                a_xs[i], a_ys[i], a_xs[j], a_ys[j], b_xs[k], b_ys[k], b_xs[l], b_ys[l],
+                a[i][0], a[i][1], a[j][0], a[j][1], b[k][0], b[k][1], b[l][0], b[l][1],
             ) {
                 return ContactKind::PartialContact;
             }
@@ -159,21 +157,21 @@ mod tests {
     #[test]
     fn shared_edge_normalize_orders_lexicographically() {
         // (0,0)→(M,M) already sorted
-        assert_eq!(normalize_edge(0, 0, M, M), ((0, 0), (M, M)));
+        assert_eq!(normalize_edge([0, 0], [M, M]), ([0, 0], [M, M]));
         // Reversed input should give same result
-        assert_eq!(normalize_edge(M, M, 0, 0), ((0, 0), (M, M)));
+        assert_eq!(normalize_edge([M, M], [0, 0]), ([0, 0], [M, M]));
     }
 
     #[test]
     fn shared_edge_normalize_same_x_sorts_by_y() {
-        assert_eq!(normalize_edge(M, 2 * M, M, 0), ((M, 0), (M, 2 * M)));
-        assert_eq!(normalize_edge(M, 0, M, 2 * M), ((M, 0), (M, 2 * M)));
+        assert_eq!(normalize_edge([M, 2 * M], [M, 0]), ([M, 0], [M, 2 * M]));
+        assert_eq!(normalize_edge([M, 0], [M, 2 * M]), ([M, 0], [M, 2 * M]));
     }
 
     #[test]
     fn shared_edge_normalize_degenerate_point() {
         // Same point: both orderings give same result
-        assert_eq!(normalize_edge(5, 5, 5, 5), ((5, 5), (5, 5)));
+        assert_eq!(normalize_edge([5, 5], [5, 5]), ([5, 5], [5, 5]));
     }
 
     // ── has_exact_shared_edge ───────────────────────────────────────
@@ -181,53 +179,43 @@ mod tests {
     #[test]
     fn shared_edge_exact_detected() {
         // A: left square, B: right square, sharing edge x=M
-        let a_xs = vec![0, M, M, 0];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![M, 2 * M, 2 * M, M];
-        let b_ys = vec![0, 0, M, M];
-        assert!(has_exact_shared_edge(&a_xs, &a_ys, &b_xs, &b_ys));
+        let a = vec![[0, 0], [M, 0], [M, M], [0, M]];
+        let b = vec![[M, 0], [2 * M, 0], [2 * M, M], [M, M]];
+        assert!(has_exact_shared_edge(&a, &b));
     }
 
     #[test]
     fn shared_edge_exact_direction_independent() {
         // Same edge but B has reversed winding
-        let a_xs = vec![0, M, M, 0];
-        let a_ys = vec![0, 0, M, M];
+        let a = vec![[0, 0], [M, 0], [M, M], [0, M]];
         // B winding: (M,M)→(2M,M)→(2M,0)→(M,0)
         // Edge (M,M)→(M,0) is reverse of A's (M,0)→(M,M)
-        let b_xs = vec![M, 2 * M, 2 * M, M];
-        let b_ys = vec![M, M, 0, 0];
-        assert!(has_exact_shared_edge(&a_xs, &a_ys, &b_xs, &b_ys));
+        let b = vec![[M, M], [2 * M, M], [2 * M, 0], [M, 0]];
+        assert!(has_exact_shared_edge(&a, &b));
     }
 
     #[test]
     fn shared_edge_no_match_separated_squares() {
-        let a_xs = vec![0, M, M, 0];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![3 * M, 4 * M, 4 * M, 3 * M];
-        let b_ys = vec![0, 0, M, M];
-        assert!(!has_exact_shared_edge(&a_xs, &a_ys, &b_xs, &b_ys));
+        let a = vec![[0, 0], [M, 0], [M, M], [0, M]];
+        let b = vec![[3 * M, 0], [4 * M, 0], [4 * M, M], [3 * M, M]];
+        assert!(!has_exact_shared_edge(&a, &b));
     }
 
     #[test]
     fn shared_edge_no_match_vertex_only_contact() {
         // Diagonal neighbors share only corner (M,M)
-        let a_xs = vec![0, M, M, 0];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![M, 2 * M, 2 * M, M];
-        let b_ys = vec![M, M, 2 * M, 2 * M];
-        assert!(!has_exact_shared_edge(&a_xs, &a_ys, &b_xs, &b_ys));
+        let a = vec![[0, 0], [M, 0], [M, M], [0, M]];
+        let b = vec![[M, M], [2 * M, M], [2 * M, 2 * M], [M, 2 * M]];
+        assert!(!has_exact_shared_edge(&a, &b));
     }
 
     #[test]
     fn shared_edge_triangles_sharing_hypotenuse() {
         // Triangle A: (0,0), (M,0), (0,M) — hypotenuse (M,0)→(0,M)
         // Triangle B: (M,M), (0,M), (M,0) — hypotenuse (0,M)→(M,0) reversed
-        let a_xs = vec![0, M, 0];
-        let a_ys = vec![0, 0, M];
-        let b_xs = vec![M, 0, M];
-        let b_ys = vec![M, M, 0];
-        assert!(has_exact_shared_edge(&a_xs, &a_ys, &b_xs, &b_ys));
+        let a = vec![[0, 0], [M, 0], [0, M]];
+        let b = vec![[M, M], [0, M], [M, 0]];
+        assert!(has_exact_shared_edge(&a, &b));
     }
 
     // ── segments_contact ────────────────────────────────────────────
@@ -290,56 +278,37 @@ mod tests {
 
     #[test]
     fn classify_contact_via_exact_edge() {
-        let a_xs = vec![0, M, M, 0];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![M, 2 * M, 2 * M, M];
-        let b_ys = vec![0, 0, M, M];
-        assert_eq!(
-            classify_contact(&a_xs, &a_ys, &b_xs, &b_ys),
-            ContactKind::SharedEdge
-        );
+        let a = vec![[0, 0], [M, 0], [M, M], [0, M]];
+        let b = vec![[M, 0], [2 * M, 0], [2 * M, M], [M, M]];
+        assert_eq!(classify_contact(&a, &b), ContactKind::SharedEdge);
     }
 
     #[test]
     fn shared_edge_no_match_partial_overlap_subsegment() {
-        let a_xs = vec![M, 2 * M, 2 * M, M];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![0, 4 * M, 4 * M, 0];
-        let b_ys = vec![0, 0, M, M];
-        assert!(!has_exact_shared_edge(&a_xs, &a_ys, &b_xs, &b_ys));
+        let a = vec![[M, 0], [2 * M, 0], [2 * M, M], [M, M]];
+        let b = vec![[0, 0], [4 * M, 0], [4 * M, M], [0, M]];
+        assert!(!has_exact_shared_edge(&a, &b));
     }
 
     #[test]
     fn shared_edge_no_match_collinear_but_disjoint_edges() {
-        let a_xs = vec![0, M, M, 0];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![2 * M, 3 * M, 3 * M, 2 * M];
-        let b_ys = vec![0, 0, M, M];
-        assert!(!has_exact_shared_edge(&a_xs, &a_ys, &b_xs, &b_ys));
+        let a = vec![[0, 0], [M, 0], [M, M], [0, M]];
+        let b = vec![[2 * M, 0], [3 * M, 0], [3 * M, M], [2 * M, M]];
+        assert!(!has_exact_shared_edge(&a, &b));
     }
 
     #[test]
     fn classify_contact_none_for_separated_squares() {
-        let a_xs = vec![0, M, M, 0];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![3 * M, 4 * M, 4 * M, 3 * M];
-        let b_ys = vec![0, 0, M, M];
-        assert_eq!(
-            classify_contact(&a_xs, &a_ys, &b_xs, &b_ys),
-            ContactKind::None
-        );
+        let a = vec![[0, 0], [M, 0], [M, M], [0, M]];
+        let b = vec![[3 * M, 0], [4 * M, 0], [4 * M, M], [3 * M, M]];
+        assert_eq!(classify_contact(&a, &b), ContactKind::None);
     }
 
     #[test]
     fn classify_contact_symmetric_shared_edge() {
-        let a_xs = vec![0, M, M, 0];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![M, 2 * M, 2 * M, M];
-        let b_ys = vec![0, 0, M, M];
-        assert_eq!(
-            classify_contact(&a_xs, &a_ys, &b_xs, &b_ys),
-            classify_contact(&b_xs, &b_ys, &a_xs, &a_ys)
-        );
+        let a = vec![[0, 0], [M, 0], [M, M], [0, M]];
+        let b = vec![[M, 0], [2 * M, 0], [2 * M, M], [M, M]];
+        assert_eq!(classify_contact(&a, &b), classify_contact(&b, &a));
     }
 
     /// Rectangle base [(0,0)-(4M,0)-(4M,M)-(0,M)] and triangle roof
@@ -348,26 +317,16 @@ mod tests {
     /// match — classic T-junction.
     #[test]
     fn classify_contact_partial_edge_is_t_junction() {
-        let a_xs = vec![0, 4 * M, 4 * M, 0];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![M, 3 * M, 2 * M];
-        let b_ys = vec![M, M, 2 * M];
-        assert_eq!(
-            classify_contact(&a_xs, &a_ys, &b_xs, &b_ys),
-            ContactKind::PartialContact
-        );
+        let a = vec![[0, 0], [4 * M, 0], [4 * M, M], [0, M]];
+        let b = vec![[M, M], [3 * M, M], [2 * M, 2 * M]];
+        assert_eq!(classify_contact(&a, &b), ContactKind::PartialContact);
     }
 
     #[test]
     fn classify_contact_t_junction_symmetric() {
-        let a_xs = vec![0, 4 * M, 4 * M, 0];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![M, 3 * M, 2 * M];
-        let b_ys = vec![M, M, 2 * M];
-        assert_eq!(
-            classify_contact(&a_xs, &a_ys, &b_xs, &b_ys),
-            classify_contact(&b_xs, &b_ys, &a_xs, &a_ys)
-        );
+        let a = vec![[0, 0], [4 * M, 0], [4 * M, M], [0, M]];
+        let b = vec![[M, M], [3 * M, M], [2 * M, 2 * M]];
+        assert_eq!(classify_contact(&a, &b), classify_contact(&b, &a));
     }
 
     /// Vertex-only touch is not a "shared edge" and not a "partial contact"
@@ -375,37 +334,27 @@ mod tests {
     /// so via a separate vertex check.
     #[test]
     fn classify_contact_vertex_only_is_none() {
-        let a_xs = vec![0, M, M, 0];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![M, 2 * M, 2 * M, M];
-        let b_ys = vec![M, M, 2 * M, 2 * M];
-        assert_eq!(
-            classify_contact(&a_xs, &a_ys, &b_xs, &b_ys),
-            ContactKind::None
-        );
+        let a = vec![[0, 0], [M, 0], [M, M], [0, M]];
+        let b = vec![[M, M], [2 * M, M], [2 * M, 2 * M], [M, 2 * M]];
+        assert_eq!(classify_contact(&a, &b), ContactKind::None);
     }
 
     #[test]
     fn classify_contact_vertex_only_sharing_one_corner_is_none() {
-        let a_xs = vec![0, 2 * M, 2 * M, 0];
-        let a_ys = vec![0, 0, 2 * M, 2 * M];
-        let b_xs = vec![2 * M, 4 * M, 4 * M, 2 * M];
-        let b_ys = vec![2 * M, 2 * M, 4 * M, 4 * M];
-        assert_eq!(
-            classify_contact(&a_xs, &a_ys, &b_xs, &b_ys),
-            ContactKind::None
-        );
+        let a = vec![[0, 0], [2 * M, 0], [2 * M, 2 * M], [0, 2 * M]];
+        let b = vec![
+            [2 * M, 2 * M],
+            [4 * M, 2 * M],
+            [4 * M, 4 * M],
+            [2 * M, 4 * M],
+        ];
+        assert_eq!(classify_contact(&a, &b), ContactKind::None);
     }
 
     #[test]
     fn classify_contact_t_junction_returns_partial_contact() {
-        let a_xs = vec![0, 4 * M, 4 * M, 0];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![M, 3 * M, 3 * M, M];
-        let b_ys = vec![M, M, 2 * M, 2 * M];
-        assert_eq!(
-            classify_contact(&a_xs, &a_ys, &b_xs, &b_ys),
-            ContactKind::PartialContact
-        );
+        let a = vec![[0, 0], [4 * M, 0], [4 * M, M], [0, M]];
+        let b = vec![[M, M], [3 * M, M], [3 * M, 2 * M], [M, 2 * M]];
+        assert_eq!(classify_contact(&a, &b), ContactKind::PartialContact);
     }
 }

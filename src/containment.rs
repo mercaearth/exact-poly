@@ -12,9 +12,7 @@ use crate::spatial::point_inside_or_on_boundary;
 /// True if point (x, y) is inside any of the given convex parts.
 pub fn point_inside_any_part(parts: &[Vec<[i64; 2]>], x: i64, y: i64) -> bool {
     for part in parts {
-        let xs: Vec<i64> = part.iter().map(|v| v[0]).collect();
-        let ys: Vec<i64> = part.iter().map(|v| v[1]).collect();
-        if point_inside_or_on_boundary(x, y, &xs, &ys) {
+        if point_inside_or_on_boundary(x, y, part) {
             return true;
         }
     }

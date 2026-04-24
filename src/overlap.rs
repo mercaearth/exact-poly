@@ -37,14 +37,14 @@ pub fn convex_parts_overlap(a_xs: &[i64], a_ys: &[i64], b_xs: &[i64], b_ys: &[i6
 
     // Check if any vertex of B is strictly inside A
     for (&bx, &by) in b_xs.iter().zip(b_ys.iter()) {
-        if point_strictly_inside_convex(bx, by, a_xs, a_ys) {
+        if point_strictly_inside_convex(bx, by, &a_ring) {
             return true;
         }
     }
 
     // Check if any vertex of A is strictly inside B
     for (&ax, &ay) in a_xs.iter().zip(a_ys.iter()) {
-        if point_strictly_inside_convex(ax, ay, b_xs, b_ys) {
+        if point_strictly_inside_convex(ax, ay, &b_ring) {
             return true;
         }
     }
@@ -67,8 +67,8 @@ pub fn convex_parts_overlap(a_xs: &[i64], a_ys: &[i64], b_xs: &[i64], b_ys: &[i6
 
             // Collinear area overlap (same-side interiors)
             if collinear_segments_overlap_area(
-                a_xs[i], a_ys[i], a_xs[ni], a_ys[ni], b_xs[j], b_ys[j], b_xs[nj], b_ys[nj], a_xs,
-                a_ys, b_xs, b_ys,
+                a_xs[i], a_ys[i], a_xs[ni], a_ys[ni], b_xs[j], b_ys[j], b_xs[nj], b_ys[nj],
+                &a_ring, &b_ring,
             ) {
                 return true;
             }

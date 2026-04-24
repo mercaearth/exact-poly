@@ -1,0 +1,21 @@
+Task 12 (Wave 2B): spatial.rs ring-representation migration
+
+Changed APIs in src/spatial.rs:
+- point_strictly_inside_convex(px, py, ring: &[[i64; 2]])
+- point_on_polygon_boundary(px, py, ring: &[[i64; 2]])
+- point_inside_or_on_boundary(px, py, ring: &[[i64; 2]])
+- collinear_segments_overlap_area(..., a_ring: &[[i64; 2]], b_ring: &[[i64; 2]])
+
+Updated callers/tests:
+- src/containment.rs: pass part ring directly
+- src/overlap.rs: pass constructed rings to spatial helpers
+- src/lib.rs: parse flat rings, pass ring slices directly to spatial helpers
+- src/spatial.rs tests: migrated from xs/ys fixtures to ring fixtures
+
+Topology note:
+- No direct spatial helper calls in src/topology.rs required updating for this task.
+
+Verification:
+- lsp_diagnostics clean for src/spatial.rs, src/containment.rs, src/overlap.rs, src/lib.rs
+- cargo test spatial::tests -> 14 passed, 0 failed
+- cargo test 2>&1 | grep "test result" -> overall suite includes: 270 passed; 0 failed

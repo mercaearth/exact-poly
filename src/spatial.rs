@@ -12,8 +12,8 @@ use crate::primitives::{cross2d, point_on_segment};
 /// Matches polygon.move::point_inside_convex_part_or_on_boundary behavior
 /// but this is strict interior only (returns false for boundary).
 /// Reference: overlap.ts::pointStrictlyInsideConvex (lines 7-19)
-pub fn point_strictly_inside_convex(px: i64, py: i64, xs: &[i64], ys: &[i64]) -> bool {
-    let n = xs.len();
+pub fn point_strictly_inside_convex(px: i64, py: i64, ring: &[[i64; 2]]) -> bool {
+    let n = ring.len();
     if n < 3 {
         return false;
     }
@@ -21,7 +21,7 @@ pub fn point_strictly_inside_convex(px: i64, py: i64, xs: &[i64], ys: &[i64]) ->
     let mut all_neg = true;
     for i in 0..n {
         let j = (i + 1) % n;
-        let cp = cross2d(xs[i], ys[i], xs[j], ys[j], px, py);
+        let cp = cross2d(ring[i][0], ring[i][1], ring[j][0], ring[j][1], px, py);
         if cp <= 0 {
             all_pos = false;
         }
@@ -33,11 +33,11 @@ pub fn point_strictly_inside_convex(px: i64, py: i64, xs: &[i64], ys: &[i64]) ->
 }
 
 /// True if point (px, py) is on the boundary of the polygon (on any edge).
-pub fn point_on_polygon_boundary(px: i64, py: i64, xs: &[i64], ys: &[i64]) -> bool {
-    let n = xs.len();
+pub fn point_on_polygon_boundary(px: i64, py: i64, ring: &[[i64; 2]]) -> bool {
+    let n = ring.len();
     for i in 0..n {
         let j = (i + 1) % n;
-        if point_on_segment(px, py, xs[i], ys[i], xs[j], ys[j]) {
+        if point_on_segment(px, py, ring[i][0], ring[i][1], ring[j][0], ring[j][1]) {
             return true;
         }
     }
@@ -46,8 +46,8 @@ pub fn point_on_polygon_boundary(px: i64, py: i64, xs: &[i64], ys: &[i64]) -> bo
 
 /// True if point is strictly inside OR on the boundary of a convex polygon.
 /// Matches polygon.move::point_inside_convex_part_or_on_boundary.
-pub fn point_inside_or_on_boundary(px: i64, py: i64, xs: &[i64], ys: &[i64]) -> bool {
-    point_strictly_inside_convex(px, py, xs, ys) || point_on_polygon_boundary(px, py, xs, ys)
+pub fn point_inside_or_on_boundary(px: i64, py: i64, ring: &[[i64; 2]]) -> bool {
+    point_strictly_inside_convex(px, py, ring) || point_on_polygon_boundary(px, py, ring)
 }
 
 /// Collinear segment overlap: true if two collinear segments share more than a point.
@@ -68,10 +68,8 @@ pub fn collinear_segments_overlap_area(
     b1y: i64,
     b2x: i64,
     b2y: i64,
-    a_xs: &[i64],
-    a_ys: &[i64], // full polygon A for interior side check
-    b_xs: &[i64],
-    b_ys: &[i64], // full polygon B
+    a_ring: &[[i64; 2]], // full polygon A for interior side check
+    b_ring: &[[i64; 2]], // full polygon B
 ) -> bool {
     let dax = (a2x as i128) - (a1x as i128);
     let day = (a2y as i128) - (a1y as i128);
@@ -108,8 +106,8 @@ pub fn collinear_segments_overlap_area(
 
     // Interior side check: find first off-line vertex of each polygon
     let mut side_a: i128 = 0;
-    for (&x, &y) in a_xs.iter().zip(a_ys.iter()) {
-        let cp = cross2d(a1x, a1y, a2x, a2y, x, y);
+    for point in a_ring {
+        let cp = cross2d(a1x, a1y, a2x, a2y, point[0], point[1]);
         if cp != 0 {
             side_a = cp;
             break;
@@ -117,8 +115,8 @@ pub fn collinear_segments_overlap_area(
     }
 
     let mut side_b: i128 = 0;
-    for (&x, &y) in b_xs.iter().zip(b_ys.iter()) {
-        let cp = cross2d(a1x, a1y, a2x, a2y, x, y);
+    for point in b_ring {
+        let cp = cross2d(a1x, a1y, a2x, a2y, point[0], point[1]);
         if cp != 0 {
             side_b = cp;
             break;
@@ -140,143 +138,91 @@ mod tests {
 
     const M: i64 = 1_000_000;
 
-    fn square_xs() -> Vec<i64> {
-        vec![0, M, M, 0]
-    }
-    fn square_ys() -> Vec<i64> {
-        vec![0, 0, M, M]
+    fn square() -> Vec<[i64; 2]> {
+        vec![[0, 0], [M, 0], [M, M], [0, M]]
     }
 
-    fn rhombus_xs() -> Vec<i64> {
-        vec![0, 2 * M, 0, -2 * M]
-    }
-
-    fn rhombus_ys() -> Vec<i64> {
-        vec![4 * M, 0, -4 * M, 0]
+    fn rhombus() -> Vec<[i64; 2]> {
+        vec![[0, 4 * M], [2 * M, 0], [0, -4 * M], [-2 * M, 0]]
     }
 
     #[test]
     fn point_strictly_inside() {
-        assert!(point_strictly_inside_convex(
-            M / 2,
-            M / 2,
-            &square_xs(),
-            &square_ys()
-        ));
+        assert!(point_strictly_inside_convex(M / 2, M / 2, &square()));
     }
 
     #[test]
     fn point_strictly_inside_convex_rhombus_centroid_and_edge_neighbors() {
-        let xs = rhombus_xs();
-        let ys = rhombus_ys();
+        let ring = rhombus();
 
-        assert!(point_strictly_inside_convex(0, 0, &xs, &ys));
+        assert!(point_strictly_inside_convex(0, 0, &ring));
 
         let edge_mid_x = M;
         let edge_mid_y = 2 * M;
         assert!(point_strictly_inside_convex(
             edge_mid_x - 2,
             edge_mid_y - 1,
-            &xs,
-            &ys
+            &ring
         ));
         assert!(!point_strictly_inside_convex(
             edge_mid_x + 2,
             edge_mid_y + 1,
-            &xs,
-            &ys
+            &ring
         ));
     }
 
     #[test]
     fn point_on_boundary_not_strictly_inside() {
         // Point on edge: (0.5M, 0)
-        assert!(!point_strictly_inside_convex(
-            M / 2,
-            0,
-            &square_xs(),
-            &square_ys()
-        ));
+        assert!(!point_strictly_inside_convex(M / 2, 0, &square()));
     }
 
     #[test]
     fn point_at_vertex_not_strictly_inside() {
-        assert!(!point_strictly_inside_convex(
-            0,
-            0,
-            &square_xs(),
-            &square_ys()
-        ));
+        assert!(!point_strictly_inside_convex(0, 0, &square()));
     }
 
     #[test]
     fn point_outside() {
-        assert!(!point_strictly_inside_convex(
-            2 * M,
-            2 * M,
-            &square_xs(),
-            &square_ys()
-        ));
+        assert!(!point_strictly_inside_convex(2 * M, 2 * M, &square()));
     }
 
     #[test]
     fn point_inside_or_on_boundary_interior() {
-        assert!(point_inside_or_on_boundary(
-            M / 2,
-            M / 2,
-            &square_xs(),
-            &square_ys()
-        ));
+        assert!(point_inside_or_on_boundary(M / 2, M / 2, &square()));
     }
 
     #[test]
     fn point_inside_or_on_boundary_edge() {
-        assert!(point_inside_or_on_boundary(
-            M / 2,
-            0,
-            &square_xs(),
-            &square_ys()
-        ));
+        assert!(point_inside_or_on_boundary(M / 2, 0, &square()));
     }
 
     #[test]
     fn point_inside_or_on_boundary_vertex() {
-        assert!(point_inside_or_on_boundary(
-            0,
-            0,
-            &square_xs(),
-            &square_ys()
-        ));
+        assert!(point_inside_or_on_boundary(0, 0, &square()));
     }
 
     #[test]
     fn point_inside_or_on_boundary_outside() {
-        assert!(!point_inside_or_on_boundary(
-            2 * M,
-            0,
-            &square_xs(),
-            &square_ys()
-        ));
+        assert!(!point_inside_or_on_boundary(2 * M, 0, &square()));
     }
 
     #[test]
     fn point_on_polygon_boundary_edge_midpoint_and_off_edge() {
-        let xs = rhombus_xs();
-        let ys = rhombus_ys();
+        let ring = rhombus();
 
-        assert!(point_on_polygon_boundary(M, 2 * M, &xs, &ys));
-        assert!(!point_on_polygon_boundary(M + 2, 2 * M + 1, &xs, &ys));
+        assert!(point_on_polygon_boundary(M, 2 * M, &ring));
+        assert!(!point_on_polygon_boundary(M + 2, 2 * M + 1, &ring));
     }
 
     #[test]
     fn point_inside_or_on_boundary_inclusive_cases() {
-        let xs = rhombus_xs();
-        let ys = rhombus_ys();
+        let ring = rhombus();
 
-        assert!(point_inside_or_on_boundary(0, 4 * M, &xs, &ys));
-        assert!(point_inside_or_on_boundary(M, 2 * M, &xs, &ys));
-        assert!(point_inside_or_on_boundary(0, 0, &xs, &ys));
-        assert!(!point_inside_or_on_boundary(3 * M, 3 * M, &xs, &ys));
+        assert!(point_inside_or_on_boundary(0, 4 * M, &ring));
+        assert!(point_inside_or_on_boundary(M, 2 * M, &ring));
+        assert!(point_inside_or_on_boundary(0, 0, &ring));
+        assert!(!point_inside_or_on_boundary(3 * M, 3 * M, &ring));
     }
 
     #[test]
@@ -286,10 +232,8 @@ mod tests {
         // Polygon B: same bottom edge but offset right: (M,0)→(3M,0)→(3M,M)→(M,M)
         // Edge A: (0,0)→(2M,0), Edge B: (M,0)→(3M,0) — same horizontal line, overlap at M..2M
         // Both polygons are ABOVE the shared edge line (same side)
-        let a_xs = vec![0, 2 * M, 2 * M, 0];
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![M, 3 * M, 3 * M, M];
-        let b_ys = vec![0, 0, M, M];
+        let a_ring = vec![[0, 0], [2 * M, 0], [2 * M, M], [0, M]];
+        let b_ring = vec![[M, 0], [3 * M, 0], [3 * M, M], [M, M]];
 
         let result = collinear_segments_overlap_area(
             0,
@@ -300,10 +244,8 @@ mod tests {
             0,
             3 * M,
             0, // edge from B
-            &a_xs,
-            &a_ys,
-            &b_xs,
-            &b_ys,
+            &a_ring,
+            &b_ring,
         );
         // Both rectangles are above y=0 — same side — area overlap → true
         assert!(result);
@@ -312,25 +254,11 @@ mod tests {
     #[test]
     fn adjacent_polygons_opposite_sides_no_overlap() {
         // Two rectangles sharing the x-axis edge: A above, B below
-        let a_xs = vec![0, 2 * M, 2 * M, 0];
-        let a_ys = vec![0, 0, M, M]; // above y=0
-        let b_xs = vec![0, 2 * M, 2 * M, 0];
-        let b_ys = vec![0, 0, -M, -M]; // below y=0
+        let a_ring = vec![[0, 0], [2 * M, 0], [2 * M, M], [0, M]]; // above y=0
+        let b_ring = vec![[0, 0], [2 * M, 0], [2 * M, -M], [0, -M]]; // below y=0
 
-        let result = collinear_segments_overlap_area(
-            0,
-            0,
-            2 * M,
-            0,
-            0,
-            0,
-            2 * M,
-            0,
-            &a_xs,
-            &a_ys,
-            &b_xs,
-            &b_ys,
-        );
+        let result =
+            collinear_segments_overlap_area(0, 0, 2 * M, 0, 0, 0, 2 * M, 0, &a_ring, &b_ring);
         // Opposite sides → adjacent parcels → no area overlap → false
         assert!(!result);
     }
@@ -338,10 +266,8 @@ mod tests {
     #[test]
     fn non_collinear_segments_return_false() {
         // Perpendicular edges — not collinear
-        let a_xs = vec![0, M, M, 0]; // square A
-        let a_ys = vec![0, 0, M, M];
-        let b_xs = vec![2 * M, 3 * M, 3 * M, 2 * M]; // square B far away
-        let b_ys = vec![0, 0, M, M];
+        let a_ring = vec![[0, 0], [M, 0], [M, M], [0, M]]; // square A
+        let b_ring = vec![[2 * M, 0], [3 * M, 0], [3 * M, M], [2 * M, M]]; // square B far away
 
         let result = collinear_segments_overlap_area(
             0,
@@ -352,10 +278,8 @@ mod tests {
             0,
             2 * M,
             M, // vertical edge from B — NOT collinear
-            &a_xs,
-            &a_ys,
-            &b_xs,
-            &b_ys,
+            &a_ring,
+            &b_ring,
         );
         assert!(!result);
     }

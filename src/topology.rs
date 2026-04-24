@@ -34,13 +34,10 @@ pub fn validate_multipart_topology(
     let mut edge_adjacent = vec![vec![false; n]; n];
 
     for i in 0..n {
-        let (ai_xs, ai_ys) = split_coords(&parts[i]);
         let ai_vertices: HashSet<Vertex> = parts[i].iter().copied().collect();
 
         for j in (i + 1)..n {
-            let (aj_xs, aj_ys) = split_coords(&parts[j]);
-
-            match classify_contact(&ai_xs, &ai_ys, &aj_xs, &aj_ys) {
+            match classify_contact(&parts[i], &parts[j]) {
                 ContactKind::SharedEdge => {
                     edge_adjacent[i][j] = true;
                     edge_adjacent[j][i] = true;
@@ -116,12 +113,6 @@ fn validate_compactness_topology(
             min_ppm: outcome.min_ppm,
         })
     }
-}
-
-fn split_coords(part: &[Vertex]) -> (Vec<i64>, Vec<i64>) {
-    let xs = part.iter().map(|v| v[0]).collect();
-    let ys = part.iter().map(|v| v[1]).collect();
-    (xs, ys)
 }
 
 fn perimeter_l1(xs: &[i64], ys: &[i64]) -> u128 {
