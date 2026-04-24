@@ -51,7 +51,7 @@ fn decompose_with_strategies<Exact, Bayazit, EarClip, Steiner>(
 ) -> Result<DecomposeResult, DecompError>
 where
     Exact: Fn(&[[i64; 2]]) -> Result<Parts, String>,
-    Bayazit: Fn(&[[i64; 2]], bool) -> Result<Parts, String>,
+    Bayazit: Fn(&[[i64; 2]], bool, &ProtocolConfig) -> Result<Parts, String>,
     EarClip: Fn(&[[i64; 2]]) -> Result<Parts, String>,
     Steiner: Fn(&[[i64; 2]], &[Vec<[i64; 2]>]) -> Vec<[i64; 2]>,
 {
@@ -176,7 +176,7 @@ fn run_minimize_parts<Exact, Bayazit, EarClip, Steiner>(
 ) -> Result<DecomposeResult, DecompError>
 where
     Exact: Fn(&[[i64; 2]]) -> Result<Parts, String>,
-    Bayazit: Fn(&[[i64; 2]], bool) -> Result<Parts, String>,
+    Bayazit: Fn(&[[i64; 2]], bool, &ProtocolConfig) -> Result<Parts, String>,
     EarClip: Fn(&[[i64; 2]]) -> Result<Parts, String>,
     Steiner: Fn(&[[i64; 2]], &[Vec<[i64; 2]>]) -> Vec<[i64; 2]>,
 {
@@ -244,7 +244,7 @@ fn collect_candidates_for_rotation<Exact, Bayazit, EarClip, Steiner>(
     last_error: &mut Option<String>,
 ) where
     Exact: Fn(&[[i64; 2]]) -> Result<Parts, String>,
-    Bayazit: Fn(&[[i64; 2]], bool) -> Result<Parts, String>,
+    Bayazit: Fn(&[[i64; 2]], bool, &ProtocolConfig) -> Result<Parts, String>,
     EarClip: Fn(&[[i64; 2]]) -> Result<Parts, String>,
     Steiner: Fn(&[[i64; 2]], &[Vec<[i64; 2]>]) -> Vec<[i64; 2]>,
 {
@@ -268,7 +268,7 @@ fn collect_candidates_for_rotation<Exact, Bayazit, EarClip, Steiner>(
         record_strategy_candidate(
             Strategy::Bayazit,
             rotation,
-            bayazit(rotated, true),
+            bayazit(rotated, true, config),
             config,
             original_area,
             original_ring,
@@ -373,7 +373,7 @@ fn try_decompose<Exact, Bayazit, EarClip>(
 ) -> Result<StrategySuccess, AttemptError>
 where
     Exact: Fn(&[[i64; 2]]) -> Result<Parts, String>,
-    Bayazit: Fn(&[[i64; 2]], bool) -> Result<Parts, String>,
+    Bayazit: Fn(&[[i64; 2]], bool, &ProtocolConfig) -> Result<Parts, String>,
     EarClip: Fn(&[[i64; 2]]) -> Result<Parts, String>,
 {
     let mut saw_too_many_parts = false;
@@ -442,7 +442,7 @@ where
     }
 
     if options.allow_steiner {
-        match bayazit(ring, true) {
+        match bayazit(ring, true, config) {
             Ok(parts) => match finalize_parts(parts, config, original_area) {
                 Ok(parts) => {
                     push_attempt(
@@ -879,7 +879,7 @@ mod tests {
             &default_opts(),
             &merca_config(),
             |poly| Ok(vec![poly.to_vec()]),
-            |_, _| {
+            |_, _, _| {
                 bayazit_calls.set(bayazit_calls.get() + 1);
                 Err("should not run".into())
             },
@@ -907,7 +907,7 @@ mod tests {
             &default_opts(),
             &merca_config(),
             |_| Err("exact failed".into()),
-            |poly, allow_steiner| {
+            |poly, allow_steiner, _| {
                 bayazit_calls.set(bayazit_calls.get() + 1);
                 assert!(allow_steiner);
                 Ok(vec![poly.to_vec()])
@@ -936,7 +936,7 @@ mod tests {
             &default_opts(),
             &merca_config(),
             |_| Err("exact failed".into()),
-            |_, _| {
+            |_, _, _| {
                 bayazit_calls.set(bayazit_calls.get() + 1);
                 Err("bayazit failed".into())
             },
@@ -974,7 +974,7 @@ mod tests {
             &options,
             &merca_config(),
             |_| Err("exact failed".into()),
-            |_, _| {
+            |_, _, _| {
                 bayazit_calls.set(bayazit_calls.get() + 1);
                 Err("should not run".into())
             },
@@ -1015,7 +1015,7 @@ mod tests {
                     Err("try another rotation".into())
                 }
             },
-            |_, _| Err("should not run".into()),
+            |_, _, _| Err("should not run".into()),
             |_| Err("should not run".into()),
             |_, _| Vec::new(),
         )
@@ -1046,7 +1046,7 @@ mod tests {
                     Err("need more rotations".into())
                 }
             },
-            |_, _| Err("bayazit failed".into()),
+            |_, _, _| Err("bayazit failed".into()),
             |_| Err("ear failed".into()),
             |_, _| Vec::new(),
         )
@@ -1064,7 +1064,7 @@ mod tests {
             &default_opts(),
             &single_part_config(),
             |poly| Ok(vec![poly.to_vec()]),
-            |_, _| Err("bayazit failed".into()),
+            |_, _, _| Err("bayazit failed".into()),
             |poly| {
                 Ok(vec![
                     vec![poly[0], poly[1], poly[2]],
@@ -1134,7 +1134,7 @@ mod tests {
             &default_opts(),
             &merca_config(),
             |_| Err("exact failed".into()),
-            |_, _| Err("bayazit failed".into()),
+            |_, _, _| Err("bayazit failed".into()),
             |poly| ear_clip_triangulate(poly),
             |_, _| Vec::new(),
         )
@@ -1208,7 +1208,7 @@ mod tests {
                     vec![c, d, poly[2], poly[3]],
                 ])
             },
-            |poly, _allow| {
+            |poly, _allow, _| {
                 // 2 parts — optimal split down the middle.
                 let mid_bot = [(poly[0][0] + poly[1][0]) / 2, poly[0][1]];
                 let mid_top = [(poly[2][0] + poly[3][0]) / 2, poly[2][1]];
@@ -1266,7 +1266,7 @@ mod tests {
                     vec![poly[0], poly[2], poly[3]],
                 ])
             },
-            |poly, _| {
+            |poly, _, _| {
                 Ok(vec![
                     vec![poly[0], poly[1], poly[2]],
                     vec![poly[0], poly[2], poly[3]],
@@ -1302,7 +1302,7 @@ mod tests {
                     vec![poly[0], poly[2], poly[3]],
                 ])
             },
-            |poly, _| {
+            |poly, _, _| {
                 // Split with a Steiner point on the bottom edge.
                 let steiner = [(poly[0][0] + poly[1][0]) / 2, poly[0][1]];
                 Ok(vec![
@@ -1364,7 +1364,7 @@ mod tests {
                     vec![poly[0], poly[2], poly[3]],
                 ])
             },
-            |poly, _| {
+            |poly, _, _| {
                 Ok(vec![
                     vec![poly[0], poly[1], poly[2]],
                     vec![poly[0], poly[2], poly[3]],

@@ -54,18 +54,6 @@ fn parse_flat_ring(ring_flat: &[i64]) -> Result<Vec<[i64; 2]>, JsValue> {
         .collect())
 }
 
-fn split_xy_from_flat(ring_flat: &[i64]) -> Result<(Vec<i64>, Vec<i64>), JsValue> {
-    let ring = parse_flat_ring(ring_flat)?;
-    Ok(split_xy(&ring))
-}
-
-fn split_xy(ring: &[[i64; 2]]) -> (Vec<i64>, Vec<i64>) {
-    (
-        ring.iter().map(|vertex| vertex[0]).collect(),
-        ring.iter().map(|vertex| vertex[1]).collect(),
-    )
-}
-
 fn flatten_ring(ring: &[[i64; 2]]) -> Vec<i64> {
     ring.iter().flat_map(|&[x, y]| [x, y]).collect()
 }
@@ -160,8 +148,12 @@ pub fn bayazit_decompose_polygon(
     allow_steiner: bool,
 ) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
-    let parts = crate::bayazit::bayazit_decompose(&ring, allow_steiner)
-        .map_err(|err| JsValue::from_str(&err))?;
+    let parts = crate::bayazit::bayazit_decompose(
+        &ring,
+        allow_steiner,
+        &crate::types::ProtocolConfig::merca(),
+    )
+    .map_err(|err| JsValue::from_str(&err))?;
     serialize(&flatten_parts(&parts))
 }
 
@@ -446,11 +438,9 @@ pub fn classify_contact(a_flat: &[i64], b_flat: &[i64]) -> Result<String, JsValu
 
 #[wasm_bindgen]
 pub fn convex_parts_overlap(a_flat: &[i64], b_flat: &[i64]) -> Result<bool, JsValue> {
-    let (a_xs, a_ys) = split_xy_from_flat(a_flat)?;
-    let (b_xs, b_ys) = split_xy_from_flat(b_flat)?;
-    Ok(crate::overlap::convex_parts_overlap(
-        &a_xs, &a_ys, &b_xs, &b_ys,
-    ))
+    let a = parse_flat_ring(a_flat)?;
+    let b = parse_flat_ring(b_flat)?;
+    Ok(crate::overlap::convex_parts_overlap(&a, &b))
 }
 
 #[wasm_bindgen]

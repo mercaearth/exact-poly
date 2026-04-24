@@ -2,8 +2,6 @@
 //! All coordinates are i64 (fixed-point, SCALE=1_000_000 units = 1 meter).
 //! No float arithmetic anywhere in this library.
 
-use crate::aabb::Aabb;
-
 /// Protocol-specific configuration for polygon validation.
 /// Passed to validation and decomposition functions.
 /// Use `ProtocolConfig::merca()` for on-chain defaults.
@@ -51,41 +49,6 @@ impl Default for ProtocolConfig {
     fn default() -> Self {
         Self::merca()
     }
-}
-
-/// A 2D point in fixed-point integer coordinates.
-/// x and y are in units of 1/SCALE meters (1 unit = 1 micrometer at SCALE=1_000_000).
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub struct Point {
-    pub x: i64,
-    pub y: i64,
-}
-
-impl Point {
-    pub fn new(x: i64, y: i64) -> Self {
-        Self { x, y }
-    }
-}
-
-impl From<[i64; 2]> for Point {
-    fn from([x, y]: [i64; 2]) -> Self {
-        Self { x, y }
-    }
-}
-
-impl From<Point> for [i64; 2] {
-    fn from(p: Point) -> Self {
-        [p.x, p.y]
-    }
-}
-
-/// A convex part of a polygon — array of vertices + bounding box.
-/// All vertices are in fixed-point integer coordinates.
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub struct Part {
-    pub xs: Vec<i64>,
-    pub ys: Vec<i64>,
-    pub aabb: Aabb,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]

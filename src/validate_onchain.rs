@@ -233,12 +233,8 @@ pub fn validate_decomposition(
     if n > 1 {
         let mut has_overlap = false;
         for i in 0..n {
-            let a_xs: Vec<i64> = parts[i].iter().map(|v| v[0]).collect();
-            let a_ys: Vec<i64> = parts[i].iter().map(|v| v[1]).collect();
             for j in (i + 1)..n {
-                let b_xs: Vec<i64> = parts[j].iter().map(|v| v[0]).collect();
-                let b_ys: Vec<i64> = parts[j].iter().map(|v| v[1]).collect();
-                if convex_parts_overlap(&a_xs, &a_ys, &b_xs, &b_ys) {
+                if convex_parts_overlap(&parts[i], &parts[j]) {
                     push(check_err(
                         format!("parts_overlap_{i}_{j}"),
                         format!("parts {i} and {j} overlap"),

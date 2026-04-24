@@ -12,7 +12,7 @@ use crate::primitives::cross2d;
 /// Ensures edge A→B and B→A are treated as the same edge.
 ///
 /// Matches polygon.move::normalize_edge + point_precedes.
-fn normalize_edge(a: [i64; 2], b: [i64; 2]) -> ([i64; 2], [i64; 2]) {
+pub(crate) fn normalize_edge(a: [i64; 2], b: [i64; 2]) -> ([i64; 2], [i64; 2]) {
     if a <= b {
         (a, b)
     } else {

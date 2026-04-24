@@ -1,7 +1,8 @@
 use crate::area::twice_area_fp2;
-use crate::shared_edge::{classify_contact, ContactKind};
+use crate::primitives::point_on_segment;
+use crate::shared_edge::{classify_contact, normalize_edge, ContactKind};
 use crate::types::{ProtocolConfig, TopologyError};
-use crate::validation::check_compactness;
+use crate::validation::{check_compactness, perimeter_l1};
 use std::collections::{HashMap, HashSet, VecDeque};
 
 type Vertex = [i64; 2];
@@ -87,10 +88,8 @@ pub fn validate_multipart_topology(
 }
 
 fn validate_single_part(part: &[Vertex], config: &ProtocolConfig) -> Result<(), TopologyError> {
-    let xs: Vec<i64> = part.iter().map(|v| v[0]).collect();
-    let ys: Vec<i64> = part.iter().map(|v| v[1]).collect();
     let twice_area = twice_area_fp2(part);
-    let perimeter = perimeter_l1(&xs, &ys);
+    let perimeter = perimeter_l1(part);
 
     validate_compactness_topology(twice_area, perimeter, config)
 }
@@ -113,15 +112,6 @@ fn validate_compactness_topology(
             min_ppm: outcome.min_ppm,
         })
     }
-}
-
-fn perimeter_l1(xs: &[i64], ys: &[i64]) -> u128 {
-    let mut perimeter = 0u128;
-    for i in 0..xs.len() {
-        let j = (i + 1) % xs.len();
-        perimeter += xs[j].abs_diff(xs[i]) as u128 + ys[j].abs_diff(ys[i]) as u128;
-    }
-    perimeter
 }
 
 fn bfs_visited(adjacent: &[Vec<bool>]) -> Vec<bool> {
@@ -163,14 +153,6 @@ fn build_vertex_adjacency(parts: &[Vec<Vertex>]) -> Vec<Vec<bool>> {
     adj
 }
 
-fn normalize_edge(a: Vertex, b: Vertex) -> Edge {
-    if a <= b {
-        (a, b)
-    } else {
-        (b, a)
-    }
-}
-
 fn validate_boundary_graph(
     parts: &[Vec<Vertex>],
     allow_vertex_contact: bool,
@@ -186,7 +168,9 @@ fn validate_boundary_graph(
             let mut points: Vec<Vertex> = all_vertices
                 .iter()
                 .copied()
-                .filter(|point| point_on_segment(start, end, *point))
+                .filter(|point| {
+                    point_on_segment(point[0], point[1], start[0], start[1], end[0], end[1])
+                })
                 .collect();
             points.sort_unstable_by(|a, b| compare_points_on_segment(start, *a, *b));
             points.dedup();
@@ -284,19 +268,6 @@ fn validate_boundary_graph(
     }
 
     Ok(perimeter)
-}
-
-fn point_on_segment(start: Vertex, end: Vertex, point: Vertex) -> bool {
-    let (sx, sy) = (start[0] as i128, start[1] as i128);
-    let (ex, ey) = (end[0] as i128, end[1] as i128);
-    let (px, py) = (point[0] as i128, point[1] as i128);
-    let cross = (ex - sx) * (py - sy) - (ey - sy) * (px - sx);
-
-    if cross != 0 {
-        return false;
-    }
-
-    px >= sx.min(ex) && px <= sx.max(ex) && py >= sy.min(ey) && py <= sy.max(ey)
 }
 
 fn compare_points_on_segment(start: Vertex, a: Vertex, b: Vertex) -> std::cmp::Ordering {

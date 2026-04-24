@@ -2,6 +2,7 @@
 
 use crate::area::twice_area_fp2;
 use crate::primitives::{cross2d, point_on_segment, segments_intersect};
+use crate::types::ProtocolConfig;
 use crate::validation::validate_part;
 use std::collections::HashSet;
 
@@ -11,6 +12,7 @@ const MAX_DEPTH: usize = 64;
 pub fn bayazit_decompose(
     ring: &[[i64; 2]],
     allow_steiner: bool,
+    config: &ProtocolConfig,
 ) -> Result<Vec<Vec<[i64; 2]>>, String> {
     if ring.len() < 3 {
         return Err("polygon has fewer than 3 vertices".into());
@@ -36,7 +38,7 @@ pub fn bayazit_decompose(
     }
 
     for (idx, part) in result.iter().enumerate() {
-        if let Some(err) = validate_part(part, &crate::types::ProtocolConfig::merca()) {
+        if let Some(err) = validate_part(part, config) {
             return Err(format!("invalid output part {idx}: {err}"));
         }
     }
@@ -480,6 +482,10 @@ mod tests {
 
     const M: i64 = 1_000_000;
 
+    fn merca_config() -> ProtocolConfig {
+        ProtocolConfig::merca()
+    }
+
     fn l_shape() -> Vec<[i64; 2]> {
         vec![
             [0, 0],
@@ -518,27 +524,27 @@ mod tests {
 
     #[test]
     fn bayazit_triangle_returns_single_part() {
-        let parts = bayazit_decompose(&triangle(), false).unwrap();
+        let parts = bayazit_decompose(&triangle(), false, &merca_config()).unwrap();
         assert_eq!(parts.len(), 1);
     }
 
     #[test]
     fn bayazit_square_returns_single_part() {
-        let parts = bayazit_decompose(&square(), false).unwrap();
+        let parts = bayazit_decompose(&square(), false, &merca_config()).unwrap();
         assert_eq!(parts.len(), 1);
     }
 
     #[test]
     fn bayazit_l_shape_decomposes_into_multiple_parts() {
         let ring = l_shape();
-        let parts = bayazit_decompose(&ring, false).unwrap();
+        let parts = bayazit_decompose(&ring, false, &merca_config()).unwrap();
         assert!(parts.len() >= 2, "expected >=2 parts, got {}", parts.len());
     }
 
     #[test]
     fn bayazit_parts_are_convex_and_valid() {
         let ring = l_shape();
-        let parts = bayazit_decompose(&ring, false).unwrap();
+        let parts = bayazit_decompose(&ring, false, &merca_config()).unwrap();
 
         for (idx, part) in parts.iter().enumerate() {
             assert!(is_convex(part), "part {idx} not convex: {part:?}");
@@ -553,14 +559,14 @@ mod tests {
     fn bayazit_area_is_conserved_exactly() {
         let ring = l_shape();
         let original_area = twice_area_fp2(&ring);
-        let parts = bayazit_decompose(&ring, false).unwrap();
+        let parts = bayazit_decompose(&ring, false, &merca_config()).unwrap();
         let parts_area: u128 = parts.iter().map(|part| twice_area_fp2(part)).sum();
         assert_eq!(parts_area, original_area);
     }
 
     #[test]
     fn bayazit_parts_have_minimum_vertex_count() {
-        for part in bayazit_decompose(&l_shape(), false).unwrap() {
+        for part in bayazit_decompose(&l_shape(), false, &merca_config()).unwrap() {
             assert!(part.len() >= 3, "degenerate part: {part:?}");
         }
     }
@@ -568,7 +574,7 @@ mod tests {
     #[test]
     fn bayazit_no_steiner_points_when_disallowed() {
         let ring = l_shape();
-        let parts = bayazit_decompose(&ring, false).unwrap();
+        let parts = bayazit_decompose(&ring, false, &merca_config()).unwrap();
         let steiner = find_steiner_points(&ring, &parts);
         assert!(steiner.is_empty(), "unexpected steiner points: {steiner:?}");
     }
