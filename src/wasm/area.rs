@@ -8,7 +8,7 @@ pub fn twice_area(ring_flat: &[i64]) -> Result<String, JsValue> {
     Ok(crate::area::twice_area_fp2(&ring).to_string())
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn area_display_from_twice_area(
     twice_area: &str,
     config: Option<JsValue>,
@@ -20,7 +20,7 @@ pub fn area_display_from_twice_area(
     ))
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn areas_conserved_values(original: &str, part_areas: JsValue) -> Result<bool, JsValue> {
     let original = parse_u128_str(original, "original")?;
     let part_area_strings: Vec<String> =

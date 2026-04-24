@@ -40,13 +40,13 @@ pub fn collinear_segments_overlap_area(
     ))
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn point_inside_any_part(parts_flat: JsValue, x: i64, y: i64) -> Result<bool, JsValue> {
     let parts = parse_flat_parts(parts_flat)?;
     Ok(crate::containment::point_inside_any_part(&parts, x, y))
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn contains_polygon(
     outer_parts_flat: JsValue,
     inner_parts_flat: JsValue,

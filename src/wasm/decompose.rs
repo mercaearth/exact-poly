@@ -3,7 +3,7 @@ use wasm_bindgen::prelude::*;
 use super::helpers::*;
 use super::types::WasmDecomposeResult;
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn decompose_polygon(
     ring_flat: &[i64],
     allow_steiner: bool,
@@ -31,7 +31,7 @@ pub fn decompose_polygon(
     })
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn collect_steiner_points(ring_flat: &[i64], parts_flat: JsValue) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     let parts = parse_flat_parts(parts_flat)?;
@@ -39,7 +39,7 @@ pub fn collect_steiner_points(ring_flat: &[i64], parts_flat: JsValue) -> Result<
     serialize(&flatten_ring(&steiner))
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn bayazit_decompose_polygon(
     ring_flat: &[i64],
     allow_steiner: bool,
@@ -54,7 +54,7 @@ pub fn bayazit_decompose_polygon(
     serialize(&flatten_parts(&parts))
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn exact_vertex_partition_polygon(ring_flat: &[i64]) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     let parts = crate::exact_partition::exact_vertex_partition(&ring)
@@ -62,7 +62,7 @@ pub fn exact_vertex_partition_polygon(ring_flat: &[i64]) -> Result<JsValue, JsVa
     serialize(&flatten_parts(&parts))
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn exact_partition_only_original_vertices(
     ring_flat: &[i64],
     parts_flat: JsValue,
@@ -74,7 +74,7 @@ pub fn exact_partition_only_original_vertices(
     ))
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn ear_clip_triangulate_polygon(ring_flat: &[i64]) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     let parts =

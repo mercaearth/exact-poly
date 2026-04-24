@@ -34,7 +34,7 @@ pub fn convex_parts_overlap(a_flat: &[i64], b_flat: &[i64]) -> Result<bool, JsVa
     Ok(crate::overlap::convex_parts_overlap(&a, &b))
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn find_overlapping_parts(
     a_parts_flat: JsValue,
     b_parts_flat: JsValue,
@@ -48,7 +48,7 @@ pub fn find_overlapping_parts(
     serialize(&overlaps)
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn parts_overlap(a_parts_flat: JsValue, b_parts_flat: JsValue) -> Result<bool, JsValue> {
     let a_parts = parse_flat_parts(a_parts_flat)?;
     let b_parts = parse_flat_parts(b_parts_flat)?;

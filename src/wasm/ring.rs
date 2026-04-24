@@ -8,14 +8,14 @@ pub fn is_ccw(ring_flat: &[i64]) -> Result<bool, JsValue> {
     Ok(crate::ring::is_ccw(&ring))
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn ensure_ccw(ring_flat: &[i64]) -> Result<JsValue, JsValue> {
     let mut ring = parse_flat_ring(ring_flat)?;
     crate::ring::ensure_ccw(&mut ring);
     serialize(&flatten_ring(&ring))
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn remove_collinear(ring_flat: &[i64]) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     serialize(&flatten_ring(&crate::ring::remove_collinear(&ring)))
@@ -27,13 +27,13 @@ pub fn is_simple(ring_flat: &[i64]) -> Result<bool, JsValue> {
     Ok(crate::ring::is_simple(&ring))
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn normalize_polygon(ring_flat: &[i64]) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     serialize(&crate::ring::normalize_ring(&ring).map(|normalized| flatten_ring(&normalized)))
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn rotate_polygon(ring_flat: &[i64], start: usize) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     serialize(&flatten_ring(&crate::ring::rotate_ring(&ring, start)))

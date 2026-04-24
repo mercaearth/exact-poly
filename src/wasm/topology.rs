@@ -44,7 +44,7 @@ pub fn classify_contact(a_flat: &[i64], b_flat: &[i64]) -> Result<String, JsValu
     .into())
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn validate_multipart_topology(
     parts_flat: JsValue,
     allow_vertex_contact: Option<bool>,
@@ -62,7 +62,7 @@ pub fn validate_multipart_topology(
     }
 }
 
-#[wasm_bindgen]
+#[wasm_bindgen(skip_typescript)]
 pub fn validate_decomposition(
     ring_flat: &[i64],
     parts_flat: JsValue,
