@@ -20,12 +20,8 @@ pub fn exact_vertex_partition(ring: &[[i64; 2]]) -> Result<Vec<Vec<[i64; 2]>>, S
     }
 
     // Already convex — return as-is
-    {
-        let xs: Vec<i64> = ring.iter().map(|v| v[0]).collect();
-        let ys: Vec<i64> = ring.iter().map(|v| v[1]).collect();
-        if is_convex(&xs, &ys) {
-            return Ok(vec![ring.to_vec()]);
-        }
+    if is_convex(ring) {
+        return Ok(vec![ring.to_vec()]);
     }
 
     let mut result = Vec::new();
@@ -49,13 +45,9 @@ fn exact_partition_recursive(
     }
 
     // Already convex
-    {
-        let xs: Vec<i64> = poly.iter().map(|v| v[0]).collect();
-        let ys: Vec<i64> = poly.iter().map(|v| v[1]).collect();
-        if is_convex(&xs, &ys) {
-            result.push(poly.to_vec());
-            return true;
-        }
+    if is_convex(poly) {
+        result.push(poly.to_vec());
+        return true;
     }
 
     let n = poly.len();
@@ -261,9 +253,7 @@ mod tests {
         let result = exact_vertex_partition(&ring);
         if let Ok(parts) = result {
             for (idx, part) in parts.iter().enumerate() {
-                let xs: Vec<i64> = part.iter().map(|v| v[0]).collect();
-                let ys: Vec<i64> = part.iter().map(|v| v[1]).collect();
-                assert!(is_convex(&xs, &ys), "part {idx} is not convex: {:?}", part);
+                assert!(is_convex(part), "part {idx} is not convex: {:?}", part);
             }
         }
     }
@@ -273,11 +263,8 @@ mod tests {
         let ring = l_shape();
         let result = exact_vertex_partition(&ring);
         if let Ok(parts) = result {
-            let original_area = crate::area::twice_area_fp2_ring(&ring);
-            let parts_area: u128 = parts
-                .iter()
-                .map(|p| crate::area::twice_area_fp2_ring(p))
-                .sum();
+            let original_area = crate::area::twice_area_fp2(&ring);
+            let parts_area: u128 = parts.iter().map(|p| crate::area::twice_area_fp2(p)).sum();
             assert_eq!(
                 parts_area, original_area,
                 "area mismatch: original={original_area}, parts_sum={parts_area}"
@@ -292,15 +279,10 @@ mod tests {
         if let Ok(parts) = result {
             assert!(only_original_vertices(&ring, &parts));
             for part in &parts {
-                let xs: Vec<i64> = part.iter().map(|v| v[0]).collect();
-                let ys: Vec<i64> = part.iter().map(|v| v[1]).collect();
-                assert!(is_convex(&xs, &ys));
+                assert!(is_convex(part));
             }
-            let original_area = crate::area::twice_area_fp2_ring(&ring);
-            let parts_area: u128 = parts
-                .iter()
-                .map(|p| crate::area::twice_area_fp2_ring(p))
-                .sum();
+            let original_area = crate::area::twice_area_fp2(&ring);
+            let parts_area: u128 = parts.iter().map(|p| crate::area::twice_area_fp2(p)).sum();
             assert_eq!(parts_area, original_area);
         }
     }
@@ -347,15 +329,10 @@ mod tests {
         if let Ok(parts) = result {
             assert!(only_original_vertices(&ring, &parts));
             for part in &parts {
-                let xs: Vec<i64> = part.iter().map(|v| v[0]).collect();
-                let ys: Vec<i64> = part.iter().map(|v| v[1]).collect();
-                assert!(is_convex(&xs, &ys));
+                assert!(is_convex(part));
             }
-            let original_area = crate::area::twice_area_fp2_ring(&ring);
-            let parts_area: u128 = parts
-                .iter()
-                .map(|p| crate::area::twice_area_fp2_ring(p))
-                .sum();
+            let original_area = crate::area::twice_area_fp2(&ring);
+            let parts_area: u128 = parts.iter().map(|p| crate::area::twice_area_fp2(p)).sum();
             assert_eq!(parts_area, original_area);
         }
     }

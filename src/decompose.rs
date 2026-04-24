@@ -1,4 +1,4 @@
-use crate::area::{areas_conserved, twice_area_fp2_ring};
+use crate::area::{areas_conserved, twice_area_fp2};
 use crate::bayazit::{bayazit_decompose, find_steiner_points};
 use crate::ear_clip::ear_clip_triangulate;
 use crate::exact_partition::exact_vertex_partition;
@@ -64,7 +64,7 @@ where
         return Err(DecompError::NotSimple);
     }
 
-    let original_area = twice_area_fp2_ring(&normalized);
+    let original_area = twice_area_fp2(&normalized);
     if original_area == 0 {
         return Err(DecompError::TooFewVertices);
     }
@@ -581,7 +581,7 @@ fn finalize_parts(
         return Err(AttemptError::ValidationFailed(validation_errors));
     }
 
-    let part_areas: Vec<u128> = parts.iter().map(|part| twice_area_fp2_ring(part)).collect();
+    let part_areas: Vec<u128> = parts.iter().map(|part| twice_area_fp2(part)).collect();
     if !areas_conserved(original_area, &part_areas) {
         return Err(AttemptError::ValidationFailed(vec![
             "area not conserved".into()
@@ -608,9 +608,7 @@ fn validate_all_parts(parts: &[Vec<[i64; 2]>], config: &ProtocolConfig) -> Vec<S
         .iter()
         .enumerate()
         .filter_map(|(idx, part)| {
-            let xs: Vec<i64> = part.iter().map(|vertex| vertex[0]).collect();
-            let ys: Vec<i64> = part.iter().map(|vertex| vertex[1]).collect();
-            validate_part(&xs, &ys, config).map(|err| format!("part {idx}: {err}"))
+            validate_part(part, config).map(|err| format!("part {idx}: {err}"))
         })
         .collect()
 }
@@ -762,19 +760,13 @@ mod tests {
         let result = decompose(ring, options, &merca_config()).unwrap();
         assert!(!result.parts.is_empty());
 
-        let original_area = twice_area_fp2_ring(&normalize_ring(ring).unwrap());
-        let parts_area: u128 = result
-            .parts
-            .iter()
-            .map(|part| twice_area_fp2_ring(part))
-            .sum();
+        let original_area = twice_area_fp2(&normalize_ring(ring).unwrap());
+        let parts_area: u128 = result.parts.iter().map(|part| twice_area_fp2(part)).sum();
         assert_eq!(parts_area, original_area);
 
         for part in &result.parts {
-            let xs: Vec<i64> = part.iter().map(|v| v[0]).collect();
-            let ys: Vec<i64> = part.iter().map(|v| v[1]).collect();
             assert!(
-                validate_part(&xs, &ys, &merca_config()).is_none(),
+                validate_part(part, &merca_config()).is_none(),
                 "invalid part: {part:?}"
             );
         }
@@ -963,12 +955,8 @@ mod tests {
         assert_eq!(ear_calls.get(), 1);
         assert!(!result.parts.is_empty());
         assert!(validate_all_parts(&result.parts, &merca_config()).is_empty());
-        let original_area = twice_area_fp2_ring(&normalize_ring(&ring).unwrap());
-        let parts_area: u128 = result
-            .parts
-            .iter()
-            .map(|part| twice_area_fp2_ring(part))
-            .sum();
+        let original_area = twice_area_fp2(&normalize_ring(&ring).unwrap());
+        let parts_area: u128 = result.parts.iter().map(|part| twice_area_fp2(part)).sum();
         assert_eq!(parts_area, original_area);
     }
 

@@ -1,6 +1,6 @@
 //! Exact-integer Bayazit convex decomposition.
 
-use crate::area::twice_area_fp2_ring;
+use crate::area::twice_area_fp2;
 use crate::primitives::{cross2d, point_on_segment, segments_intersect};
 use crate::validation::validate_part;
 use std::collections::HashSet;
@@ -16,7 +16,7 @@ pub fn bayazit_decompose(
         return Err("polygon has fewer than 3 vertices".into());
     }
 
-    if twice_area_fp2_ring(ring) == 0 {
+    if twice_area_fp2(ring) == 0 {
         return Err("polygon area is zero".into());
     }
 
@@ -27,8 +27,8 @@ pub fn bayazit_decompose(
         return Err("decomposition produced no parts".into());
     }
 
-    let original_area = twice_area_fp2_ring(ring);
-    let parts_area: u128 = result.iter().map(|part| twice_area_fp2_ring(part)).sum();
+    let original_area = twice_area_fp2(ring);
+    let parts_area: u128 = result.iter().map(|part| twice_area_fp2(part)).sum();
     if parts_area != original_area {
         return Err(format!(
             "area not conserved: original={original_area}, parts sum={parts_area}"
@@ -36,9 +36,7 @@ pub fn bayazit_decompose(
     }
 
     for (idx, part) in result.iter().enumerate() {
-        let xs: Vec<i64> = part.iter().map(|v| v[0]).collect();
-        let ys: Vec<i64> = part.iter().map(|v| v[1]).collect();
-        if let Some(err) = validate_part(&xs, &ys, &crate::types::ProtocolConfig::merca()) {
+        if let Some(err) = validate_part(part, &crate::types::ProtocolConfig::merca()) {
             return Err(format!("invalid output part {idx}: {err}"));
         }
     }
@@ -307,7 +305,7 @@ fn is_valid_subpolygon(poly: &[[i64; 2]]) -> bool {
     if poly.len() < 3 {
         return false;
     }
-    let area = twice_area_fp2_ring(poly);
+    let area = twice_area_fp2(poly);
     if area == 0 {
         return false;
     }
@@ -543,11 +541,9 @@ mod tests {
         let parts = bayazit_decompose(&ring, false).unwrap();
 
         for (idx, part) in parts.iter().enumerate() {
-            let xs: Vec<i64> = part.iter().map(|v| v[0]).collect();
-            let ys: Vec<i64> = part.iter().map(|v| v[1]).collect();
-            assert!(is_convex(&xs, &ys), "part {idx} not convex: {part:?}");
+            assert!(is_convex(part), "part {idx} not convex: {part:?}");
             assert!(
-                validate_part(&xs, &ys, &crate::types::ProtocolConfig::merca()).is_none(),
+                validate_part(part, &crate::types::ProtocolConfig::merca()).is_none(),
                 "part {idx} invalid: {part:?}"
             );
         }
@@ -556,9 +552,9 @@ mod tests {
     #[test]
     fn bayazit_area_is_conserved_exactly() {
         let ring = l_shape();
-        let original_area = twice_area_fp2_ring(&ring);
+        let original_area = twice_area_fp2(&ring);
         let parts = bayazit_decompose(&ring, false).unwrap();
-        let parts_area: u128 = parts.iter().map(|part| twice_area_fp2_ring(part)).sum();
+        let parts_area: u128 = parts.iter().map(|part| twice_area_fp2(part)).sum();
         assert_eq!(parts_area, original_area);
     }
 

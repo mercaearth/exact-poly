@@ -195,14 +195,14 @@ pub fn ear_clip_triangulate_polygon(ring_flat: &[i64]) -> Result<JsValue, JsValu
 
 #[wasm_bindgen]
 pub fn twice_area(ring_flat: &[i64]) -> Result<String, JsValue> {
-    let (xs, ys) = split_xy_from_flat(ring_flat)?;
-    Ok(crate::area::twice_area_fp2(&xs, &ys).to_string())
+    let ring = parse_flat_ring(ring_flat)?;
+    Ok(crate::area::twice_area_fp2(&ring).to_string())
 }
 
 #[wasm_bindgen]
 pub fn twice_area_ring(ring_flat: &[i64]) -> Result<String, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
-    Ok(crate::area::twice_area_fp2_ring(&ring).to_string())
+    Ok(crate::area::twice_area_fp2(&ring).to_string())
 }
 
 #[wasm_bindgen]
@@ -274,8 +274,8 @@ pub fn rotate_polygon_ring(ring_flat: &[i64], start: usize) -> Result<JsValue, J
 
 #[wasm_bindgen]
 pub fn is_convex_ring(ring_flat: &[i64]) -> Result<bool, JsValue> {
-    let (xs, ys) = split_xy_from_flat(ring_flat)?;
-    Ok(crate::validation::is_convex(&xs, &ys))
+    let ring = parse_flat_ring(ring_flat)?;
+    Ok(crate::validation::is_convex(&ring))
 }
 
 #[wasm_bindgen]
@@ -283,15 +283,15 @@ pub fn validate_edge_lengths_ring(
     ring_flat: &[i64],
     config: Option<JsValue>,
 ) -> Result<Option<String>, JsValue> {
-    let (xs, ys) = split_xy_from_flat(ring_flat)?;
+    let ring = parse_flat_ring(ring_flat)?;
     let config = parse_config(config)?;
-    Ok(crate::validation::validate_edge_lengths(&xs, &ys, &config))
+    Ok(crate::validation::validate_edge_lengths(&ring, &config))
 }
 
 #[wasm_bindgen]
 pub fn perimeter_l1_ring(ring_flat: &[i64]) -> Result<String, JsValue> {
-    let (xs, ys) = split_xy_from_flat(ring_flat)?;
-    Ok(crate::validation::perimeter_l1(&xs, &ys).to_string())
+    let ring = parse_flat_ring(ring_flat)?;
+    Ok(crate::validation::perimeter_l1(&ring).to_string())
 }
 
 /// Boundary-level compactness check. Apply to a whole polygon's outer
@@ -323,9 +323,9 @@ pub fn validate_part_ring(
     ring_flat: &[i64],
     config: Option<JsValue>,
 ) -> Result<Option<String>, JsValue> {
-    let (xs, ys) = split_xy_from_flat(ring_flat)?;
+    let ring = parse_flat_ring(ring_flat)?;
     let config = parse_config(config)?;
-    Ok(crate::validation::validate_part(&xs, &ys, &config))
+    Ok(crate::validation::validate_part(&ring, &config))
 }
 
 #[wasm_bindgen]

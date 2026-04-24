@@ -16,7 +16,7 @@
 //! Compactness is a boundary-level invariant (step 6), not a per-part one —
 //! see the `validation` module docs for the rationale that mirrors polygon.move.
 
-use crate::area::{areas_conserved, twice_area_fp2, twice_area_fp2_ring};
+use crate::area::{areas_conserved, twice_area_fp2};
 use crate::overlap::convex_parts_overlap;
 use crate::topology::validate_multipart_topology;
 use crate::types::{ProtocolConfig, TopologyError};
@@ -128,9 +128,6 @@ pub fn validate_decomposition(
     let mut total_vertices = 0usize;
 
     for (i, part) in parts.iter().enumerate() {
-        let xs: Vec<i64> = part.iter().map(|v| v[0]).collect();
-        let ys: Vec<i64> = part.iter().map(|v| v[1]).collect();
-
         total_vertices += part.len();
 
         // Vertex count
@@ -157,7 +154,7 @@ pub fn validate_decomposition(
 
         // Per-part structural validation (convexity, edges).
         // Boundary compactness is checked once at step 6 below.
-        match validate_part(&xs, &ys, config) {
+        match validate_part(part, config) {
             None => {
                 push(check_ok(format!("part_{i}_valid"), "OK"));
             }
@@ -167,7 +164,7 @@ pub fn validate_decomposition(
         }
 
         // Area
-        let area = twice_area_fp2(&xs, &ys);
+        let area = twice_area_fp2(part);
         part_areas.push(area);
         if area == 0 {
             push(check_err(format!("part_{i}_area"), "zero area"));
@@ -177,7 +174,10 @@ pub fn validate_decomposition(
 
         // Coordinate range (MAX_WORLD = 40_075_017_000_000)
         let max_world = crate::constants::MAX_WORLD as i64;
-        let out_of_range = xs.iter().chain(ys.iter()).any(|&c| c < 0 || c > max_world);
+        let out_of_range = part
+            .iter()
+            .flat_map(|vertex| vertex.iter())
+            .any(|&c| c < 0 || c > max_world);
         if out_of_range {
             // On-chain uses u64, so negatives are impossible there.
             // In WASM we use i64, so negative coords are valid for demos but won't pass on-chain.
@@ -211,7 +211,7 @@ pub fn validate_decomposition(
     }
 
     // 4. Area conservation
-    let original_area = twice_area_fp2_ring(ring);
+    let original_area = twice_area_fp2(ring);
     if areas_conserved(original_area, &part_areas) {
         push(check_ok(
             "area_conservation",

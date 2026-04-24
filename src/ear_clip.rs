@@ -1,4 +1,4 @@
-use crate::area::twice_area_fp2_ring;
+use crate::area::twice_area_fp2;
 use crate::primitives::cross2d;
 
 pub fn ear_clip_triangulate(ring: &[[i64; 2]]) -> Result<Vec<Vec<[i64; 2]>>, String> {
@@ -43,10 +43,10 @@ pub fn ear_clip_triangulate(ring: &[[i64; 2]]) -> Result<Vec<Vec<[i64; 2]>>, Str
         ));
     }
 
-    let original_area = twice_area_fp2_ring(ring);
+    let original_area = twice_area_fp2(ring);
     let parts_area: u128 = triangles
         .iter()
-        .map(|triangle| twice_area_fp2_ring(triangle))
+        .map(|triangle| twice_area_fp2(triangle))
         .sum();
     if parts_area != original_area {
         return Err(format!(
@@ -56,7 +56,7 @@ pub fn ear_clip_triangulate(ring: &[[i64; 2]]) -> Result<Vec<Vec<[i64; 2]>>, Str
 
     if triangles
         .iter()
-        .any(|triangle| twice_area_fp2_ring(triangle) == 0)
+        .any(|triangle| twice_area_fp2(triangle) == 0)
     {
         return Err("ear clipping produced degenerate triangle".to_string());
     }
@@ -168,7 +168,7 @@ mod tests {
     fn all_triangles_have_positive_area() {
         let parts = ear_clip_triangulate(&l_shape()).unwrap();
         for (i, tri) in parts.iter().enumerate() {
-            let area = twice_area_fp2_ring(tri);
+            let area = twice_area_fp2(tri);
             assert!(area > 0, "triangle {i} has zero area");
         }
     }
@@ -176,9 +176,9 @@ mod tests {
     #[test]
     fn area_conservation_square() {
         let ring = square();
-        let original_area = twice_area_fp2_ring(&ring);
+        let original_area = twice_area_fp2(&ring);
         let triangles = ear_clip_triangulate(&ring).unwrap();
-        let parts_area: u128 = triangles.iter().map(|t| twice_area_fp2_ring(t)).sum();
+        let parts_area: u128 = triangles.iter().map(|t| twice_area_fp2(t)).sum();
         assert_eq!(
             parts_area, original_area,
             "area not conserved: original={original_area}, sum={parts_area}"
@@ -188,9 +188,9 @@ mod tests {
     #[test]
     fn area_conservation_l_shape() {
         let ring = l_shape();
-        let original_area = twice_area_fp2_ring(&ring);
+        let original_area = twice_area_fp2(&ring);
         let triangles = ear_clip_triangulate(&ring).unwrap();
-        let parts_area: u128 = triangles.iter().map(|t| twice_area_fp2_ring(t)).sum();
+        let parts_area: u128 = triangles.iter().map(|t| twice_area_fp2(t)).sum();
         assert_eq!(
             parts_area, original_area,
             "area not conserved: original={original_area}, sum={parts_area}"

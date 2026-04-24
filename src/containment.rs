@@ -101,9 +101,8 @@ fn part_is_inside(outer_parts: &[Vec<[i64; 2]>], inner_part: &[[i64; 2]]) -> boo
 
 /// Compute the bounding AABB of all parts combined.
 fn compute_multi_part_aabb(parts: &[Vec<[i64; 2]>]) -> Aabb {
-    let all_xs: Vec<i64> = parts.iter().flat_map(|p| p.iter().map(|v| v[0])).collect();
-    let all_ys: Vec<i64> = parts.iter().flat_map(|p| p.iter().map(|v| v[1])).collect();
-    Aabb::from_vertices(&all_xs, &all_ys)
+    let ring: Vec<[i64; 2]> = parts.iter().flat_map(|p| p.iter().copied()).collect();
+    Aabb::from_ring(&ring)
 }
 
 #[cfg(test)]

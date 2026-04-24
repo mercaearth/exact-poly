@@ -1,4 +1,4 @@
-use crate::area::twice_area_fp2_ring;
+use crate::area::twice_area_fp2;
 use crate::shared_edge::{classify_contact, ContactKind};
 use crate::types::{ProtocolConfig, TopologyError};
 use crate::validation::check_compactness;
@@ -82,10 +82,7 @@ pub fn validate_multipart_topology(
     }
 
     let boundary_perimeter = validate_boundary_graph(parts, allow_vertex_contact)?;
-    let twice_area = parts
-        .iter()
-        .map(|part| twice_area_fp2_ring(part))
-        .sum::<u128>();
+    let twice_area = parts.iter().map(|part| twice_area_fp2(part)).sum::<u128>();
 
     validate_compactness_topology(twice_area, boundary_perimeter, config)?;
 
@@ -95,7 +92,7 @@ pub fn validate_multipart_topology(
 fn validate_single_part(part: &[Vertex], config: &ProtocolConfig) -> Result<(), TopologyError> {
     let xs: Vec<i64> = part.iter().map(|v| v[0]).collect();
     let ys: Vec<i64> = part.iter().map(|v| v[1]).collect();
-    let twice_area = twice_area_fp2_ring(part);
+    let twice_area = twice_area_fp2(part);
     let perimeter = perimeter_l1(&xs, &ys);
 
     validate_compactness_topology(twice_area, perimeter, config)

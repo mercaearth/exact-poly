@@ -18,27 +18,33 @@ impl Aabb {
         }
     }
 
-    pub fn from_vertices(xs: &[i64], ys: &[i64]) -> Self {
-        assert!(!xs.is_empty(), "AABB requires at least 1 vertex");
-        assert_eq!(xs.len(), ys.len(), "xs and ys must have same length");
+    pub fn from_ring(ring: &[[i64; 2]]) -> Self {
+        if ring.is_empty() {
+            return Self {
+                min_x: 0,
+                max_x: 0,
+                min_y: 0,
+                max_y: 0,
+            };
+        }
 
-        let mut min_x = xs[0];
-        let mut max_x = xs[0];
-        let mut min_y = ys[0];
-        let mut max_y = ys[0];
+        let mut min_x = ring[0][0];
+        let mut max_x = ring[0][0];
+        let mut min_y = ring[0][1];
+        let mut max_y = ring[0][1];
 
-        for (&x, &y) in xs[1..].iter().zip(ys[1..].iter()) {
-            if x < min_x {
-                min_x = x;
+        for pt in &ring[1..] {
+            if pt[0] < min_x {
+                min_x = pt[0];
             }
-            if x > max_x {
-                max_x = x;
+            if pt[0] > max_x {
+                max_x = pt[0];
             }
-            if y < min_y {
-                min_y = y;
+            if pt[1] < min_y {
+                min_y = pt[1];
             }
-            if y > max_y {
-                max_y = y;
+            if pt[1] > max_y {
+                max_y = pt[1];
             }
         }
 
@@ -86,10 +92,9 @@ mod tests {
     const M: i64 = 1_000_000;
 
     #[test]
-    fn from_vertices_tracks_extrema() {
-        let xs = vec![M, 2 * M, 2 * M, M];
-        let ys = vec![M, M, 2 * M, 2 * M];
-        let aabb = Aabb::from_vertices(&xs, &ys);
+    fn from_ring_tracks_extrema() {
+        let ring = vec![[M, M], [2 * M, M], [2 * M, 2 * M], [M, 2 * M]];
+        let aabb = Aabb::from_ring(&ring);
         assert_eq!(aabb.min_x, M);
         assert_eq!(aabb.max_x, 2 * M);
         assert_eq!(aabb.min_y, M);
@@ -97,10 +102,9 @@ mod tests {
     }
 
     #[test]
-    fn from_vertices_handles_single_vertex() {
-        let xs = vec![5];
-        let ys = vec![3];
-        let aabb = Aabb::from_vertices(&xs, &ys);
+    fn from_ring_handles_single_vertex() {
+        let ring = vec![[5, 3]];
+        let aabb = Aabb::from_ring(&ring);
 
         assert_eq!(aabb.min_x, 5);
         assert_eq!(aabb.max_x, 5);
@@ -109,10 +113,9 @@ mod tests {
     }
 
     #[test]
-    fn from_vertices_handles_negative_coordinates() {
-        let xs = vec![-10, 10];
-        let ys = vec![-5, 5];
-        let aabb = Aabb::from_vertices(&xs, &ys);
+    fn from_ring_handles_negative_coordinates() {
+        let ring = vec![[-10, -5], [10, 5]];
+        let aabb = Aabb::from_ring(&ring);
 
         assert_eq!(aabb.min_x, -10);
         assert_eq!(aabb.max_x, 10);

@@ -41,8 +41,8 @@ use crate::types::ProtocolConfig;
 /// Any mix of positive and negative cross products → not convex.
 ///
 /// Coordinates are i64; cross products use i128.
-pub fn is_convex(xs: &[i64], ys: &[i64]) -> bool {
-    let n = xs.len();
+pub fn is_convex(ring: &[[i64; 2]]) -> bool {
+    let n = ring.len();
     if n < 3 {
         return false;
     }
@@ -53,7 +53,14 @@ pub fn is_convex(xs: &[i64], ys: &[i64]) -> bool {
         let prev = (i + n - 1) % n;
         let next = (i + 1) % n;
 
-        let cross = cross2d(xs[prev], ys[prev], xs[i], ys[i], xs[next], ys[next]);
+        let cross = cross2d(
+            ring[prev][0],
+            ring[prev][1],
+            ring[i][0],
+            ring[i][1],
+            ring[next][0],
+            ring[next][1],
+        );
 
         if cross == 0 {
             // Collinear — skip this vertex (weakly convex allows this)
@@ -75,12 +82,12 @@ pub fn is_convex(xs: &[i64], ys: &[i64]) -> bool {
 /// Validate all edges have squared length >= MIN_EDGE_LENGTH_SQUARED.
 /// Returns None if valid, Some(error message) if any edge is too short.
 /// Matches polygon.move::validate_part_edges().
-pub fn validate_edge_lengths(xs: &[i64], ys: &[i64], config: &ProtocolConfig) -> Option<String> {
-    let n = xs.len();
+pub fn validate_edge_lengths(ring: &[[i64; 2]], config: &ProtocolConfig) -> Option<String> {
+    let n = ring.len();
     for i in 0..n {
         let j = (i + 1) % n;
-        let dx = (xs[j] as i128) - (xs[i] as i128);
-        let dy = (ys[j] as i128) - (ys[i] as i128);
+        let dx = (ring[j][0] as i128) - (ring[i][0] as i128);
+        let dy = (ring[j][1] as i128) - (ring[i][1] as i128);
         let sq_len = (dx * dx + dy * dy) as u128;
         if sq_len < config.min_edge_length_squared {
             return Some(format!(
@@ -95,13 +102,13 @@ pub fn validate_edge_lengths(xs: &[i64], ys: &[i64], config: &ProtocolConfig) ->
 /// Compute the L1 (Manhattan) perimeter of a polygon.
 /// Uses |dx| + |dy| per edge — matches polygon.move's perimeter formula.
 /// MUST use L1, NOT Euclidean (matching on-chain compactness check).
-pub fn perimeter_l1(xs: &[i64], ys: &[i64]) -> u128 {
-    let n = xs.len();
+pub fn perimeter_l1(ring: &[[i64; 2]]) -> u128 {
+    let n = ring.len();
     let mut perimeter: u128 = 0;
     for i in 0..n {
         let j = (i + 1) % n;
-        let dx = xs[j].abs_diff(xs[i]) as u128;
-        let dy = ys[j].abs_diff(ys[i]) as u128;
+        let dx = ring[j][0].abs_diff(ring[i][0]) as u128;
+        let dy = ring[j][1].abs_diff(ring[i][1]) as u128;
         perimeter += dx + dy;
     }
     perimeter
@@ -199,8 +206,8 @@ pub fn validate_compactness(
 /// 2. At most `max_vertices_per_part` vertices
 /// 3. Weakly convex
 /// 4. All edges `>= min_edge_length_squared`
-pub fn validate_part(xs: &[i64], ys: &[i64], config: &ProtocolConfig) -> Option<String> {
-    let n = xs.len();
+pub fn validate_part(ring: &[[i64; 2]], config: &ProtocolConfig) -> Option<String> {
+    let n = ring.len();
 
     if n < 3 {
         return Some(format!("part has {n} vertices, need >= 3"));
@@ -213,11 +220,11 @@ pub fn validate_part(xs: &[i64], ys: &[i64], config: &ProtocolConfig) -> Option<
         ));
     }
 
-    if !is_convex(xs, ys) {
+    if !is_convex(ring) {
         return Some("part is not convex".into());
     }
 
-    if let Some(err) = validate_edge_lengths(xs, ys, config) {
+    if let Some(err) = validate_edge_lengths(ring, config) {
         return Some(err);
     }
 
@@ -238,93 +245,94 @@ mod tests {
 
     #[test]
     fn is_convex_accepts_square() {
-        let xs = vec![0, 10 * M, 10 * M, 0];
-        let ys = vec![0, 0, 10 * M, 10 * M];
-        assert!(is_convex(&xs, &ys));
+        let ring = vec![[0, 0], [10 * M, 0], [10 * M, 10 * M], [0, 10 * M]];
+        assert!(is_convex(&ring));
     }
 
     #[test]
     fn is_convex_rejects_l_shape() {
         // L-shape has a reflex vertex
-        let xs = vec![0, 20 * M, 20 * M, 10 * M, 10 * M, 0];
-        let ys = vec![0, 0, 10 * M, 10 * M, 20 * M, 20 * M];
-        assert!(!is_convex(&xs, &ys));
+        let ring = vec![
+            [0, 0],
+            [20 * M, 0],
+            [20 * M, 10 * M],
+            [10 * M, 10 * M],
+            [10 * M, 20 * M],
+            [0, 20 * M],
+        ];
+        assert!(!is_convex(&ring));
     }
 
     #[test]
     fn is_convex_accepts_weakly_convex_with_collinear() {
         // Rectangle with extra vertex at midpoint of top edge (collinear)
-        let xs = vec![0, 10 * M, 10 * M, 5 * M, 0];
-        let ys = vec![0, 0, 10 * M, 10 * M, 10 * M];
-        assert!(is_convex(&xs, &ys));
+        let ring = vec![
+            [0, 0],
+            [10 * M, 0],
+            [10 * M, 10 * M],
+            [5 * M, 10 * M],
+            [0, 10 * M],
+        ];
+        assert!(is_convex(&ring));
     }
 
     #[test]
     fn is_convex_accepts_triangle() {
-        let xs = vec![0, 10 * M, 5 * M];
-        let ys = vec![0, 0, 10 * M];
-        assert!(is_convex(&xs, &ys));
+        let ring = vec![[0, 0], [10 * M, 0], [5 * M, 10 * M]];
+        assert!(is_convex(&ring));
     }
 
     #[test]
     fn is_convex_rejects_two_points() {
-        let xs = vec![0, 1];
-        let ys = vec![0, 0];
-        assert!(!is_convex(&xs, &ys));
+        let ring = vec![[0, 0], [1, 0]];
+        assert!(!is_convex(&ring));
     }
 
     #[test]
     fn is_convex_accepts_convex_pentagon() {
-        let xs = vec![0, 2 * M, 3 * M, 2 * M, 0];
-        let ys = vec![0, 0, M, 2 * M, 2 * M];
-        assert!(is_convex(&xs, &ys));
+        let ring = vec![[0, 0], [2 * M, 0], [3 * M, M], [2 * M, 2 * M], [0, 2 * M]];
+        assert!(is_convex(&ring));
     }
 
     #[test]
     fn validate_edge_lengths_valid() {
         // All edges 10M each (= (10M)^2 = 1e14 >> 1e12 threshold)
-        let xs = vec![0, 10 * M, 10 * M, 0];
-        let ys = vec![0, 0, 10 * M, 10 * M];
-        assert!(validate_edge_lengths(&xs, &ys, &merca_config()).is_none());
+        let ring = vec![[0, 0], [10 * M, 0], [10 * M, 10 * M], [0, 10 * M]];
+        assert!(validate_edge_lengths(&ring, &merca_config()).is_none());
     }
 
     #[test]
     fn validate_edge_lengths_rejects_short_edge() {
         // Edge of 0.5M length: (0.5M)^2 = 2.5e11 < MIN_EDGE_LENGTH_SQUARED=1e12
-        let xs = vec![0, M / 2, M / 2, 0]; // 0.5M = 500_000
-        let ys = vec![0, 0, M, M];
-        // Edge 0→1: dx=500_000, dy=0, sq=250_000_000_000 < 1_000_000_000_000
-        assert!(validate_edge_lengths(&xs, &ys, &merca_config()).is_some());
+        let ring = vec![[0, 0], [M / 2, 0], [M / 2, M], [0, M]]; // 0.5M = 500_000
+                                                                 // Edge 0→1: dx=500_000, dy=0, sq=250_000_000_000 < 1_000_000_000_000
+        assert!(validate_edge_lengths(&ring, &merca_config()).is_some());
     }
 
     #[test]
     fn validate_edge_lengths_exact_threshold() {
         // Edge exactly at MIN_EDGE_LENGTH = 1M: sq = (1M)^2 = 1e12 = MIN_EDGE_LENGTH_SQUARED
-        let xs = vec![0, M, M, 0];
-        let ys = vec![0, 0, M, M];
-        assert!(validate_edge_lengths(&xs, &ys, &merca_config()).is_none());
+        let ring = vec![[0, 0], [M, 0], [M, M], [0, M]];
+        assert!(validate_edge_lengths(&ring, &merca_config()).is_none());
     }
 
     #[test]
     fn validate_edge_lengths_accepts_large_negative_coordinates() {
-        let xs = vec![-1_000_000, 1_000_000];
-        let ys = vec![0, 0];
-        assert!(validate_edge_lengths(&xs, &ys, &merca_config()).is_none());
+        let ring = vec![[-1_000_000, 0], [1_000_000, 0]];
+        assert!(validate_edge_lengths(&ring, &merca_config()).is_none());
     }
 
     #[test]
     fn validate_edge_lengths_rejects_unit_edge() {
-        let xs = vec![0, 1, 1];
-        let ys = vec![0, 1, 0];
-        assert!(validate_edge_lengths(&xs, &ys, &merca_config()).is_some());
+        let ring = vec![[0, 0], [1, 1], [1, 0]];
+        assert!(validate_edge_lengths(&ring, &merca_config()).is_some());
     }
 
     #[test]
     fn perimeter_l1_uses_manhattan() {
         // Square 10M x 10M: L1 perimeter = 4 * (|10M| + |0|) = 4 * 10M = 40M
-        let xs = vec![0, 10 * M, 10 * M, 0];
-        let ys = vec![0, 0, 10 * M, 10 * M];
-        let p = perimeter_l1(&xs, &ys);
+        let ring = vec![[0, 0], [10 * M, 0], [10 * M, 10 * M], [0, 10 * M]];
+        let p = perimeter_l1(&ring);
         assert_eq!(p, 4 * 10 * M as u128);
     }
 
@@ -332,92 +340,90 @@ mod tests {
     fn perimeter_l1_not_euclidean() {
         // Diagonal edge: (0,0)→(3M,4M)
         // Euclidean = 5M, L1 = 7M
-        let xs = vec![0, 3 * M, 0];
-        let ys = vec![0, 0, 4 * M]; // right triangle
-                                    // Edge 0→1: |3M|+|0|=3M, Edge 1→2: |3M|+|4M|=7M, Edge 2→0: |0|+|4M|=4M
-        let p = perimeter_l1(&xs, &ys);
+        let ring = vec![[0, 0], [3 * M, 0], [0, 4 * M]]; // right triangle
+                                                         // Edge 0→1: |3M|+|0|=3M, Edge 1→2: |3M|+|4M|=7M, Edge 2→0: |0|+|4M|=4M
+        let p = perimeter_l1(&ring);
         assert_eq!(p, (3 + 7 + 4) * M as u128);
     }
 
     #[test]
     fn perimeter_l1_handles_negative_coordinates() {
-        let xs = vec![-1, -1, 1, 1];
-        let ys = vec![-1, 1, 1, -1];
-        assert_eq!(perimeter_l1(&xs, &ys), 8);
+        let ring = vec![[-1, -1], [-1, 1], [1, 1], [1, -1]];
+        assert_eq!(perimeter_l1(&ring), 8);
     }
 
     #[test]
     fn perimeter_l1_large_square_does_not_overflow() {
-        let xs = vec![
-            10_000_000 * M,
-            11_000_000 * M,
-            11_000_000 * M,
-            10_000_000 * M,
+        let ring = vec![
+            [10_000_000 * M, 10_000_000 * M],
+            [11_000_000 * M, 10_000_000 * M],
+            [11_000_000 * M, 11_000_000 * M],
+            [10_000_000 * M, 11_000_000 * M],
         ];
-        let ys = vec![
-            10_000_000 * M,
-            10_000_000 * M,
-            11_000_000 * M,
-            11_000_000 * M,
-        ];
-        assert_eq!(perimeter_l1(&xs, &ys), 4 * 1_000_000_000_000u128);
+        assert_eq!(perimeter_l1(&ring), 4 * 1_000_000_000_000u128);
     }
 
     #[test]
     fn validate_compactness_compact_square_passes() {
         // 10M x 10M square
-        let xs = vec![0, 10 * M, 10 * M, 0];
-        let ys = vec![0, 0, 10 * M, 10 * M];
-        let twice_area = twice_area_fp2(&xs, &ys);
-        let perimeter = perimeter_l1(&xs, &ys);
+        let ring = vec![[0, 0], [10 * M, 0], [10 * M, 10 * M], [0, 10 * M]];
+        let twice_area = twice_area_fp2(&ring);
+        let perimeter = perimeter_l1(&ring);
         assert!(validate_compactness(twice_area, perimeter, &merca_config()).is_none());
     }
 
     #[test]
     fn validate_compactness_uses_checked_mul() {
         // Large but valid polygon — should not panic
-        let xs = vec![0, 10_000_000 * M, 10_000_000 * M, 0]; // 10000 km square
-        let ys = vec![0, 0, 10_000_000 * M, 10_000_000 * M];
-        let twice_area = twice_area_fp2(&xs, &ys);
-        let perimeter = perimeter_l1(&xs, &ys);
+        let ring = vec![
+            [0, 0],
+            [10_000_000 * M, 0],
+            [10_000_000 * M, 10_000_000 * M],
+            [0, 10_000_000 * M],
+        ];
+        let twice_area = twice_area_fp2(&ring);
+        let perimeter = perimeter_l1(&ring);
         // Should not panic, result doesn't matter (extreme case)
         let _ = validate_compactness(twice_area, perimeter, &merca_config());
     }
 
     #[test]
     fn validate_part_valid_square() {
-        let xs = vec![0, 10 * M, 10 * M, 0];
-        let ys = vec![0, 0, 10 * M, 10 * M];
-        assert!(validate_part(&xs, &ys, &merca_config()).is_none());
+        let ring = vec![[0, 0], [10 * M, 0], [10 * M, 10 * M], [0, 10 * M]];
+        assert!(validate_part(&ring, &merca_config()).is_none());
     }
 
     #[test]
     fn validate_part_square_passes_both_configs() {
-        let xs = vec![0, 10 * M, 10 * M, 0];
-        let ys = vec![0, 0, 10 * M, 10 * M];
+        let ring = vec![[0, 0], [10 * M, 0], [10 * M, 10 * M], [0, 10 * M]];
         let permissive = ProtocolConfig::permissive();
-        assert!(validate_part(&xs, &ys, &merca_config()).is_none());
-        assert!(validate_part(&xs, &ys, &permissive).is_none());
+        assert!(validate_part(&ring, &merca_config()).is_none());
+        assert!(validate_part(&ring, &permissive).is_none());
     }
 
     #[test]
     fn validate_part_short_square_fails_merca_but_passes_permissive() {
-        let xs = vec![0, M / 2, M / 2, 0];
-        let ys = vec![0, 0, M / 2, M / 2];
+        let ring = vec![[0, 0], [M / 2, 0], [M / 2, M / 2], [0, M / 2]];
         let permissive = ProtocolConfig::permissive();
-        assert!(validate_part(&xs, &ys, &merca_config()).is_some());
-        assert!(validate_part(&xs, &ys, &permissive).is_none());
+        assert!(validate_part(&ring, &merca_config()).is_some());
+        assert!(validate_part(&ring, &permissive).is_none());
     }
 
     #[test]
     fn validate_part_rejects_l_shape() {
-        let xs = vec![0, 20 * M, 20 * M, 10 * M, 10 * M, 0];
-        let ys = vec![0, 0, 10 * M, 10 * M, 20 * M, 20 * M];
-        assert!(validate_part(&xs, &ys, &merca_config()).is_some());
+        let ring = vec![
+            [0, 0],
+            [20 * M, 0],
+            [20 * M, 10 * M],
+            [10 * M, 10 * M],
+            [10 * M, 20 * M],
+            [0, 20 * M],
+        ];
+        assert!(validate_part(&ring, &merca_config()).is_some());
     }
 
     #[test]
     fn validate_part_rejects_too_few_vertices() {
-        assert!(validate_part(&[0, M], &[0, 0], &merca_config()).is_some());
+        assert!(validate_part(&[[0, 0], [M, 0]], &merca_config()).is_some());
     }
 }

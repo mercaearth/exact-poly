@@ -19,8 +19,18 @@ use crate::spatial::{collinear_segments_overlap_area, point_strictly_inside_conv
 /// 4. Check all collinear edge pairs for area overlap (same-side interior check)
 pub fn convex_parts_overlap(a_xs: &[i64], a_ys: &[i64], b_xs: &[i64], b_ys: &[i64]) -> bool {
     // AABB pre-filter: if bounding boxes don't overlap, no need for detailed check
-    let aabb_a = Aabb::from_vertices(a_xs, a_ys);
-    let aabb_b = Aabb::from_vertices(b_xs, b_ys);
+    let a_ring: Vec<[i64; 2]> = a_xs
+        .iter()
+        .zip(a_ys.iter())
+        .map(|(&x, &y)| [x, y])
+        .collect();
+    let b_ring: Vec<[i64; 2]> = b_xs
+        .iter()
+        .zip(b_ys.iter())
+        .map(|(&x, &y)| [x, y])
+        .collect();
+    let aabb_a = Aabb::from_ring(&a_ring);
+    let aabb_b = Aabb::from_ring(&b_ring);
     if !aabb_a.intersects(&aabb_b) {
         return false;
     }

@@ -1,0 +1,22 @@
+   Compiling exact-poly v0.1.0 (/Users/fefa4ka/Documents/My/merca/exact-poly)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.92s
+     Running unittests src/lib.rs (target/debug/deps/exact_poly-2f32831be56f8539)
+
+running 14 tests
+test aabb::tests::contains_point_works ... ok
+test aabb::tests::contains_point_includes_corner_and_excludes_outside ... ok
+test aabb::tests::intersects_contained_returns_true ... ok
+test aabb::tests::intersects_is_symmetric ... ok
+test aabb::tests::from_ring_handles_single_vertex ... ok
+test aabb::tests::from_ring_handles_negative_coordinates ... ok
+test aabb::tests::intersects_overlapping_returns_true ... ok
+test aabb::tests::from_ring_tracks_extrema ... ok
+test aabb::tests::intersects_separated_returns_false ... ok
+test aabb::tests::intersects_touching_corner_returns_false ... ok
+test aabb::tests::intersects_touching_edge_returns_false ... ok
+test aabb::tests::merge_covers_both ... ok
+test aabb::tests::merge_disjoint_boxes_contains_both ... ok
+test aabb::tests::merge_nested_boxes_equals_outer_box ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 256 filtered out; finished in 0.00s
+

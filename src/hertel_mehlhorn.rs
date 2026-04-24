@@ -1,4 +1,4 @@
-use crate::area::twice_area_fp2_ring;
+use crate::area::twice_area_fp2;
 use crate::validation::is_convex;
 use std::collections::BTreeMap;
 
@@ -86,13 +86,11 @@ pub fn merge_convex_pair(a: &[Vertex], b: &[Vertex]) -> Option<Vec<Vertex>> {
     }
 
     let merged = boundary_cycle_without_shared(a, b, shared_edges[0])?;
-    if twice_area_fp2_ring(&merged) == 0 {
+    if twice_area_fp2(&merged) == 0 {
         return None;
     }
 
-    let xs: Vec<i64> = merged.iter().map(|vertex| vertex[0]).collect();
-    let ys: Vec<i64> = merged.iter().map(|vertex| vertex[1]).collect();
-    if is_convex(&xs, &ys) {
+    if is_convex(&merged) {
         Some(merged)
     } else {
         None
@@ -146,7 +144,7 @@ pub fn optimize_partition(parts: &[Vec<Vertex>]) -> Vec<Vec<Vertex>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::area::twice_area_fp2_ring;
+    use crate::area::twice_area_fp2;
     use crate::ear_clip::ear_clip_triangulate;
 
     const M: i64 = 1_000_000;
@@ -169,9 +167,7 @@ mod tests {
             "two triangles forming square should merge to 1"
         );
 
-        let xs: Vec<i64> = result[0].iter().map(|v| v[0]).collect();
-        let ys: Vec<i64> = result[0].iter().map(|v| v[1]).collect();
-        assert!(is_convex(&xs, &ys));
+        assert!(is_convex(&result[0]));
     }
 
     #[test]
@@ -198,9 +194,7 @@ mod tests {
         );
 
         for part in &optimized {
-            let xs: Vec<i64> = part.iter().map(|v| v[0]).collect();
-            let ys: Vec<i64> = part.iter().map(|v| v[1]).collect();
-            assert!(is_convex(&xs, &ys));
+            assert!(is_convex(part));
         }
     }
 
@@ -215,9 +209,9 @@ mod tests {
             [0, 20 * M],
         ];
         let triangles = ear_clip_triangulate(&l_shape).unwrap();
-        let original_area: u128 = triangles.iter().map(|t| twice_area_fp2_ring(t)).sum();
+        let original_area: u128 = triangles.iter().map(|t| twice_area_fp2(t)).sum();
         let optimized = optimize_partition(&triangles);
-        let optimized_area: u128 = optimized.iter().map(|p| twice_area_fp2_ring(p)).sum();
+        let optimized_area: u128 = optimized.iter().map(|p| twice_area_fp2(p)).sum();
         assert_eq!(original_area, optimized_area);
     }
 
@@ -248,8 +242,6 @@ mod tests {
         let b = vec![[0, 0], [10 * M, 10 * M], [0, 10 * M]];
         let merged = merge_convex_pair(&a, &b).expect("square triangles should merge");
         assert_eq!(merged.len(), 4);
-        let xs: Vec<i64> = merged.iter().map(|v| v[0]).collect();
-        let ys: Vec<i64> = merged.iter().map(|v| v[1]).collect();
-        assert!(is_convex(&xs, &ys));
+        assert!(is_convex(&merged));
     }
 }

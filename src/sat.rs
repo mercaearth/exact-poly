@@ -80,8 +80,18 @@ pub fn sat_overlaps(a_xs: &[i64], a_ys: &[i64], b_xs: &[i64], b_ys: &[i64]) -> b
 }
 
 pub fn sat_overlaps_with_aabb(a_xs: &[i64], a_ys: &[i64], b_xs: &[i64], b_ys: &[i64]) -> bool {
-    let aabb_a = Aabb::from_vertices(a_xs, a_ys);
-    let aabb_b = Aabb::from_vertices(b_xs, b_ys);
+    let a_ring: Vec<[i64; 2]> = a_xs
+        .iter()
+        .zip(a_ys.iter())
+        .map(|(&x, &y)| [x, y])
+        .collect();
+    let b_ring: Vec<[i64; 2]> = b_xs
+        .iter()
+        .zip(b_ys.iter())
+        .map(|(&x, &y)| [x, y])
+        .collect();
+    let aabb_a = Aabb::from_ring(&a_ring);
+    let aabb_b = Aabb::from_ring(&b_ring);
 
     if !aabb_a.intersects(&aabb_b) {
         return false;
