@@ -1,2 +1,12 @@
+pub mod area;
+pub mod decompose;
 pub mod helpers;
+pub mod optimization;
+pub mod overlap;
+pub mod primitives;
+pub mod ring;
+pub mod signed;
+pub mod spatial;
+pub mod topology;
 pub mod types;
+pub mod validation;

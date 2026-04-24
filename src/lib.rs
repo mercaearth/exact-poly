@@ -25,12 +25,10 @@ use wasm_bindgen::prelude::*;
 use wasm::helpers::*;
 use wasm::types::{WasmDecomposeResult, WasmIndexPair};
 
-#[wasm_bindgen]
 pub fn add_i64(a: i64, b: i64) -> i64 {
     a + b
 }
 
-#[wasm_bindgen]
 pub fn decompose_polygon(
     ring_flat: &[i64],
     allow_steiner: bool,
@@ -58,7 +56,6 @@ pub fn decompose_polygon(
     })
 }
 
-#[wasm_bindgen]
 pub fn collect_steiner_points(ring_flat: &[i64], parts_flat: JsValue) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     let parts = parse_flat_parts(parts_flat)?;
@@ -66,7 +63,6 @@ pub fn collect_steiner_points(ring_flat: &[i64], parts_flat: JsValue) -> Result<
     serialize(&flatten_ring(&steiner))
 }
 
-#[wasm_bindgen]
 pub fn bayazit_decompose_polygon(
     ring_flat: &[i64],
     allow_steiner: bool,
@@ -81,7 +77,6 @@ pub fn bayazit_decompose_polygon(
     serialize(&flatten_parts(&parts))
 }
 
-#[wasm_bindgen]
 pub fn exact_vertex_partition_polygon(ring_flat: &[i64]) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     let parts = crate::exact_partition::exact_vertex_partition(&ring)
@@ -89,7 +84,6 @@ pub fn exact_vertex_partition_polygon(ring_flat: &[i64]) -> Result<JsValue, JsVa
     serialize(&flatten_parts(&parts))
 }
 
-#[wasm_bindgen]
 pub fn exact_partition_only_original_vertices(
     ring_flat: &[i64],
     parts_flat: JsValue,
@@ -101,7 +95,6 @@ pub fn exact_partition_only_original_vertices(
     ))
 }
 
-#[wasm_bindgen]
 pub fn ear_clip_triangulate_polygon(ring_flat: &[i64]) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     let parts =
@@ -109,19 +102,16 @@ pub fn ear_clip_triangulate_polygon(ring_flat: &[i64]) -> Result<JsValue, JsValu
     serialize(&flatten_parts(&parts))
 }
 
-#[wasm_bindgen]
 pub fn twice_area(ring_flat: &[i64]) -> Result<String, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     Ok(crate::area::twice_area_fp2(&ring).to_string())
 }
 
-#[wasm_bindgen]
 pub fn twice_area_ring(ring_flat: &[i64]) -> Result<String, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     Ok(crate::area::twice_area_fp2(&ring).to_string())
 }
 
-#[wasm_bindgen]
 pub fn area_display_from_twice_area(
     twice_area: &str,
     config: Option<JsValue>,
@@ -133,7 +123,6 @@ pub fn area_display_from_twice_area(
     ))
 }
 
-#[wasm_bindgen]
 pub fn areas_conserved_values(original: &str, part_areas: JsValue) -> Result<bool, JsValue> {
     let original = parse_u128_str(original, "original")?;
     let part_area_strings: Vec<String> =
@@ -145,56 +134,47 @@ pub fn areas_conserved_values(original: &str, part_areas: JsValue) -> Result<boo
     Ok(crate::area::areas_conserved(original, &parsed))
 }
 
-#[wasm_bindgen]
 pub fn signed_area_2x_ring(ring_flat: &[i64]) -> Result<String, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     Ok(crate::ring::signed_area_2x(&ring).to_string())
 }
 
-#[wasm_bindgen]
 pub fn is_ccw_ring(ring_flat: &[i64]) -> Result<bool, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     Ok(crate::ring::is_ccw(&ring))
 }
 
-#[wasm_bindgen]
 pub fn ensure_ccw_ring(ring_flat: &[i64]) -> Result<JsValue, JsValue> {
     let mut ring = parse_flat_ring(ring_flat)?;
     crate::ring::ensure_ccw(&mut ring);
     serialize(&flatten_ring(&ring))
 }
 
-#[wasm_bindgen]
 pub fn remove_collinear_ring(ring_flat: &[i64]) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     serialize(&flatten_ring(&crate::ring::remove_collinear(&ring)))
 }
 
-#[wasm_bindgen]
 pub fn is_simple_ring(ring_flat: &[i64]) -> Result<bool, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     Ok(crate::ring::is_simple(&ring))
 }
 
-#[wasm_bindgen]
 pub fn normalize_polygon_ring(ring_flat: &[i64]) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     serialize(&crate::ring::normalize_ring(&ring).map(|normalized| flatten_ring(&normalized)))
 }
 
-#[wasm_bindgen]
 pub fn rotate_polygon_ring(ring_flat: &[i64], start: usize) -> Result<JsValue, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     serialize(&flatten_ring(&crate::ring::rotate_ring(&ring, start)))
 }
 
-#[wasm_bindgen]
 pub fn is_convex_ring(ring_flat: &[i64]) -> Result<bool, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     Ok(crate::validation::is_convex(&ring))
 }
 
-#[wasm_bindgen]
 pub fn validate_edge_lengths_ring(
     ring_flat: &[i64],
     config: Option<JsValue>,
@@ -204,7 +184,6 @@ pub fn validate_edge_lengths_ring(
     Ok(crate::validation::validate_edge_lengths(&ring, &config))
 }
 
-#[wasm_bindgen]
 pub fn perimeter_l1_ring(ring_flat: &[i64]) -> Result<String, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     Ok(crate::validation::perimeter_l1(&ring).to_string())
@@ -214,7 +193,6 @@ pub fn perimeter_l1_ring(ring_flat: &[i64]) -> Result<String, JsValue> {
 /// boundary (single part, or the union boundary of a multipart polygon).
 /// NOT intended for individual parts of a multipart polygon — that would be
 /// stricter than on-chain and reject legitimate decompositions.
-#[wasm_bindgen]
 pub fn validate_compactness_values(
     twice_area: &str,
     perimeter: &str,
@@ -234,7 +212,6 @@ pub fn validate_compactness_values(
 /// Breaking change (was: also enforced compactness). Compactness is a
 /// boundary-level property; call `validate_multipart_topology` (or the
 /// full on-chain validator) to check the assembled polygon instead.
-#[wasm_bindgen]
 pub fn validate_part_ring(
     ring_flat: &[i64],
     config: Option<JsValue>,
@@ -244,7 +221,6 @@ pub fn validate_part_ring(
     Ok(crate::validation::validate_part(&ring, &config))
 }
 
-#[wasm_bindgen]
 pub fn sat_overlap(a_flat: &[i64], b_flat: &[i64]) -> Result<bool, JsValue> {
     let a = parse_flat_ring(a_flat)?;
     let b = parse_flat_ring(b_flat)?;
@@ -256,7 +232,6 @@ pub fn sat_overlap(a_flat: &[i64], b_flat: &[i64]) -> Result<bool, JsValue> {
     Ok(crate::sat::sat_overlaps(&a, &b))
 }
 
-#[wasm_bindgen]
 pub fn sat_overlap_with_aabb(a_flat: &[i64], b_flat: &[i64]) -> Result<bool, JsValue> {
     let a = parse_flat_ring(a_flat)?;
     let b = parse_flat_ring(b_flat)?;
@@ -268,7 +243,6 @@ pub fn sat_overlap_with_aabb(a_flat: &[i64], b_flat: &[i64]) -> Result<bool, JsV
     Ok(crate::sat::sat_overlaps_with_aabb(&a, &b))
 }
 
-#[wasm_bindgen]
 pub fn point_strictly_inside_convex_ring(
     px: i64,
     py: i64,
@@ -278,7 +252,6 @@ pub fn point_strictly_inside_convex_ring(
     Ok(crate::spatial::point_strictly_inside_convex(px, py, &ring))
 }
 
-#[wasm_bindgen]
 pub fn point_on_polygon_boundary_ring(
     px: i64,
     py: i64,
@@ -288,7 +261,6 @@ pub fn point_on_polygon_boundary_ring(
     Ok(crate::spatial::point_on_polygon_boundary(px, py, &ring))
 }
 
-#[wasm_bindgen]
 pub fn point_inside_or_on_boundary_ring(
     px: i64,
     py: i64,
@@ -298,7 +270,6 @@ pub fn point_inside_or_on_boundary_ring(
     Ok(crate::spatial::point_inside_or_on_boundary(px, py, &ring))
 }
 
-#[wasm_bindgen]
 pub fn collinear_segments_overlap_area_rings(
     a1x: i64,
     a1y: i64,
@@ -318,14 +289,12 @@ pub fn collinear_segments_overlap_area_rings(
     ))
 }
 
-#[wasm_bindgen]
 pub fn has_exact_shared_edge(a_flat: &[i64], b_flat: &[i64]) -> Result<bool, JsValue> {
     let a = parse_flat_ring(a_flat)?;
     let b = parse_flat_ring(b_flat)?;
     Ok(crate::shared_edge::has_exact_shared_edge(&a, &b))
 }
 
-#[wasm_bindgen]
 pub fn segments_contact(
     ax1: i64,
     ay1: i64,
@@ -347,7 +316,6 @@ pub fn segments_contact(
 /// - `"partial_contact"`: collinear overlap without exact match (T-junction —
 ///   on-chain aborts `EInvalidMultipartContact`).
 /// - `"none"`: no collinear contact at all.
-#[wasm_bindgen]
 pub fn classify_contact(a_flat: &[i64], b_flat: &[i64]) -> Result<String, JsValue> {
     let a = parse_flat_ring(a_flat)?;
     let b = parse_flat_ring(b_flat)?;
@@ -360,14 +328,12 @@ pub fn classify_contact(a_flat: &[i64], b_flat: &[i64]) -> Result<String, JsValu
     .into())
 }
 
-#[wasm_bindgen]
 pub fn convex_parts_overlap(a_flat: &[i64], b_flat: &[i64]) -> Result<bool, JsValue> {
     let a = parse_flat_ring(a_flat)?;
     let b = parse_flat_ring(b_flat)?;
     Ok(crate::overlap::convex_parts_overlap(&a, &b))
 }
 
-#[wasm_bindgen]
 pub fn find_overlapping_parts(
     a_parts_flat: JsValue,
     b_parts_flat: JsValue,
@@ -381,20 +347,17 @@ pub fn find_overlapping_parts(
     serialize(&overlaps)
 }
 
-#[wasm_bindgen]
 pub fn parts_overlap(a_parts_flat: JsValue, b_parts_flat: JsValue) -> Result<bool, JsValue> {
     let a_parts = parse_flat_parts(a_parts_flat)?;
     let b_parts = parse_flat_parts(b_parts_flat)?;
     Ok(crate::overlap::parts_overlap(&a_parts, &b_parts))
 }
 
-#[wasm_bindgen]
 pub fn point_inside_any_part(parts_flat: JsValue, x: i64, y: i64) -> Result<bool, JsValue> {
     let parts = parse_flat_parts(parts_flat)?;
     Ok(crate::containment::point_inside_any_part(&parts, x, y))
 }
 
-#[wasm_bindgen]
 pub fn contains_polygon(
     outer_parts_flat: JsValue,
     inner_parts_flat: JsValue,
@@ -407,7 +370,6 @@ pub fn contains_polygon(
     ))
 }
 
-#[wasm_bindgen]
 pub fn validate_multipart_topology(
     parts_flat: JsValue,
     allow_vertex_contact: Option<bool>,
@@ -425,12 +387,10 @@ pub fn validate_multipart_topology(
     }
 }
 
-#[wasm_bindgen]
 pub fn cross2d(ax: i64, ay: i64, bx: i64, by: i64, cx: i64, cy: i64) -> String {
     crate::primitives::cross2d(ax, ay, bx, by, cx, cy).to_string()
 }
 
-#[wasm_bindgen]
 pub fn orientation(ax: i64, ay: i64, bx: i64, by: i64, cx: i64, cy: i64) -> String {
     match crate::primitives::orientation(ax, ay, bx, by, cx, cy) {
         crate::primitives::Orientation::CounterClockwise => "CounterClockwise",
@@ -440,32 +400,26 @@ pub fn orientation(ax: i64, ay: i64, bx: i64, by: i64, cx: i64, cy: i64) -> Stri
     .into()
 }
 
-#[wasm_bindgen]
 pub fn is_left(ax: i64, ay: i64, bx: i64, by: i64, px: i64, py: i64) -> bool {
     crate::primitives::is_left(ax, ay, bx, by, px, py)
 }
 
-#[wasm_bindgen]
 pub fn is_left_or_on(ax: i64, ay: i64, bx: i64, by: i64, px: i64, py: i64) -> bool {
     crate::primitives::is_left_or_on(ax, ay, bx, by, px, py)
 }
 
-#[wasm_bindgen]
 pub fn is_right(ax: i64, ay: i64, bx: i64, by: i64, px: i64, py: i64) -> bool {
     crate::primitives::is_right(ax, ay, bx, by, px, py)
 }
 
-#[wasm_bindgen]
 pub fn is_right_or_on(ax: i64, ay: i64, bx: i64, by: i64, px: i64, py: i64) -> bool {
     crate::primitives::is_right_or_on(ax, ay, bx, by, px, py)
 }
 
-#[wasm_bindgen]
 pub fn is_collinear_pts(ax: i64, ay: i64, bx: i64, by: i64, px: i64, py: i64) -> bool {
     crate::primitives::is_collinear_pts(ax, ay, bx, by, px, py)
 }
 
-#[wasm_bindgen]
 pub fn is_reflex(
     prev_x: i64,
     prev_y: i64,
@@ -477,17 +431,14 @@ pub fn is_reflex(
     crate::primitives::is_reflex(prev_x, prev_y, curr_x, curr_y, next_x, next_y)
 }
 
-#[wasm_bindgen]
 pub fn edge_squared_length(ax: i64, ay: i64, bx: i64, by: i64) -> String {
     crate::primitives::edge_squared_length(ax, ay, bx, by).to_string()
 }
 
-#[wasm_bindgen]
 pub fn point_on_segment(px: i64, py: i64, ax: i64, ay: i64, bx: i64, by: i64) -> bool {
     crate::primitives::point_on_segment(px, py, ax, ay, bx, by)
 }
 
-#[wasm_bindgen]
 pub fn segments_properly_intersect(
     a1x: i64,
     a1y: i64,
@@ -501,7 +452,6 @@ pub fn segments_properly_intersect(
     crate::primitives::segments_properly_intersect(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y)
 }
 
-#[wasm_bindgen]
 pub fn segments_intersect(
     a1x: i64,
     a1y: i64,
@@ -515,17 +465,14 @@ pub fn segments_intersect(
     crate::primitives::segments_intersect(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y)
 }
 
-#[wasm_bindgen]
 pub fn cross_sign(ax: i64, ay: i64, bx: i64, by: i64, cx: i64, cy: i64) -> String {
     crate::signed::cross_sign(ax, ay, bx, by, cx, cy).to_string()
 }
 
-#[wasm_bindgen]
 pub fn sub_u64(a: u64, b: u64) -> String {
     crate::signed::sub_u64(a, b).to_string()
 }
 
-#[wasm_bindgen]
 pub fn sign_i128(value: &str) -> Result<i32, JsValue> {
     let parsed = value
         .parse::<i128>()
@@ -533,7 +480,6 @@ pub fn sign_i128(value: &str) -> Result<i32, JsValue> {
     Ok(crate::signed::sign(parsed))
 }
 
-#[wasm_bindgen]
 pub fn is_left_turn(cross: &str) -> Result<bool, JsValue> {
     let parsed = cross
         .parse::<i128>()
@@ -541,7 +487,6 @@ pub fn is_left_turn(cross: &str) -> Result<bool, JsValue> {
     Ok(crate::signed::is_left_turn(parsed))
 }
 
-#[wasm_bindgen]
 pub fn is_right_turn(cross: &str) -> Result<bool, JsValue> {
     let parsed = cross
         .parse::<i128>()
@@ -549,7 +494,6 @@ pub fn is_right_turn(cross: &str) -> Result<bool, JsValue> {
     Ok(crate::signed::is_right_turn(parsed))
 }
 
-#[wasm_bindgen]
 pub fn is_collinear(cross: &str) -> Result<bool, JsValue> {
     let parsed = cross
         .parse::<i128>()
@@ -557,14 +501,12 @@ pub fn is_collinear(cross: &str) -> Result<bool, JsValue> {
     Ok(crate::signed::is_collinear(parsed))
 }
 
-#[wasm_bindgen]
 pub fn optimize_partition(parts_flat: JsValue) -> Result<JsValue, JsValue> {
     let parts = parse_flat_parts(parts_flat)?;
     let optimized = crate::hertel_mehlhorn::optimize_partition(&parts);
     serialize(&flatten_parts(&optimized))
 }
 
-#[wasm_bindgen]
 pub fn merge_convex_pair(a_flat: &[i64], b_flat: &[i64]) -> Result<JsValue, JsValue> {
     let a = parse_flat_ring(a_flat)?;
     let b = parse_flat_ring(b_flat)?;
@@ -572,7 +514,6 @@ pub fn merge_convex_pair(a_flat: &[i64], b_flat: &[i64]) -> Result<JsValue, JsVa
     serialize(&result.map(|r| flatten_ring(&r)))
 }
 
-#[wasm_bindgen]
 pub fn validate_decomposition(
     ring_flat: &[i64],
     parts_flat: JsValue,

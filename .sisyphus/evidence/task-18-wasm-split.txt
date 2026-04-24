@@ -1,0 +1,27 @@
+Task 18: Move #[wasm_bindgen] exports from lib.rs into domain-specific src/wasm/*.rs modules
+==========================================================================================
+
+Date: 2026-04-24
+
+Files created:
+  src/wasm/decompose.rs    — 6 exports: decompose_polygon, collect_steiner_points, bayazit_decompose_polygon, exact_vertex_partition_polygon, exact_partition_only_original_vertices, ear_clip_triangulate_polygon
+  src/wasm/area.rs         — 5 exports: twice_area, twice_area_ring, area_display_from_twice_area, areas_conserved_values, signed_area_2x_ring
+  src/wasm/ring.rs         — 6 exports: is_ccw_ring, ensure_ccw_ring, remove_collinear_ring, is_simple_ring, normalize_polygon_ring, rotate_polygon_ring
+  src/wasm/validation.rs   — 5 exports: is_convex_ring, validate_edge_lengths_ring, perimeter_l1_ring, validate_compactness_values, validate_part_ring
+  src/wasm/spatial.rs      — 6 exports: point_strictly_inside_convex_ring, point_on_polygon_boundary_ring, point_inside_or_on_boundary_ring, collinear_segments_overlap_area_rings, point_inside_any_part, contains_polygon
+  src/wasm/overlap.rs      — 5 exports: sat_overlap, sat_overlap_with_aabb, convex_parts_overlap, find_overlapping_parts, parts_overlap
+  src/wasm/topology.rs     — 5 exports: has_exact_shared_edge, segments_contact, classify_contact, validate_multipart_topology, validate_decomposition
+  src/wasm/primitives.rs   — 12 exports: cross2d, orientation, is_left, is_left_or_on, is_right, is_right_or_on, is_collinear_pts, is_reflex, edge_squared_length, point_on_segment, segments_properly_intersect, segments_intersect
+  src/wasm/optimization.rs — 2 exports: optimize_partition, merge_convex_pair
+  src/wasm/signed.rs       — 7 exports: add_i64, cross_sign, sub_u64, sign_i128, is_left_turn, is_right_turn, is_collinear
+
+Files modified:
+  src/wasm/mod.rs — declares all 11 submodules (helpers, types, + 9 domain modules)
+  src/lib.rs      — stripped #[wasm_bindgen] from all functions (bodies preserved for T19 cleanup)
+
+Total: 59 exports across 10 domain modules
+
+Verification:
+  cargo test: 270 passed, 0 failed
+  wasm-pack build --target bundler --release: SUCCESS
+  .d.ts export count: 59 (matches baseline)
