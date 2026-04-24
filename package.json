@@ -1,6 +1,6 @@
 {
   "name": "exact-poly",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Integer polygon geometry library (Rust/WASM) — exact arithmetic, no float errors",
   "main": "pkg/exact_poly.js",
   "types": "pkg/exact_poly.d.ts",

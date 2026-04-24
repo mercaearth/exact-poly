@@ -103,16 +103,16 @@ export function collect_steiner_points(ring_flat, parts_flat) {
  * @param {bigint} b1y
  * @param {bigint} b2x
  * @param {bigint} b2y
- * @param {BigInt64Array} a_ring_flat
- * @param {BigInt64Array} b_ring_flat
+ * @param {BigInt64Array} a_flat
+ * @param {BigInt64Array} b_flat
  * @returns {boolean}
  */
-export function collinear_segments_overlap_area_rings(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y, a_ring_flat, b_ring_flat) {
-    const ptr0 = passArray64ToWasm0(a_ring_flat, wasm.__wbindgen_malloc);
+export function collinear_segments_overlap_area(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y, a_flat, b_flat) {
+    const ptr0 = passArray64ToWasm0(a_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ptr1 = passArray64ToWasm0(b_ring_flat, wasm.__wbindgen_malloc);
+    const ptr1 = passArray64ToWasm0(b_flat, wasm.__wbindgen_malloc);
     const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.collinear_segments_overlap_area_rings(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y, ptr0, len0, ptr1, len1);
+    const ret = wasm.collinear_segments_overlap_area(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b2y, ptr0, len0, ptr1, len1);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
@@ -227,10 +227,10 @@ export function edge_squared_length(ax, ay, bx, by) {
  * @param {BigInt64Array} ring_flat
  * @returns {any}
  */
-export function ensure_ccw_ring(ring_flat) {
+export function ensure_ccw(ring_flat) {
     const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.ensure_ccw_ring(ptr0, len0);
+    const ret = wasm.ensure_ccw(ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
@@ -300,10 +300,10 @@ export function has_exact_shared_edge(a_flat, b_flat) {
  * @param {BigInt64Array} ring_flat
  * @returns {boolean}
  */
-export function is_ccw_ring(ring_flat) {
+export function is_ccw(ring_flat) {
     const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.is_ccw_ring(ptr0, len0);
+    const ret = wasm.is_ccw(ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
@@ -328,10 +328,10 @@ export function is_collinear_pts(ax, ay, bx, by, px, py) {
  * @param {BigInt64Array} ring_flat
  * @returns {boolean}
  */
-export function is_convex_ring(ring_flat) {
+export function is_convex(ring_flat) {
     const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.is_convex_ring(ptr0, len0);
+    const ret = wasm.is_convex(ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
@@ -412,10 +412,10 @@ export function is_right_or_on(ax, ay, bx, by, px, py) {
  * @param {BigInt64Array} ring_flat
  * @returns {boolean}
  */
-export function is_simple_ring(ring_flat) {
+export function is_simple(ring_flat) {
     const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.is_simple_ring(ptr0, len0);
+    const ret = wasm.is_simple(ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
@@ -443,10 +443,10 @@ export function merge_convex_pair(a_flat, b_flat) {
  * @param {BigInt64Array} ring_flat
  * @returns {any}
  */
-export function normalize_polygon_ring(ring_flat) {
+export function normalize_polygon(ring_flat) {
     const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.normalize_polygon_ring(ptr0, len0);
+    const ret = wasm.normalize_polygon(ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
@@ -504,13 +504,13 @@ export function parts_overlap(a_parts_flat, b_parts_flat) {
  * @param {BigInt64Array} ring_flat
  * @returns {string}
  */
-export function perimeter_l1_ring(ring_flat) {
+export function perimeter_l1(ring_flat) {
     let deferred3_0;
     let deferred3_1;
     try {
         const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.perimeter_l1_ring(ptr0, len0);
+        const ret = wasm.perimeter_l1(ptr0, len0);
         var ptr2 = ret[0];
         var len2 = ret[1];
         if (ret[3]) {
@@ -545,10 +545,10 @@ export function point_inside_any_part(parts_flat, x, y) {
  * @param {BigInt64Array} ring_flat
  * @returns {boolean}
  */
-export function point_inside_or_on_boundary_ring(px, py, ring_flat) {
+export function point_inside_or_on_boundary(px, py, ring_flat) {
     const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.point_inside_or_on_boundary_ring(px, py, ptr0, len0);
+    const ret = wasm.point_inside_or_on_boundary(px, py, ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
@@ -561,10 +561,10 @@ export function point_inside_or_on_boundary_ring(px, py, ring_flat) {
  * @param {BigInt64Array} ring_flat
  * @returns {boolean}
  */
-export function point_on_polygon_boundary_ring(px, py, ring_flat) {
+export function point_on_polygon_boundary(px, py, ring_flat) {
     const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.point_on_polygon_boundary_ring(px, py, ptr0, len0);
+    const ret = wasm.point_on_polygon_boundary(px, py, ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
@@ -591,10 +591,10 @@ export function point_on_segment(px, py, ax, ay, bx, by) {
  * @param {BigInt64Array} ring_flat
  * @returns {boolean}
  */
-export function point_strictly_inside_convex_ring(px, py, ring_flat) {
+export function point_strictly_inside_convex(px, py, ring_flat) {
     const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.point_strictly_inside_convex_ring(px, py, ptr0, len0);
+    const ret = wasm.point_strictly_inside_convex(px, py, ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
@@ -605,10 +605,10 @@ export function point_strictly_inside_convex_ring(px, py, ring_flat) {
  * @param {BigInt64Array} ring_flat
  * @returns {any}
  */
-export function remove_collinear_ring(ring_flat) {
+export function remove_collinear(ring_flat) {
     const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.remove_collinear_ring(ptr0, len0);
+    const ret = wasm.remove_collinear(ptr0, len0);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
@@ -620,10 +620,10 @@ export function remove_collinear_ring(ring_flat) {
  * @param {number} start
  * @returns {any}
  */
-export function rotate_polygon_ring(ring_flat, start) {
+export function rotate_polygon(ring_flat, start) {
     const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.rotate_polygon_ring(ptr0, len0, start);
+    const ret = wasm.rotate_polygon(ptr0, len0, start);
     if (ret[2]) {
         throw takeFromExternrefTable0(ret[1]);
     }
@@ -716,13 +716,13 @@ export function segments_properly_intersect(a1x, a1y, a2x, a2y, b1x, b1y, b2x, b
  * @param {BigInt64Array} ring_flat
  * @returns {string}
  */
-export function signed_area_2x_ring(ring_flat) {
+export function signed_area_2x(ring_flat) {
     let deferred3_0;
     let deferred3_1;
     try {
         const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.signed_area_2x_ring(ptr0, len0);
+        const ret = wasm.signed_area_2x(ptr0, len0);
         var ptr2 = ret[0];
         var len2 = ret[1];
         if (ret[3]) {
@@ -741,13 +741,13 @@ export function signed_area_2x_ring(ring_flat) {
  * @param {BigInt64Array} ring_flat
  * @returns {string}
  */
-export function twice_area_ring(ring_flat) {
+export function twice_area(ring_flat) {
     let deferred3_0;
     let deferred3_1;
     try {
         const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
         const len0 = WASM_VECTOR_LEN;
-        const ret = wasm.twice_area_ring(ptr0, len0);
+        const ret = wasm.twice_area(ptr0, len0);
         var ptr2 = ret[0];
         var len2 = ret[1];
         if (ret[3]) {
@@ -772,12 +772,12 @@ export function twice_area_ring(ring_flat) {
  * @param {any | null} [config]
  * @returns {string | undefined}
  */
-export function validate_compactness_values(twice_area, perimeter, config) {
+export function validate_compactness(twice_area, perimeter, config) {
     const ptr0 = passStringToWasm0(twice_area, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len0 = WASM_VECTOR_LEN;
     const ptr1 = passStringToWasm0(perimeter, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
     const len1 = WASM_VECTOR_LEN;
-    const ret = wasm.validate_compactness_values(ptr0, len0, ptr1, len1, isLikeNone(config) ? 0 : addToExternrefTable0(config));
+    const ret = wasm.validate_compactness(ptr0, len0, ptr1, len1, isLikeNone(config) ? 0 : addToExternrefTable0(config));
     if (ret[3]) {
         throw takeFromExternrefTable0(ret[2]);
     }
@@ -810,10 +810,10 @@ export function validate_decomposition(ring_flat, parts_flat, config) {
  * @param {any | null} [config]
  * @returns {string | undefined}
  */
-export function validate_edge_lengths_ring(ring_flat, config) {
+export function validate_edge_lengths(ring_flat, config) {
     const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.validate_edge_lengths_ring(ptr0, len0, isLikeNone(config) ? 0 : addToExternrefTable0(config));
+    const ret = wasm.validate_edge_lengths(ptr0, len0, isLikeNone(config) ? 0 : addToExternrefTable0(config));
     if (ret[3]) {
         throw takeFromExternrefTable0(ret[2]);
     }
@@ -850,10 +850,10 @@ export function validate_multipart_topology(parts_flat, allow_vertex_contact, co
  * @param {any | null} [config]
  * @returns {string | undefined}
  */
-export function validate_part_ring(ring_flat, config) {
+export function validate_part(ring_flat, config) {
     const ptr0 = passArray64ToWasm0(ring_flat, wasm.__wbindgen_malloc);
     const len0 = WASM_VECTOR_LEN;
-    const ret = wasm.validate_part_ring(ptr0, len0, isLikeNone(config) ? 0 : addToExternrefTable0(config));
+    const ret = wasm.validate_part(ptr0, len0, isLikeNone(config) ? 0 : addToExternrefTable0(config));
     if (ret[3]) {
         throw takeFromExternrefTable0(ret[2]);
     }

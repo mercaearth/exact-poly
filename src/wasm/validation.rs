@@ -3,13 +3,13 @@ use wasm_bindgen::prelude::*;
 use super::helpers::*;
 
 #[wasm_bindgen]
-pub fn is_convex_ring(ring_flat: &[i64]) -> Result<bool, JsValue> {
+pub fn is_convex(ring_flat: &[i64]) -> Result<bool, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     Ok(crate::validation::is_convex(&ring))
 }
 
 #[wasm_bindgen]
-pub fn validate_edge_lengths_ring(
+pub fn validate_edge_lengths(
     ring_flat: &[i64],
     config: Option<JsValue>,
 ) -> Result<Option<String>, JsValue> {
@@ -19,7 +19,7 @@ pub fn validate_edge_lengths_ring(
 }
 
 #[wasm_bindgen]
-pub fn perimeter_l1_ring(ring_flat: &[i64]) -> Result<String, JsValue> {
+pub fn perimeter_l1(ring_flat: &[i64]) -> Result<String, JsValue> {
     let ring = parse_flat_ring(ring_flat)?;
     Ok(crate::validation::perimeter_l1(&ring).to_string())
 }
@@ -29,7 +29,7 @@ pub fn perimeter_l1_ring(ring_flat: &[i64]) -> Result<String, JsValue> {
 /// NOT intended for individual parts of a multipart polygon — that would be
 /// stricter than on-chain and reject legitimate decompositions.
 #[wasm_bindgen]
-pub fn validate_compactness_values(
+pub fn validate_compactness(
     twice_area: &str,
     perimeter: &str,
     config: Option<JsValue>,
@@ -49,7 +49,7 @@ pub fn validate_compactness_values(
 /// boundary-level property; call `validate_multipart_topology` (or the
 /// full on-chain validator) to check the assembled polygon instead.
 #[wasm_bindgen]
-pub fn validate_part_ring(
+pub fn validate_part(
     ring_flat: &[i64],
     config: Option<JsValue>,
 ) -> Result<Option<String>, JsValue> {

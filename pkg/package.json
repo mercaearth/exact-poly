@@ -1,7 +1,7 @@
 {
   "name": "exact-poly",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "files": [
     "exact_poly_bg.wasm",
     "exact_poly.js",

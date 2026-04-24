@@ -1,0 +1,8 @@
+Task 23 evidence
+
+- Renamed WASM exports to drop redundant `_ring`/`_rings` suffixes.
+- Renamed `validate_compactness_values` -> `validate_compactness`.
+- Bumped `Cargo.toml` and `package.json` to `0.2.0`.
+- Verification: `cargo test` passed (270 tests).
+- Verification: `wasm-pack build --target bundler --release` succeeded.
+- Verification: `grep '_ring' pkg/exact_poly.d.ts | wc -l` => `0`.
