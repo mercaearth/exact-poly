@@ -14,12 +14,12 @@ import { createDrawingTool, type DrawingTool } from "../canvas/drawing";
 import { PRESETS } from "../canvas/presets";
 import { getPolygon, setPolygon, onPolygonChange } from "../state";
 import {
-  is_ccw_ring,
-  ensure_ccw_ring,
-  remove_collinear_ring,
-  is_simple_ring,
-  is_convex_ring,
-  normalize_polygon_ring,
+  is_ccw,
+  ensure_ccw,
+  remove_collinear,
+  is_simple,
+  is_convex,
+  normalize_polygon,
   is_reflex,
   toFlat,
   fromFlat,
@@ -44,9 +44,9 @@ export function createRingTab(): Tab {
 
     try {
       const flat = toFlat(polygon);
-      const isCcw = is_ccw_ring(flat);
-      const isSimple = is_simple_ring(flat);
-      const isConvex = is_convex_ring(flat);
+      const isCcw = is_ccw(flat);
+      const isSimple = is_simple(flat);
+      const isConvex = is_convex(flat);
 
       const reflexVertices: number[] = [];
       for (let i = 0; i < polygon.length; i++) {
@@ -141,11 +141,11 @@ export function createRingTab(): Tab {
       let result: bigint[] | null = null;
 
       if (op === "ccw") {
-        result = ensure_ccw_ring(flat) as bigint[];
+        result = ensure_ccw(flat) as bigint[];
       } else if (op === "collinear") {
-        result = remove_collinear_ring(flat) as bigint[];
+        result = remove_collinear(flat) as bigint[];
       } else if (op === "normalize") {
-        const normalized = normalize_polygon_ring(flat);
+        const normalized = normalize_polygon(flat);
         if (normalized) {
           result = normalized as bigint[];
         } else {

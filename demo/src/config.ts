@@ -1,7 +1,4 @@
-/**
- * Global ProtocolConfig state for the demo.
- * Mirrors the Rust ProtocolConfig struct.
- */
+import type { ProtocolConfig as WasmProtocolConfig } from "exact-poly";
 
 type Listener = () => void;
 
@@ -37,8 +34,7 @@ export function getConfig(): ProtocolConfig {
   return config;
 }
 
-/** Returns config for passing to WASM. u128 fields must be BigInt for serde-wasm-bindgen. */
-export function getConfigForWasm(): object {
+export function getConfigForWasm(): WasmProtocolConfig {
   return {
     max_parts: config.max_parts,
     max_vertices_per_part: config.max_vertices_per_part,

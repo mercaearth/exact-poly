@@ -17,33 +17,32 @@ export {
 
   // Area
   twice_area,
-  twice_area_ring,
   area_display_from_twice_area,
   areas_conserved_values,
-  signed_area_2x_ring,
+  signed_area_2x,
 
   // Ring operations
-  is_ccw_ring,
-  ensure_ccw_ring,
-  remove_collinear_ring,
-  is_simple_ring,
-  is_convex_ring,
-  normalize_polygon_ring,
-  rotate_polygon_ring,
+  is_ccw,
+  ensure_ccw,
+  remove_collinear,
+  is_simple,
+  is_convex,
+  normalize_polygon,
+  rotate_polygon,
 
   // Validation
-  validate_edge_lengths_ring,
-  validate_compactness_values,
-  validate_part_ring,
-  perimeter_l1_ring,
+  validate_edge_lengths,
+  validate_compactness,
+  validate_part,
+  perimeter_l1,
 
   // Spatial
-  point_strictly_inside_convex_ring,
-  point_on_polygon_boundary_ring,
-  point_inside_or_on_boundary_ring,
+  point_strictly_inside_convex,
+  point_on_polygon_boundary,
+  point_inside_or_on_boundary,
   point_inside_any_part,
   contains_polygon,
-  collinear_segments_overlap_area_rings,
+  collinear_segments_overlap_area,
 
   // Overlap / SAT
   sat_overlap,
@@ -72,17 +71,25 @@ export {
   segments_properly_intersect,
   segments_intersect,
 
-  // Signed
-  cross_sign,
-  sub_u64,
-  sign_i128,
-  is_left_turn,
-  is_right_turn,
-  is_collinear,
-
   // Full on-chain validation
   validate_decomposition,
 } from "exact-poly";
+
+export type {
+  DecomposeResult,
+  DecomposeAttempt,
+  DecomposeStrategy,
+  DecomposeOutcome,
+  ValidationCheck,
+  ValidationReport,
+  TopologyError,
+  IndexPair,
+  PolygonRing,
+  PolygonParts,
+} from "exact-poly";
+
+/** Backward-compat alias — prefer DecomposeAttempt */
+export type { DecomposeAttempt as DecomposeTraceEntry } from "exact-poly";
 
 /** Helper: convert [x0,y0,x1,y1,...] number array to BigInt64Array for WASM */
 const SCALE = 1_000_000;
@@ -104,45 +111,3 @@ export function fromFlat(flat: bigint[] | number[]): [number, number][] {
   }
   return result;
 }
-
-export interface DecomposeResult {
-  parts: bigint[][];
-  steiner_points: bigint[];
-  strategy?: string | { Rotation: { offset: number; inner: string | object } };
-  trace?: DecomposeTraceEntry[];
-}
-
-export interface DecomposeTraceEntry {
-  strategy: string | { Rotation: { offset: number; inner: string | object } };
-  rotation: number;
-  outcome:
-    | { Success: { part_count: number } }
-    | { TooManyParts: { count: number } }
-    | { ValidationFailed: { errors: string[] } }
-    | { AlgorithmFailed: { error: string } };
-}
-
-export interface ValidationCheck {
-  name: string;
-  passed: boolean;
-  detail: string;
-  severity: string; // "ok" | "error" | "warn"
-}
-
-export interface ValidationReport {
-  checks: ValidationCheck[];
-  valid: boolean;
-  error_count: number;
-  warn_count: number;
-  original_twice_area: string;
-  parts_twice_area_sum: string;
-  part_areas: string[];
-}
-
-export type TopologyError =
-  | { NotConnected: { disconnected_parts: number[] } }
-  | { HasHoles: { boundary_components: number } }
-  | { TooManyParts: { count: number; max: number } }
-  | { NotCompact: { compactness_ppm: number; min_ppm: number } }
-  | { VertexOnlyContact: { part_a: number; part_b: number } }
-  | { UnsupportedContact: { part_a: number; part_b: number; reason: string } };

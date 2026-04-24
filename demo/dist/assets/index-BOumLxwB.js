@@ -4,7 +4,7 @@
         if (n && n.supports && n.supports("modulepreload")) return;
         for (const i of document.querySelectorAll('link[rel="modulepreload"]'))t(i);
         new MutationObserver((i)=>{
-            for (const s of i)if (s.type === "childList") for (const r of s.addedNodes)r.tagName === "LINK" && r.rel === "modulepreload" && t(r);
+            for (const s of i)if (s.type === "childList") for (const a of s.addedNodes)a.tagName === "LINK" && a.rel === "modulepreload" && t(a);
         }).observe(document, {
             childList: !0,
             subtree: !0
@@ -46,9 +46,9 @@
     function fe(e, n, o = 40) {
         const t = n.flat();
         if (t.length === 0) return;
-        let i = 1 / 0, s = -1 / 0, r = 1 / 0, d = -1 / 0;
-        for (const [c, a] of t)c < i && (i = c), c > s && (s = c), a < r && (r = a), a > d && (d = a);
-        const m = s - i || 1, p = d - r || 1, l = e.width - o * 2, g = e.height - o * 2;
+        let i = 1 / 0, s = -1 / 0, a = 1 / 0, d = -1 / 0;
+        for (const [c, r] of t)c < i && (i = c), c > s && (s = c), r < a && (a = r), r > d && (d = r);
+        const m = s - i || 1, p = d - a || 1, l = e.width - o * 2, g = e.height - o * 2;
         e.scale = Math.min(l / m, g / p), e.offsetX = o + (l - m * e.scale) / 2 - i * e.scale, e.offsetY = o + (g - p * e.scale) / 2 + d * e.scale;
     }
     function W(e, n, o) {
@@ -69,53 +69,53 @@
     function de(e, n = 50) {
         const { ctx: o, width: t, height: i } = e;
         o.strokeStyle = ct, o.lineWidth = .5;
-        const r = n * e.scale;
-        if (r < 10) return;
-        const d = e.offsetX % r, m = e.offsetY % r;
+        const a = n * e.scale;
+        if (a < 10) return;
+        const d = e.offsetX % a, m = e.offsetY % a;
         o.beginPath();
-        for(let p = d; p < t; p += r)o.moveTo(p, 0), o.lineTo(p, i);
-        for(let p = m; p < i; p += r)o.moveTo(0, p), o.lineTo(t, p);
+        for(let p = d; p < t; p += a)o.moveTo(p, 0), o.lineTo(p, i);
+        for(let p = m; p < i; p += a)o.moveTo(0, p), o.lineTo(t, p);
         o.stroke(), o.strokeStyle = dt, o.lineWidth = 1, o.beginPath(), o.moveTo(e.offsetX, 0), o.lineTo(e.offsetX, i), o.moveTo(0, e.offsetY), o.lineTo(t, e.offsetY), o.stroke();
     }
     function N(e, n, o = {}) {
         if (n.length < 2) return;
-        const { ctx: t } = e, { fill: i, stroke: s = "#4a9eff", lineWidth: r = ut, showVertices: d = !0, vertexColor: m, closed: p = !0, dashed: l = !1 } = o;
+        const { ctx: t } = e, { fill: i, stroke: s = "#4a9eff", lineWidth: a = ut, showVertices: d = !0, vertexColor: m, closed: p = !0, dashed: l = !1 } = o;
         t.beginPath(), l && t.setLineDash([
             6,
             4
         ]);
         const [g, c] = W(e, n[0][0], n[0][1]);
         t.moveTo(g, c);
-        for(let a = 1; a < n.length; a++){
-            const [u, w] = W(e, n[a][0], n[a][1]);
+        for(let r = 1; r < n.length; r++){
+            const [u, w] = W(e, n[r][0], n[r][1]);
             t.lineTo(u, w);
         }
-        if (p && t.closePath(), i && (t.fillStyle = i, t.globalAlpha = .15, t.fill(), t.globalAlpha = 1), t.strokeStyle = s, t.lineWidth = r, t.stroke(), t.setLineDash([]), d) for (const [a, u] of n){
-            const [w, h] = W(e, a, u);
+        if (p && t.closePath(), i && (t.fillStyle = i, t.globalAlpha = .15, t.fill(), t.globalAlpha = 1), t.strokeStyle = s, t.lineWidth = a, t.stroke(), t.setLineDash([]), d) for (const [r, u] of n){
+            const [w, h] = W(e, r, u);
             t.beginPath(), t.arc(w, h, Ze, 0, Math.PI * 2), t.fillStyle = m || s, t.fill();
         }
     }
     function ne(e, n, o, t = "#fff", i = Ze) {
-        const [s, r] = W(e, n, o);
-        e.ctx.beginPath(), e.ctx.arc(s, r, i, 0, Math.PI * 2), e.ctx.fillStyle = t, e.ctx.fill();
+        const [s, a] = W(e, n, o);
+        e.ctx.beginPath(), e.ctx.arc(s, a, i, 0, Math.PI * 2), e.ctx.fillStyle = t, e.ctx.fill();
     }
     function K(e, n, o, t, i = "#aaa", s = [
         8,
         -8
     ]) {
-        const [r, d] = W(e, n, o);
-        e.ctx.font = "11px SF Mono, Fira Code, monospace", e.ctx.fillStyle = i, e.ctx.fillText(t, r + s[0], d + s[1]);
+        const [a, d] = W(e, n, o);
+        e.ctx.font = "11px SF Mono, Fira Code, monospace", e.ctx.fillStyle = i, e.ctx.fillText(t, a + s[0], d + s[1]);
     }
     function ft(e, n, o, t = "#4a9eff", i = 8) {
-        const [s, r] = W(e, n[0], n[1]), [d, m] = W(e, o[0], o[1]), p = Math.atan2(m - r, d - s), { ctx: l } = e, g = (s + d) / 2, c = (r + m) / 2;
+        const [s, a] = W(e, n[0], n[1]), [d, m] = W(e, o[0], o[1]), p = Math.atan2(m - a, d - s), { ctx: l } = e, g = (s + d) / 2, c = (a + m) / 2;
         l.beginPath(), l.moveTo(g + i * Math.cos(p), c + i * Math.sin(p)), l.lineTo(g - i * Math.cos(p - Math.PI / 6), c - i * Math.sin(p - Math.PI / 6)), l.lineTo(g - i * Math.cos(p + Math.PI / 6), c - i * Math.sin(p + Math.PI / 6)), l.closePath(), l.fillStyle = t, l.fill();
     }
-    function re(e, n, o, t = "#4a9eff", i = 2, s = !1) {
-        const [r, d] = W(e, n[0], n[1]), [m, p] = W(e, o[0], o[1]), { ctx: l } = e;
+    function ae(e, n, o, t = "#4a9eff", i = 2, s = !1) {
+        const [a, d] = W(e, n[0], n[1]), [m, p] = W(e, o[0], o[1]), { ctx: l } = e;
         s && l.setLineDash([
             6,
             4
-        ]), l.beginPath(), l.moveTo(r, d), l.lineTo(m, p), l.strokeStyle = t, l.lineWidth = i, l.stroke(), l.setLineDash([]);
+        ]), l.beginPath(), l.moveTo(a, d), l.lineTo(m, p), l.strokeStyle = t, l.lineWidth = i, l.stroke(), l.setLineDash([]);
     }
     function Se(e) {
         return Ue[e % Ue.length];
@@ -132,15 +132,15 @@
     }
     const gt = 12;
     function me(e, n) {
-        let o = [], t = !1, i = null, s = null, r = !1;
+        let o = [], t = !1, i = null, s = null, a = !1;
         function d(l) {
-            if (!r) return;
-            const g = e.getBoundingClientRect(), c = l.clientX - g.left, a = l.clientY - g.top, u = n(), [w, h] = ze(u, c, a);
+            if (!a) return;
+            const g = e.getBoundingClientRect(), c = l.clientX - g.left, r = l.clientY - g.top, u = n(), [w, h] = ze(u, c, r);
             if (o.length >= 3) {
                 const [_, B] = [
                     o[0][0] * u.scale + u.offsetX,
                     -o[0][1] * u.scale + u.offsetY
-                ], v = c - _, b = a - B;
+                ], v = c - _, b = r - B;
                 if (Math.sqrt(v * v + b * b) < gt) {
                     t = !1, s?.(o.slice());
                     return;
@@ -152,7 +152,7 @@
             ]), i?.(o.slice());
         }
         function m(l) {
-            l.preventDefault(), !(!r || o.length === 0) && o.length >= 3 && (t = !1, s?.(o.slice()));
+            l.preventDefault(), !(!a || o.length === 0) && o.length >= 3 && (t = !1, s?.(o.slice()));
         }
         return {
             get points () {
@@ -162,10 +162,10 @@
                 return t;
             },
             enable () {
-                r || (r = !0, e.addEventListener("click", d), e.addEventListener("contextmenu", m));
+                a || (a = !0, e.addEventListener("click", d), e.addEventListener("contextmenu", m));
             },
             disable () {
-                r = !1, e.removeEventListener("click", d), e.removeEventListener("contextmenu", m);
+                a = !1, e.removeEventListener("click", d), e.removeEventListener("contextmenu", m);
             },
             clear () {
                 o = [], t = !1, i?.(o.slice());
@@ -993,7 +993,7 @@
                 ]
             ]
         }
-    ], _t = "/assets/exact_poly_bg-CI3TXUQV.wasm", pt = async (e = {}, n)=>{
+    ], _t = "/assets/exact_poly_bg-DUfbB8rQ.wasm", pt = async (e = {}, n)=>{
         let o;
         if (n.startsWith("data:")) {
             const t = n.replace(/^data:.*?base64,/, "");
@@ -1002,7 +1002,7 @@
             else if (typeof atob == "function") {
                 const s = atob(t);
                 i = new Uint8Array(s.length);
-                for(let r = 0; r < s.length; r++)i[r] = s.charCodeAt(r);
+                for(let a = 0; a < s.length; a++)i[a] = s.charCodeAt(a);
             } else throw new Error("Cannot decode base64-encoded data URL");
             o = await WebAssembly.instantiate(i, e);
         } else {
@@ -1031,16 +1031,16 @@
         return S(i[0]);
     }
     function vt(e, n, o, t, i, s) {
-        let r, d;
+        let a, d;
         try {
             const m = f.cross2d(e, n, o, t, i, s);
-            return r = m[0], d = m[1], q(m[0], m[1]);
+            return a = m[0], d = m[1], q(m[0], m[1]);
         } finally{
-            f.__wbindgen_free(r, d, 1);
+            f.__wbindgen_free(a, d, 1);
         }
     }
     function He(e, n, o, t, i) {
-        const s = O(e, f.__wbindgen_malloc), r = T, d = f.decompose_polygon(s, r, n, F(o) ? 16777215 : o ? 1 : 0, F(t) ? 16777215 : t ? 1 : 0, F(i) ? 0 : oe(i));
+        const s = O(e, f.__wbindgen_malloc), a = T, d = f.decompose_polygon(s, a, n, F(o) ? 16777215 : o ? 1 : 0, F(t) ? 16777215 : t ? 1 : 0, F(i) ? 0 : oe(i));
         if (d[2]) throw S(d[1]);
         return S(d[0]);
     }
@@ -1050,7 +1050,7 @@
         return S(t[0]);
     }
     function tt(e) {
-        const n = O(e, f.__wbindgen_malloc), o = T, t = f.ensure_ccw_ring(n, o);
+        const n = O(e, f.__wbindgen_malloc), o = T, t = f.ensure_ccw(n, o);
         if (t[2]) throw S(t[1]);
         return S(t[0]);
     }
@@ -1060,17 +1060,17 @@
         return S(t[0]);
     }
     function wt(e, n) {
-        const o = O(e, f.__wbindgen_malloc), t = T, i = O(n, f.__wbindgen_malloc), s = T, r = f.has_exact_shared_edge(o, t, i, s);
-        if (r[2]) throw S(r[1]);
-        return r[0] !== 0;
+        const o = O(e, f.__wbindgen_malloc), t = T, i = O(n, f.__wbindgen_malloc), s = T, a = f.has_exact_shared_edge(o, t, i, s);
+        if (a[2]) throw S(a[1]);
+        return a[0] !== 0;
     }
     function De(e) {
-        const n = O(e, f.__wbindgen_malloc), o = T, t = f.is_ccw_ring(n, o);
+        const n = O(e, f.__wbindgen_malloc), o = T, t = f.is_ccw(n, o);
         if (t[2]) throw S(t[1]);
         return t[0] !== 0;
     }
     function $e(e) {
-        const n = O(e, f.__wbindgen_malloc), o = T, t = f.is_convex_ring(n, o);
+        const n = O(e, f.__wbindgen_malloc), o = T, t = f.is_convex(n, o);
         if (t[2]) throw S(t[1]);
         return t[0] !== 0;
     }
@@ -1084,12 +1084,12 @@
         return f.is_right(e, n, o, t, i, s) !== 0;
     }
     function nt(e) {
-        const n = O(e, f.__wbindgen_malloc), o = T, t = f.is_simple_ring(n, o);
+        const n = O(e, f.__wbindgen_malloc), o = T, t = f.is_simple(n, o);
         if (t[2]) throw S(t[1]);
         return t[0] !== 0;
     }
     function $t(e) {
-        const n = O(e, f.__wbindgen_malloc), o = T, t = f.normalize_polygon_ring(n, o);
+        const n = O(e, f.__wbindgen_malloc), o = T, t = f.normalize_polygon(n, o);
         if (t[2]) throw S(t[1]);
         return S(t[0]);
     }
@@ -1099,18 +1099,18 @@
         return S(n[0]);
     }
     function Ke(e, n, o, t, i, s) {
-        let r, d;
+        let a, d;
         try {
             const m = f.orientation(e, n, o, t, i, s);
-            return r = m[0], d = m[1], q(m[0], m[1]);
+            return a = m[0], d = m[1], q(m[0], m[1]);
         } finally{
-            f.__wbindgen_free(r, d, 1);
+            f.__wbindgen_free(a, d, 1);
         }
     }
     function Re(e) {
         let n, o;
         try {
-            const s = O(e, f.__wbindgen_malloc), r = T, d = f.perimeter_l1_ring(s, r);
+            const s = O(e, f.__wbindgen_malloc), a = T, d = f.perimeter_l1(s, a);
             var t = d[0], i = d[1];
             if (d[3]) throw t = 0, i = 0, S(d[2]);
             return n = t, o = i, q(t, i);
@@ -1119,45 +1119,45 @@
         }
     }
     function Ct(e, n, o) {
-        const t = O(o, f.__wbindgen_malloc), i = T, s = f.point_inside_or_on_boundary_ring(e, n, t, i);
+        const t = O(o, f.__wbindgen_malloc), i = T, s = f.point_inside_or_on_boundary(e, n, t, i);
         if (s[2]) throw S(s[1]);
         return s[0] !== 0;
     }
     function St(e, n, o) {
-        const t = O(o, f.__wbindgen_malloc), i = T, s = f.point_on_polygon_boundary_ring(e, n, t, i);
+        const t = O(o, f.__wbindgen_malloc), i = T, s = f.point_on_polygon_boundary(e, n, t, i);
         if (s[2]) throw S(s[1]);
         return s[0] !== 0;
     }
     function kt(e, n, o) {
-        const t = O(o, f.__wbindgen_malloc), i = T, s = f.point_strictly_inside_convex_ring(e, n, t, i);
+        const t = O(o, f.__wbindgen_malloc), i = T, s = f.point_strictly_inside_convex(e, n, t, i);
         if (s[2]) throw S(s[1]);
         return s[0] !== 0;
     }
     function ot(e) {
-        const n = O(e, f.__wbindgen_malloc), o = T, t = f.remove_collinear_ring(n, o);
+        const n = O(e, f.__wbindgen_malloc), o = T, t = f.remove_collinear(n, o);
         if (t[2]) throw S(t[1]);
         return S(t[0]);
     }
     function Tt(e, n) {
-        const o = O(e, f.__wbindgen_malloc), t = T, i = O(n, f.__wbindgen_malloc), s = T, r = f.sat_overlap(o, t, i, s);
-        if (r[2]) throw S(r[1]);
-        return r[0] !== 0;
+        const o = O(e, f.__wbindgen_malloc), t = T, i = O(n, f.__wbindgen_malloc), s = T, a = f.sat_overlap(o, t, i, s);
+        if (a[2]) throw S(a[1]);
+        return a[0] !== 0;
     }
     function At(e, n) {
-        const o = O(e, f.__wbindgen_malloc), t = T, i = O(n, f.__wbindgen_malloc), s = T, r = f.sat_overlap_with_aabb(o, t, i, s);
-        if (r[2]) throw S(r[1]);
-        return r[0] !== 0;
+        const o = O(e, f.__wbindgen_malloc), t = T, i = O(n, f.__wbindgen_malloc), s = T, a = f.sat_overlap_with_aabb(o, t, i, s);
+        if (a[2]) throw S(a[1]);
+        return a[0] !== 0;
     }
-    function Ge(e, n, o, t, i, s, r, d) {
-        return f.segments_intersect(e, n, o, t, i, s, r, d) !== 0;
+    function Ge(e, n, o, t, i, s, a, d) {
+        return f.segments_intersect(e, n, o, t, i, s, a, d) !== 0;
     }
-    function Lt(e, n, o, t, i, s, r, d) {
-        return f.segments_properly_intersect(e, n, o, t, i, s, r, d) !== 0;
+    function Lt(e, n, o, t, i, s, a, d) {
+        return f.segments_properly_intersect(e, n, o, t, i, s, a, d) !== 0;
     }
     function Pt(e) {
         let n, o;
         try {
-            const s = O(e, f.__wbindgen_malloc), r = T, d = f.signed_area_2x_ring(s, r);
+            const s = O(e, f.__wbindgen_malloc), a = T, d = f.signed_area_2x(s, a);
             var t = d[0], i = d[1];
             if (d[3]) throw t = 0, i = 0, S(d[2]);
             return n = t, o = i, q(t, i);
@@ -1168,7 +1168,7 @@
     function Ee(e) {
         let n, o;
         try {
-            const s = O(e, f.__wbindgen_malloc), r = T, d = f.twice_area_ring(s, r);
+            const s = O(e, f.__wbindgen_malloc), a = T, d = f.twice_area(s, a);
             var t = d[0], i = d[1];
             if (d[3]) throw t = 0, i = 0, S(d[2]);
             return n = t, o = i, q(t, i);
@@ -1177,7 +1177,7 @@
         }
     }
     function Mt(e, n, o) {
-        const t = le(e, f.__wbindgen_malloc, f.__wbindgen_realloc), i = T, s = le(n, f.__wbindgen_malloc, f.__wbindgen_realloc), r = T, d = f.validate_compactness_values(t, i, s, r, F(o) ? 0 : oe(o));
+        const t = le(e, f.__wbindgen_malloc, f.__wbindgen_realloc), i = T, s = le(n, f.__wbindgen_malloc, f.__wbindgen_realloc), a = T, d = f.validate_compactness(t, i, s, a, F(o) ? 0 : oe(o));
         if (d[3]) throw S(d[2]);
         let m;
         return d[0] !== 0 && (m = q(d[0], d[1]).slice(), f.__wbindgen_free(d[0], d[1] * 1, 1)), m;
@@ -1188,7 +1188,7 @@
         return S(s[0]);
     }
     function Nt(e, n) {
-        const o = O(e, f.__wbindgen_malloc), t = T, i = f.validate_edge_lengths_ring(o, t, F(n) ? 0 : oe(n));
+        const o = O(e, f.__wbindgen_malloc), t = T, i = f.validate_edge_lengths(o, t, F(n) ? 0 : oe(n));
         if (i[3]) throw S(i[2]);
         let s;
         return i[0] !== 0 && (s = q(i[0], i[1]).slice(), f.__wbindgen_free(i[0], i[1] * 1, 1)), s;
@@ -1199,7 +1199,7 @@
         return S(t[0]);
     }
     function Rt(e, n) {
-        const o = O(e, f.__wbindgen_malloc), t = T, i = f.validate_part_ring(o, t, F(n) ? 0 : oe(n));
+        const o = O(e, f.__wbindgen_malloc), t = T, i = f.validate_part(o, t, F(n) ? 0 : oe(n));
         if (i[3]) throw S(i[2]);
         let s;
         return i[0] !== 0 && (s = q(i[0], i[1]).slice(), f.__wbindgen_free(i[0], i[1] * 1, 1)), s;
@@ -1276,10 +1276,10 @@
             return Reflect.get(e, n);
         }, arguments);
     }
-    function rn(e, n) {
+    function an(e, n) {
         return e[n >>> 0];
     }
-    function an(e, n) {
+    function rn(e, n) {
         return e[n];
     }
     function ln(e) {
@@ -1383,7 +1383,7 @@
             const i = e.length;
             let s = "[";
             i > 0 && (s += Fe(e[0]));
-            for(let r = 1; r < i; r++)s += ", " + Fe(e[r]);
+            for(let a = 1; a < i; a++)s += ", " + Fe(e[a]);
             return s += "]", s;
         }
         const o = /\[object ([^\]]+)\]/.exec(toString.call(e));
@@ -1438,18 +1438,18 @@ ${e.stack}` : t;
         }
         let t = e.length, i = n(t, 1) >>> 0;
         const s = pe();
-        let r = 0;
-        for(; r < t; r++){
-            const d = e.charCodeAt(r);
+        let a = 0;
+        for(; a < t; a++){
+            const d = e.charCodeAt(a);
             if (d > 127) break;
-            s[i + r] = d;
+            s[i + a] = d;
         }
-        if (r !== t) {
-            r !== 0 && (e = e.slice(r)), i = o(i, t, t = r + e.length * 3, 1) >>> 0;
-            const d = pe().subarray(i + r, i + t), m = be.encodeInto(e, d);
-            r += m.written, i = o(i, t, r, 1) >>> 0;
+        if (a !== t) {
+            a !== 0 && (e = e.slice(a)), i = o(i, t, t = a + e.length * 3, 1) >>> 0;
+            const d = pe().subarray(i + a, i + t), m = be.encodeInto(e, d);
+            a += m.written, i = o(i, t, a, 1) >>> 0;
         }
-        return T = r, i;
+        return T = a, i;
     }
     function S(e) {
         const n = f.__wbindgen_externrefs.get(e);
@@ -1488,8 +1488,8 @@ ${e.stack}` : t;
             __wbg_done_9158f7cc8751ba32: on,
             __wbg_value_ee3a06f4579184fa: In,
             __wbg_length_3d4ecd04bd8d22f1: gn,
-            __wbg_get_unchecked_17f53dad852b9588: rn,
-            __wbg_get_with_ref_key_6412cf3094599694: an,
+            __wbg_get_unchecked_17f53dad852b9588: an,
+            __wbg_get_with_ref_key_6412cf3094599694: rn,
             __wbg_set_6be42768c690e380: xn,
             __wbg_String_8564e559799eccda: Vt,
             __wbg_new_682678e2f47e32bc: bn,
@@ -1528,80 +1528,72 @@ ${e.stack}` : t;
             __wbindgen_cast_0000000000000004: Cn,
             __wbindgen_cast_0000000000000005: Sn
         }
-    }, _t), { memory: Nn, add_i64: Dn, area_display_from_twice_area: Rn, areas_conserved_values: Fn, bayazit_decompose_polygon: jn, classify_contact: Vn, collect_steiner_points: zn, collinear_segments_overlap_area_rings: Hn, contains_polygon: Yn, convex_parts_overlap: Wn, cross2d: Un, decompose_polygon: Xn, ear_clip_triangulate_polygon: qn, edge_squared_length: Jn, ensure_ccw_ring: Kn, exact_partition_only_original_vertices: Gn, exact_vertex_partition_polygon: Qn, find_overlapping_parts: Zn, has_exact_shared_edge: eo, is_ccw_ring: to, is_collinear: no, is_collinear_pts: oo, is_convex_ring: io, is_left: so, is_left_or_on: ro, is_left_turn: ao, is_reflex: lo, is_right_or_on: co, is_right_turn: uo, is_simple_ring: fo, merge_convex_pair: go, normalize_polygon_ring: _o, optimize_partition: po, orientation: bo, parts_overlap: mo, perimeter_l1_ring: ho, point_inside_any_part: vo, point_inside_or_on_boundary_ring: yo, point_on_polygon_boundary_ring: wo, point_on_segment: xo, point_strictly_inside_convex_ring: Io, remove_collinear_ring: Bo, rotate_polygon_ring: $o, sat_overlap: Eo, sat_overlap_with_aabb: Co, segments_contact: So, segments_intersect: ko, segments_properly_intersect: To, sign_i128: Ao, signed_area_2x_ring: Lo, sub_u64: Po, twice_area: Mo, twice_area_ring: Oo, validate_compactness_values: No, validate_decomposition: Do, validate_edge_lengths_ring: Ro, validate_multipart_topology: Fo, validate_part_ring: jo, cross_sign: Vo, is_right: zo, __wbindgen_malloc: Ho, __wbindgen_realloc: Yo, __wbindgen_exn_store: Wo, __externref_table_alloc: Uo, __wbindgen_externrefs: Xo, __externref_table_dealloc: qo, __wbindgen_free: Jo, __wbindgen_start: it } = On, Ko = Object.freeze(Object.defineProperty({
+    }, _t), { memory: Nn, bayazit_decompose_polygon: Dn, classify_contact: Rn, collect_steiner_points: Fn, collinear_segments_overlap_area: jn, contains_polygon: Vn, decompose_polygon: zn, ear_clip_triangulate_polygon: Hn, exact_partition_only_original_vertices: Yn, exact_vertex_partition_polygon: Wn, has_exact_shared_edge: Un, point_inside_any_part: Xn, point_inside_or_on_boundary: qn, point_on_polygon_boundary: Jn, point_strictly_inside_convex: Kn, segments_contact: Gn, validate_decomposition: Qn, validate_multipart_topology: Zn, is_convex: eo, perimeter_l1: to, validate_compactness: no, validate_edge_lengths: oo, validate_part: io, cross2d: so, edge_squared_length: ao, is_collinear_pts: ro, is_left: lo, is_left_or_on: co, is_reflex: uo, is_right_or_on: fo, orientation: go, point_on_segment: _o, segments_intersect: po, segments_properly_intersect: bo, is_right: mo, ensure_ccw: ho, is_ccw: vo, is_simple: yo, normalize_polygon: wo, remove_collinear: xo, rotate_polygon: Io, area_display_from_twice_area: Bo, areas_conserved_values: $o, convex_parts_overlap: Eo, find_overlapping_parts: Co, parts_overlap: So, sat_overlap: ko, sat_overlap_with_aabb: To, signed_area_2x: Ao, twice_area: Lo, merge_convex_pair: Po, optimize_partition: Mo, __wbindgen_malloc: Oo, __wbindgen_realloc: No, __wbindgen_exn_store: Do, __externref_table_alloc: Ro, __wbindgen_externrefs: Fo, __externref_table_dealloc: jo, __wbindgen_free: Vo, __wbindgen_start: it } = On, zo = Object.freeze(Object.defineProperty({
         __proto__: null,
-        __externref_table_alloc: Uo,
-        __externref_table_dealloc: qo,
-        __wbindgen_exn_store: Wo,
-        __wbindgen_externrefs: Xo,
-        __wbindgen_free: Jo,
-        __wbindgen_malloc: Ho,
-        __wbindgen_realloc: Yo,
+        __externref_table_alloc: Ro,
+        __externref_table_dealloc: jo,
+        __wbindgen_exn_store: Do,
+        __wbindgen_externrefs: Fo,
+        __wbindgen_free: Vo,
+        __wbindgen_malloc: Oo,
+        __wbindgen_realloc: No,
         __wbindgen_start: it,
-        add_i64: Dn,
-        area_display_from_twice_area: Rn,
-        areas_conserved_values: Fn,
-        bayazit_decompose_polygon: jn,
-        classify_contact: Vn,
-        collect_steiner_points: zn,
-        collinear_segments_overlap_area_rings: Hn,
-        contains_polygon: Yn,
-        convex_parts_overlap: Wn,
-        cross2d: Un,
-        cross_sign: Vo,
-        decompose_polygon: Xn,
-        ear_clip_triangulate_polygon: qn,
-        edge_squared_length: Jn,
-        ensure_ccw_ring: Kn,
-        exact_partition_only_original_vertices: Gn,
-        exact_vertex_partition_polygon: Qn,
-        find_overlapping_parts: Zn,
-        has_exact_shared_edge: eo,
-        is_ccw_ring: to,
-        is_collinear: no,
-        is_collinear_pts: oo,
-        is_convex_ring: io,
-        is_left: so,
-        is_left_or_on: ro,
-        is_left_turn: ao,
-        is_reflex: lo,
-        is_right: zo,
-        is_right_or_on: co,
-        is_right_turn: uo,
-        is_simple_ring: fo,
+        area_display_from_twice_area: Bo,
+        areas_conserved_values: $o,
+        bayazit_decompose_polygon: Dn,
+        classify_contact: Rn,
+        collect_steiner_points: Fn,
+        collinear_segments_overlap_area: jn,
+        contains_polygon: Vn,
+        convex_parts_overlap: Eo,
+        cross2d: so,
+        decompose_polygon: zn,
+        ear_clip_triangulate_polygon: Hn,
+        edge_squared_length: ao,
+        ensure_ccw: ho,
+        exact_partition_only_original_vertices: Yn,
+        exact_vertex_partition_polygon: Wn,
+        find_overlapping_parts: Co,
+        has_exact_shared_edge: Un,
+        is_ccw: vo,
+        is_collinear_pts: ro,
+        is_convex: eo,
+        is_left: lo,
+        is_left_or_on: co,
+        is_reflex: uo,
+        is_right: mo,
+        is_right_or_on: fo,
+        is_simple: yo,
         memory: Nn,
-        merge_convex_pair: go,
-        normalize_polygon_ring: _o,
-        optimize_partition: po,
-        orientation: bo,
-        parts_overlap: mo,
-        perimeter_l1_ring: ho,
-        point_inside_any_part: vo,
-        point_inside_or_on_boundary_ring: yo,
-        point_on_polygon_boundary_ring: wo,
-        point_on_segment: xo,
-        point_strictly_inside_convex_ring: Io,
-        remove_collinear_ring: Bo,
-        rotate_polygon_ring: $o,
-        sat_overlap: Eo,
-        sat_overlap_with_aabb: Co,
-        segments_contact: So,
-        segments_intersect: ko,
-        segments_properly_intersect: To,
-        sign_i128: Ao,
-        signed_area_2x_ring: Lo,
-        sub_u64: Po,
-        twice_area: Mo,
-        twice_area_ring: Oo,
-        validate_compactness_values: No,
-        validate_decomposition: Do,
-        validate_edge_lengths_ring: Ro,
-        validate_multipart_topology: Fo,
-        validate_part_ring: jo
+        merge_convex_pair: Po,
+        normalize_polygon: wo,
+        optimize_partition: Mo,
+        orientation: go,
+        parts_overlap: So,
+        perimeter_l1: to,
+        point_inside_any_part: Xn,
+        point_inside_or_on_boundary: qn,
+        point_on_polygon_boundary: Jn,
+        point_on_segment: _o,
+        point_strictly_inside_convex: Kn,
+        remove_collinear: xo,
+        rotate_polygon: Io,
+        sat_overlap: ko,
+        sat_overlap_with_aabb: To,
+        segments_contact: Gn,
+        segments_intersect: po,
+        segments_properly_intersect: bo,
+        signed_area_2x: Ao,
+        twice_area: Lo,
+        validate_compactness: no,
+        validate_decomposition: Qn,
+        validate_edge_lengths: oo,
+        validate_multipart_topology: Zn,
+        validate_part: io
     }, Symbol.toStringTag, {
         value: "Module"
     }));
-    Mn(Ko);
+    Mn(zo);
     it();
     const Ce = 1e6;
     function D(e) {
@@ -1645,24 +1637,24 @@ ${e.stack}` : t;
         min_compactness_ppm: 0,
         area_divisor: 1
     };
-    let ae = {
+    let re = {
         ...Be
     }, Me = !1;
     const Ve = new Set;
-    function rt() {
-        return ae;
+    function at() {
+        return re;
     }
     function ee() {
         return {
-            max_parts: ae.max_parts,
-            max_vertices_per_part: ae.max_vertices_per_part,
-            min_edge_length_squared: BigInt(ae.min_edge_length_squared),
-            min_compactness_ppm: BigInt(ae.min_compactness_ppm),
-            area_divisor: BigInt(ae.area_divisor)
+            max_parts: re.max_parts,
+            max_vertices_per_part: re.max_vertices_per_part,
+            min_edge_length_squared: BigInt(re.min_edge_length_squared),
+            min_compactness_ppm: BigInt(re.min_compactness_ppm),
+            area_divisor: BigInt(re.area_divisor)
         };
     }
     function Oe(e) {
-        if (ae = {
+        if (re = {
             ...e
         }, !Me) {
             Me = !0;
@@ -1682,14 +1674,14 @@ ${e.stack}` : t;
         }
         return JSON.stringify(e);
     }
-    function Go(e) {
+    function Ho(e) {
         return "Success" in e ? "ok" : "TooManyParts" in e ? "warn" : "error";
     }
-    function Qo(e) {
+    function Yo(e) {
         return "Success" in e ? `Success: ${e.Success.part_count} parts` : "TooManyParts" in e ? `TooManyParts: ${e.TooManyParts.count}` : "ValidationFailed" in e ? `ValidationFailed: ${e.ValidationFailed.errors.join(", ")}` : "AlgorithmFailed" in e ? `AlgorithmFailed: "${e.AlgorithmFailed.error}"` : JSON.stringify(e);
     }
-    function Zo() {
-        let e, n, o, t = [], i = [], s = [], r = [], d, m, p = !1, l = "decompose", g = !0, c = !1, a = !1, u, w, h, _ = null, B = !0, v = !0, b = null, I = null;
+    function Wo() {
+        let e, n, o, t = [], i = [], s = [], a = [], d, m, p = !1, l = "decompose", g = !0, c = !1, r = !1, u, w, h, _ = null, B = !0, v = !0, b = null, I = null;
         const k = 1e6;
         function A($) {
             if ($.length < 3) return {};
@@ -1756,7 +1748,7 @@ ${e.stack}` : t;
       </details>`;
                 return;
             }
-            const $ = rt(), y = [];
+            const $ = at(), y = [];
             y.push(`<div class="debug-section">
       <div class="debug-section-title">Polygon (${t.length} vertices)</div>
       <div class="debug-copy-row">
@@ -1864,14 +1856,14 @@ ${e.stack}` : t;
             return $.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
         function U() {
-            if (i = [], s = [], r = [], d = void 0, m = void 0, p = !1, w.textContent = "", !(t.length < 3)) {
+            if (i = [], s = [], a = [], d = void 0, m = void 0, p = !1, w.textContent = "", !(t.length < 3)) {
                 try {
                     const $ = D(t);
                     p = !De($);
                     const x = p ? BigInt64Array.from(tt($), (E)=>typeof E == "bigint" ? E : BigInt(E)) : $;
                     if (l === "decompose") {
-                        const E = He(x, g, c || void 0, a || void 0, ee());
-                        i = E.parts.map((C)=>X(C)), r = X(E.steiner_points), d = E.strategy, m = E.trace;
+                        const E = He(x, g, c || void 0, r || void 0, ee());
+                        i = E.parts.map((C)=>X(C)), a = X(E.steiner_points), d = E.strategy, m = E.trace;
                     } else if (l === "bayazit") i = ht(x, g).map((C)=>X(C));
                     else if (l === "exact_partition") i = yt(x).map((C)=>X(C));
                     else if (l === "ear_clip") i = Je(x).map((C)=>X(C));
@@ -1884,12 +1876,12 @@ ${e.stack}` : t;
                 } catch ($) {
                     w.textContent = String($);
                 }
-                at(), lt(), j(), ge();
+                rt(), lt(), j(), ge();
             }
         }
-        function at() {
+        function rt() {
             const $ = [];
-            $.push(te("Vertices", String(t.length))), $.push(te("Algorithm", l)), d && $.push(te("Strategy", Qe(d))), $.push(te("Parts", String(i.length))), l === "hertel_mehlhorn" && s.length > 0 && ($.push(te("Triangles", String(s.length))), $.push(te("Optimized", `${s.length} → ${i.length}`))), r.length > 0 && $.push(te("Steiner pts", String(r.length)));
+            $.push(te("Vertices", String(t.length))), $.push(te("Algorithm", l)), d && $.push(te("Strategy", Qe(d))), $.push(te("Parts", String(i.length))), l === "hertel_mehlhorn" && s.length > 0 && ($.push(te("Triangles", String(s.length))), $.push(te("Optimized", `${s.length} → ${i.length}`))), a.length > 0 && $.push(te("Steiner pts", String(a.length)));
             for(let y = 0; y < i.length; y++)$.push(te(`Part ${y}`, `${i[y].length} verts`));
             u.innerHTML = `<h3>Result</h3>${$.join("")}`;
         }
@@ -1900,12 +1892,12 @@ ${e.stack}` : t;
             }
             h.style.display = "block";
             const $ = m.map((y, x)=>{
-                const E = Go(y.outcome);
+                const E = Ho(y.outcome);
                 return `<div class="trace-entry">
         <span class="trace-index">#${x}</span>
         <span class="trace-strategy">${Qe(y.strategy)}</span>
         <span class="trace-rotation">rot=${y.rotation}</span>
-        <span class="info-value ${E}">${Qo(y.outcome)}</span>
+        <span class="info-value ${E}">${Yo(y.outcome)}</span>
       </div>`;
             }).join("");
             h.innerHTML = `
@@ -1957,7 +1949,7 @@ ${e.stack}` : t;
                     ]);
                 }
             }
-            for (const [y, x] of r)ne(n, y, x, "#ff6b6b", 6), K(n, y, x, "S", "#ff6b6b");
+            for (const [y, x] of a)ne(n, y, x, "#ff6b6b", 6), K(n, y, x, "S", "#ff6b6b");
             o.isDrawing && o.points.length > 0 && N(n, o.points, {
                 stroke: "#666",
                 closed: !1,
@@ -2017,14 +2009,14 @@ ${e.stack}` : t;
             },
             activate () {
                 e = document.getElementById("decomp-canvas"), u = document.getElementById("decomp-info"), w = document.getElementById("decomp-error"), h = document.getElementById("decomp-trace-panel"), _ = document.getElementById("decomp-debug-panel"), n = V(e), o = me(e, ()=>n), t = Z(), b = he(()=>{
-                    t = Z(), i = [], s = [], r = [], t.length >= 3 ? U() : (j(), ge());
+                    t = Z(), i = [], s = [], a = [], t.length >= 3 ? U() : (j(), ge());
                 }), o.setOnChange(()=>ge()), o.setOnComplete((x)=>{
                     t = x, o.clear(), R(t);
                 }), o.enable(), document.getElementById("decomp-preset").addEventListener("change", (x)=>{
                     const E = x.target.value, C = G.find((M)=>M.name === E) ?? Xe.find((M)=>M.name === E);
                     C && (o.clear(), R(C.points.slice()));
                 }), document.getElementById("decomp-clear").addEventListener("click", ()=>{
-                    i = [], s = [], r = [], o.clear(), w.textContent = "", h.innerHTML = "", h.style.display = "none", document.getElementById("decomp-preset").value = "", R([]);
+                    i = [], s = [], a = [], o.clear(), w.textContent = "", h.innerHTML = "", h.style.display = "none", document.getElementById("decomp-preset").value = "", R([]);
                 });
                 const $ = document.getElementById("decomp-minimize"), y = ()=>{
                     $.disabled = l !== "decompose", $.parentElement?.classList.toggle("disabled", $.disabled);
@@ -2036,7 +2028,7 @@ ${e.stack}` : t;
                 }), document.getElementById("decomp-trace").addEventListener("change", (x)=>{
                     c = x.target.checked, t.length >= 3 && U();
                 }), document.getElementById("decomp-minimize").addEventListener("change", (x)=>{
-                    a = x.target.checked, t.length >= 3 && U();
+                    r = x.target.checked, t.length >= 3 && U();
                 }), document.getElementById("decomp-run").addEventListener("click", U), document.getElementById("decomp-debug").addEventListener("change", (x)=>{
                     B = x.target.checked, j();
                 }), document.getElementById("decomp-vertex-labels").addEventListener("change", (x)=>{
@@ -2050,19 +2042,19 @@ ${e.stack}` : t;
             }
         };
     }
-    function ei() {
-        let e, n, o, t = [], i = [], s, r, d = null, m = null;
+    function Uo() {
+        let e, n, o, t = [], i = [], s, a, d = null, m = null;
         function p() {
-            if (i = [], r.textContent = "", t.length < 3) {
+            if (i = [], a.textContent = "", t.length < 3) {
                 l(null), c();
                 return;
             }
             try {
-                const a = D(t), u = Ee(a), w = Pt(a), h = bt(u, ee()), _ = Re(a);
+                const r = D(t), u = Ee(r), w = Pt(r), h = bt(u, ee()), _ = Re(r);
                 let B = null;
                 const v = [];
                 try {
-                    i = He(a, !0, void 0, void 0, ee()).parts.map((I)=>X(I));
+                    i = He(r, !0, void 0, void 0, ee()).parts.map((I)=>X(I));
                     for (const I of i){
                         const k = D(I);
                         v.push(Ee(k));
@@ -2078,36 +2070,36 @@ ${e.stack}` : t;
                     partAreas: v,
                     conserved: B
                 });
-            } catch (a) {
-                r.textContent = String(a);
+            } catch (r) {
+                a.textContent = String(r);
             }
             c();
         }
-        function l(a) {
-            if (!a) {
+        function l(r) {
+            if (!r) {
                 s.innerHTML = '<h3>Metrics</h3><div class="info-row"><span class="info-label">Draw a polygon to begin</span></div>';
                 return;
             }
             const u = [];
-            if (u.push(g("2x Area (unsigned)", a.twiceArea)), u.push(g("2x Area (signed)", a.signedArea)), u.push(g("Display Area", a.displayArea)), u.push(g("L1 Perimeter", a.perimeter)), a.partsCount > 0) {
-                u.push('<div style="border-top:1px solid #222;margin:8px 0;"></div>'), u.push(g("Parts", String(a.partsCount)));
-                for(let w = 0; w < a.partAreas.length; w++)u.push(g(`Part ${w} 2xArea`, a.partAreas[w]));
-                a.conserved !== null && u.push(g("Area Conserved", a.conserved ? "Yes" : "No", a.conserved ? "ok" : "error"));
+            if (u.push(g("2x Area (unsigned)", r.twiceArea)), u.push(g("2x Area (signed)", r.signedArea)), u.push(g("Display Area", r.displayArea)), u.push(g("L1 Perimeter", r.perimeter)), r.partsCount > 0) {
+                u.push('<div style="border-top:1px solid #222;margin:8px 0;"></div>'), u.push(g("Parts", String(r.partsCount)));
+                for(let w = 0; w < r.partAreas.length; w++)u.push(g(`Part ${w} 2xArea`, r.partAreas[w]));
+                r.conserved !== null && u.push(g("Area Conserved", r.conserved ? "Yes" : "No", r.conserved ? "ok" : "error"));
             }
             s.innerHTML = `<h3>Metrics</h3>${u.join("")}`;
         }
-        function g(a, u, w = "") {
-            return `<div class="info-row"><span class="info-label">${a}</span><span class="info-value ${w}">${u}</span></div>`;
+        function g(r, u, w = "") {
+            return `<div class="info-row"><span class="info-label">${r}</span><span class="info-value ${w}">${u}</span></div>`;
         }
         function c() {
             n = V(e);
-            const a = i.length > 0 ? [
+            const r = i.length > 0 ? [
                 t,
                 ...i
             ] : t.length > 0 ? [
                 t
             ] : [];
-            if (a.length > 0 && fe(n, a), ce(n), de(n), i.length > 0) {
+            if (r.length > 0 && fe(n, r), ce(n), de(n), i.length > 0) {
                 N(n, t, {
                     stroke: "#555",
                     showVertices: !1,
@@ -2134,8 +2126,8 @@ ${e.stack}` : t;
             id: "area",
             label: "Area & Metrics",
             create () {
-                const a = document.createElement("div");
-                return a.id = "tab-area", a.innerHTML = `
+                const r = document.createElement("div");
+                return r.id = "tab-area", r.innerHTML = `
         <div class="toolbar">
           <select id="area-preset">
             <option value="">— Preset —</option>
@@ -2158,18 +2150,18 @@ ${e.stack}` : t;
             <div id="area-error" style="color:#ff4a4a;font-size:12px;"></div>
           </div>
         </div>
-      `, a;
+      `, r;
             },
             activate () {
-                e = document.getElementById("area-canvas"), s = document.getElementById("area-info"), r = document.getElementById("area-error"), n = V(e), o = me(e, ()=>n), t = Z(), d = he(()=>{
+                e = document.getElementById("area-canvas"), s = document.getElementById("area-info"), a = document.getElementById("area-error"), n = V(e), o = me(e, ()=>n), t = Z(), d = he(()=>{
                     t = Z(), i = [], p();
-                }), o.setOnChange(()=>c()), o.setOnComplete((a)=>{
-                    o.clear(), R(a);
-                }), o.enable(), document.getElementById("area-preset").addEventListener("change", (a)=>{
-                    const u = a.target.value, w = G.find((h)=>h.name === u);
+                }), o.setOnChange(()=>c()), o.setOnComplete((r)=>{
+                    o.clear(), R(r);
+                }), o.enable(), document.getElementById("area-preset").addEventListener("change", (r)=>{
+                    const u = r.target.value, w = G.find((h)=>h.name === u);
                     w && (o.clear(), R(w.points.slice()));
                 }), document.getElementById("area-clear").addEventListener("click", ()=>{
-                    i = [], o.clear(), r.textContent = "", document.getElementById("area-preset").value = "", R([]);
+                    i = [], o.clear(), a.textContent = "", document.getElementById("area-preset").value = "", R([]);
                 }), m = We(()=>{
                     t.length >= 3 && p();
                 }), t.length >= 3 ? p() : c();
@@ -2179,21 +2171,21 @@ ${e.stack}` : t;
             }
         };
     }
-    function ti() {
-        let e, n, o, t = [], i, s, r = null;
+    function Xo() {
+        let e, n, o, t = [], i, s, a = null;
         function d() {
             if (s.textContent = "", t.length < 3) {
                 m(null), l();
                 return;
             }
             try {
-                const c = D(t), a = De(c), u = nt(c), w = $e(c), h = [];
+                const c = D(t), r = De(c), u = nt(c), w = $e(c), h = [];
                 for(let _ = 0; _ < t.length; _++){
                     const B = t[(_ - 1 + t.length) % t.length], v = t[_], b = t[(_ + 1) % t.length];
                     It(BigInt(B[0]), BigInt(B[1]), BigInt(v[0]), BigInt(v[1]), BigInt(b[0]), BigInt(b[1])) && h.push(_);
                 }
                 m({
-                    isCcw: a,
+                    isCcw: r,
                     isSimple: u,
                     isConvex: w,
                     reflexCount: h.length,
@@ -2208,11 +2200,11 @@ ${e.stack}` : t;
                 i.innerHTML = '<h3>Properties</h3><div class="info-row"><span class="info-label">Draw a polygon to begin</span></div>';
                 return;
             }
-            const a = [];
-            a.push(p("Vertices", String(t.length))), a.push(p("CCW", c.isCcw ? "Yes" : "No", c.isCcw ? "ok" : "warn")), a.push(p("Simple", c.isSimple ? "Yes" : "No", c.isSimple ? "ok" : "error")), a.push(p("Convex", c.isConvex ? "Yes" : "No", c.isConvex ? "ok" : "warn")), a.push(p("Reflex vertices", String(c.reflexCount), c.reflexCount > 0 ? "warn" : "ok")), i.innerHTML = `<h3>Properties</h3>${a.join("")}`;
+            const r = [];
+            r.push(p("Vertices", String(t.length))), r.push(p("CCW", c.isCcw ? "Yes" : "No", c.isCcw ? "ok" : "warn")), r.push(p("Simple", c.isSimple ? "Yes" : "No", c.isSimple ? "ok" : "error")), r.push(p("Convex", c.isConvex ? "Yes" : "No", c.isConvex ? "ok" : "warn")), r.push(p("Reflex vertices", String(c.reflexCount), c.reflexCount > 0 ? "warn" : "ok")), i.innerHTML = `<h3>Properties</h3>${r.join("")}`;
         }
-        function p(c, a, u = "") {
-            return `<div class="info-row"><span class="info-label">${c}</span><span class="info-value ${u}">${a}</span></div>`;
+        function p(c, r, u = "") {
+            return `<div class="info-row"><span class="info-label">${c}</span><span class="info-value ${u}">${r}</span></div>`;
         }
         function l(c = []) {
             if (n = V(e), t.length > 0 && fe(n, [
@@ -2232,9 +2224,9 @@ ${e.stack}` : t;
                 const w = (u + 1) % t.length;
                 ft(n, t[u], t[w]);
             }
-            const a = new Set(c);
+            const r = new Set(c);
             for(let u = 0; u < t.length; u++){
-                const w = a.has(u), h = w ? "#ff6b6b" : "#4a9eff";
+                const w = r.has(u), h = w ? "#ff6b6b" : "#4a9eff";
                 ne(n, t[u][0], t[u][1], h, w ? 6 : 4), K(n, t[u][0], t[u][1], String(u), w ? "#ff6b6b" : "#888");
             }
             o.isDrawing && o.points.length > 0 && N(n, o.points, {
@@ -2247,12 +2239,12 @@ ${e.stack}` : t;
             if (!(t.length < 3)) {
                 s.textContent = "";
                 try {
-                    const a = D(t);
+                    const r = D(t);
                     let u = null;
-                    if (c === "ccw") u = tt(a);
-                    else if (c === "collinear") u = ot(a);
+                    if (c === "ccw") u = tt(r);
+                    else if (c === "collinear") u = ot(r);
                     else if (c === "normalize") {
-                        const w = $t(a);
+                        const w = $t(r);
                         if (w) u = w;
                         else {
                             s.textContent = "Normalization returned null (degenerate ring)";
@@ -2260,8 +2252,8 @@ ${e.stack}` : t;
                         }
                     }
                     u && R(X(u));
-                } catch (a) {
-                    s.textContent = String(a);
+                } catch (r) {
+                    s.textContent = String(r);
                 }
             }
         }
@@ -2274,7 +2266,7 @@ ${e.stack}` : t;
         <div class="toolbar">
           <select id="ring-preset">
             <option value="">— Preset —</option>
-            ${G.map((a)=>`<option value="${a.name}">${a.name}</option>`).join("")}
+            ${G.map((r)=>`<option value="${r.name}">${r.name}</option>`).join("")}
           </select>
           <div class="sep"></div>
           <button class="btn" id="ring-ccw">Ensure CCW</button>
@@ -2301,24 +2293,24 @@ ${e.stack}` : t;
       `, c;
             },
             activate () {
-                e = document.getElementById("ring-canvas"), i = document.getElementById("ring-info"), s = document.getElementById("ring-error"), n = V(e), o = me(e, ()=>n), t = Z(), r = he(()=>{
+                e = document.getElementById("ring-canvas"), i = document.getElementById("ring-info"), s = document.getElementById("ring-error"), n = V(e), o = me(e, ()=>n), t = Z(), a = he(()=>{
                     t = Z(), d();
                 }), o.setOnChange(()=>l()), o.setOnComplete((c)=>{
                     o.clear(), R(c);
                 }), o.enable(), document.getElementById("ring-preset").addEventListener("change", (c)=>{
-                    const a = c.target.value, u = G.find((w)=>w.name === a);
+                    const r = c.target.value, u = G.find((w)=>w.name === r);
                     u && (o.clear(), R(u.points.slice()));
                 }), document.getElementById("ring-clear").addEventListener("click", ()=>{
                     o.clear(), s.textContent = "", document.getElementById("ring-preset").value = "", R([]);
                 }), document.getElementById("ring-ccw").addEventListener("click", ()=>g("ccw")), document.getElementById("ring-collinear").addEventListener("click", ()=>g("collinear")), document.getElementById("ring-normalize").addEventListener("click", ()=>g("normalize")), t.length >= 3 ? d() : l();
             },
             deactivate () {
-                o?.disable(), r?.(), r = null;
+                o?.disable(), a?.(), a = null;
             }
         };
     }
-    function ni() {
-        let e, n, o, t = [], i = [], s = !1, r = "draw", d, m, p = null, l = null;
+    function qo() {
+        let e, n, o, t = [], i = [], s = !1, a = "draw", d, m, p = null, l = null;
         function g(h, _) {
             if (!(t.length < 3)) try {
                 const v = D(t), b = BigInt(Math.round(h * 1e6)), I = BigInt(Math.round(_ * 1e6)), k = Ct(b, I, v), A = St(b, I, v);
@@ -2336,13 +2328,13 @@ ${e.stack}` : t;
         }
         function c() {
             const h = [];
-            if (h.push(a("Vertices", String(t.length))), h.push(a("Convex", s ? "Yes" : "No", s ? "ok" : "warn")), h.push(a("Test points", String(i.length))), i.length > 0) {
+            if (h.push(r("Vertices", String(t.length))), h.push(r("Convex", s ? "Yes" : "No", s ? "ok" : "warn")), h.push(r("Test points", String(i.length))), i.length > 0) {
                 const _ = i[i.length - 1];
-                h.push('<div style="border-top:1px solid #222;margin:8px 0;"></div>'), h.push(a("Last point", `(${_.x}, ${_.y})`)), h.push(a("Inside/On", _.inside ? "Yes" : "No", _.inside ? "ok" : "error")), h.push(a("On boundary", _.boundary ? "Yes" : "No", _.boundary ? "warn" : "")), s && h.push(a("Strictly inside", _.strictlyInside ? "Yes" : "No", _.strictlyInside ? "ok" : ""));
+                h.push('<div style="border-top:1px solid #222;margin:8px 0;"></div>'), h.push(r("Last point", `(${_.x}, ${_.y})`)), h.push(r("Inside/On", _.inside ? "Yes" : "No", _.inside ? "ok" : "error")), h.push(r("On boundary", _.boundary ? "Yes" : "No", _.boundary ? "warn" : "")), s && h.push(r("Strictly inside", _.strictlyInside ? "Yes" : "No", _.strictlyInside ? "ok" : ""));
             }
             d.innerHTML = `<h3>Spatial Query</h3>${h.join("")}`;
         }
-        function a(h, _, B = "") {
+        function r(h, _, B = "") {
             return `<div class="info-row"><span class="info-label">${h}</span><span class="info-value ${B}">${_}</span></div>`;
         }
         function u() {
@@ -2362,7 +2354,7 @@ ${e.stack}` : t;
             });
         }
         function w(h) {
-            if (r !== "test" || t.length < 3) return;
+            if (a !== "test" || t.length < 3) return;
             const _ = e.getBoundingClientRect(), [B, v] = ze(n, h.clientX - _.left, h.clientY - _.top);
             g(B, v);
         }
@@ -2414,7 +2406,7 @@ ${e.stack}` : t;
                 }), o.setOnChange(()=>u()), o.setOnComplete((h)=>{
                     o.clear(), R(h);
                 }), l = function(_) {
-                    r = _;
+                    a = _;
                     const B = document.getElementById("spatial-mode-draw"), v = document.getElementById("spatial-mode-test"), b = document.getElementById("spatial-status");
                     _ === "draw" ? (B.classList.add("btn-primary"), v.classList.remove("btn-primary"), o.enable(), e.removeEventListener("click", w), b.textContent = "Click to draw polygon vertices. Right-click to close.") : (v.classList.add("btn-primary"), B.classList.remove("btn-primary"), o.disable(), e.addEventListener("click", w), b.textContent = "Click anywhere to test point inclusion.");
                 }, t.length >= 3) {
@@ -2439,11 +2431,11 @@ ${e.stack}` : t;
             }
         };
     }
-    function oi() {
+    function Jo() {
         let e, n, o = [], t = [], i = null, s = [
             0,
             0
-        ], r = [
+        ], a = [
             0,
             0
         ], d, m, p = !1;
@@ -2466,7 +2458,7 @@ ${e.stack}` : t;
         function c(b, I, k = "") {
             return `<div class="info-row"><span class="info-label">${b}</span><span class="info-value ${k}">${I}</span></div>`;
         }
-        function a() {
+        function r() {
             n = V(e);
             const b = [
                 o,
@@ -2506,15 +2498,15 @@ ${e.stack}` : t;
                 P,
                 z
             ], u(t)) : 1 / 0;
-            J < j && J < 1 / 0 ? (i = "a", s = u(o)) : j < 1 / 0 && (i = "b", s = u(t)), i && (r = [
+            J < j && J < 1 / 0 ? (i = "a", s = u(o)) : j < 1 / 0 && (i = "b", s = u(t)), i && (a = [
                 P - s[0],
                 z - s[1]
             ]);
         }
         function B(b) {
             if (!i) return;
-            const I = e.getBoundingClientRect(), k = b.clientX - I.left, A = b.clientY - I.top, P = (k - n.offsetX) / n.scale, z = -(A - n.offsetY) / n.scale, j = u(i === "a" ? o : t), Y = P - r[0] - j[0], U = z - r[1] - j[1];
-            i === "a" ? o = w(o, Y, U) : t = w(t, Y, U), g(), a();
+            const I = e.getBoundingClientRect(), k = b.clientX - I.left, A = b.clientY - I.top, P = (k - n.offsetX) / n.scale, z = -(A - n.offsetY) / n.scale, j = u(i === "a" ? o : t), Y = P - a[0] - j[0], U = z - a[1] - j[1];
+            i === "a" ? o = w(o, Y, U) : t = w(t, Y, U), g(), r();
         }
         function v() {
             i = null;
@@ -2552,36 +2544,36 @@ ${e.stack}` : t;
                 const b = Te[0];
                 o = b.a.slice(), t = b.b.slice(), e.addEventListener("mousedown", _), e.addEventListener("mousemove", B), e.addEventListener("mouseup", v), e.addEventListener("mouseleave", v), document.getElementById("overlap-preset").addEventListener("change", (I)=>{
                     const k = I.target.value, A = Te.find((P)=>P.name === k);
-                    A && (o = A.a.slice(), t = A.b.slice(), m.textContent = "", g(), a());
+                    A && (o = A.a.slice(), t = A.b.slice(), m.textContent = "", g(), r());
                 }), document.getElementById("overlap-aabb").addEventListener("change", (I)=>{
-                    p = I.target.checked, g(), a();
-                }), g(), a();
+                    p = I.target.checked, g(), r();
+                }), g(), r();
             },
             deactivate () {
                 e?.removeEventListener("mousedown", _), e?.removeEventListener("mousemove", B), e?.removeEventListener("mouseup", v), e?.removeEventListener("mouseleave", v);
             }
         };
     }
-    function ii(e) {
+    function Ko(e) {
         return e == null ? null : typeof e == "string" ? {
             HasHoles: {
                 boundary_components: 0
             }
         } : e;
     }
-    function si(e) {
+    function Go(e) {
         return "NotConnected" in e ? `Parts not connected. Disconnected: [${e.NotConnected.disconnected_parts.join(", ")}]` : "HasHoles" in e ? `Polygon has holes. ${e.HasHoles.boundary_components} boundary components found.` : "TooManyParts" in e ? `Too many parts: ${e.TooManyParts.count} (max ${e.TooManyParts.max})` : "NotCompact" in e ? `Not compact enough: ${e.NotCompact.compactness_ppm} ppm (min ${e.NotCompact.min_ppm})` : "VertexOnlyContact" in e ? `Parts ${e.VertexOnlyContact.part_a} and ${e.VertexOnlyContact.part_b} have only vertex contact` : "UnsupportedContact" in e ? `Parts ${e.UnsupportedContact.part_a} and ${e.UnsupportedContact.part_b}: ${e.UnsupportedContact.reason}` : JSON.stringify(e);
     }
-    function ri(e) {
+    function Qo(e) {
         return "NotConnected" in e ? "NotConnected" : "HasHoles" in e ? "HasHoles" : "TooManyParts" in e ? "TooManyParts" : "NotCompact" in e ? "NotCompact" : "VertexOnlyContact" in e ? "VertexOnlyContact" : "UnsupportedContact" in e ? "UnsupportedContact" : "Unknown";
     }
-    function ai(e) {
+    function Zo(e) {
         return e && "NotConnected" in e ? new Set(e.NotConnected.disconnected_parts) : new Set;
     }
-    function li() {
-        let e, n, o, t = [], i = [], s = [], r = null, d = !1, m = null, p, l, g = null, c = null;
-        function a() {
-            if (i = [], s = [], r = null, l.textContent = "", m) i = m;
+    function ei() {
+        let e, n, o, t = [], i = [], s = [], a = null, d = !1, m = null, p, l, g = null, c = null;
+        function r() {
+            if (i = [], s = [], a = null, l.textContent = "", m) i = m;
             else if (t.length < 3) {
                 u(), h();
                 return;
@@ -2613,7 +2605,7 @@ ${e.stack}` : t;
                         for (const [I, k] of v)b.push(BigInt(I)), b.push(BigInt(k));
                         return b;
                     }), B = Dt(_, d || void 0, ee());
-                    r = ii(B);
+                    a = Ko(B);
                 }
             } catch (_) {
                 l.textContent = String(_);
@@ -2624,9 +2616,9 @@ ${e.stack}` : t;
             const _ = [];
             if (m && _.push(w("Mode", "Manual parts", "warn")), _.push(w("Vertices", String(t.length))), _.push(w("Parts", String(i.length))), i.length > 1) {
                 const B = s.filter((v)=>v.shared).length;
-                if (_.push(w("Shared edges", `${B}/${s.length} pairs`)), r) {
-                    const v = ri(r);
-                    _.push(w("Topology", v, "error")), _.push(`<div class="topo-error-detail">${si(r)}</div>`);
+                if (_.push(w("Shared edges", `${B}/${s.length} pairs`)), a) {
+                    const v = Qo(a);
+                    _.push(w("Topology", v, "error")), _.push(`<div class="topo-error-detail">${Go(a)}</div>`);
                 } else i.length > 1 && _.push(w("Topology", "Valid", "ok"));
                 _.push('<div style="border-top:1px solid #222;margin:8px 0;"></div>');
                 for (const v of s)_.push(w(`P${v.partA} — P${v.partB}`, v.shared ? "Shared edge" : "No shared edge", v.shared ? "ok" : "warn"));
@@ -2653,7 +2645,7 @@ ${e.stack}` : t;
                     dashed: !0,
                     lineWidth: 1
                 });
-                const B = ai(r);
+                const B = Zo(a);
                 for(let v = 0; v < i.length; v++)if (B.has(v)) N(n, i[v], {
                     fill: "#ff4a4a",
                     stroke: "#ff4a4a",
@@ -2675,7 +2667,7 @@ ${e.stack}` : t;
                         const A = b[k], P = b[(k + 1) % b.length];
                         for(let z = 0; z < I.length; z++){
                             const J = I[z], j = I[(z + 1) % I.length];
-                            (A[0] === j[0] && A[1] === j[1] && P[0] === J[0] && P[1] === J[1] || A[0] === J[0] && A[1] === J[1] && P[0] === j[0] && P[1] === j[1]) && re(n, A, P, "#fcc419", 3);
+                            (A[0] === j[0] && A[1] === j[1] && P[0] === J[0] && P[1] === J[1] || A[0] === J[0] && A[1] === J[1] && P[0] === j[0] && P[1] === j[1]) && ae(n, A, P, "#fcc419", 3);
                         }
                     }
                 }
@@ -2723,47 +2715,47 @@ ${e.stack}` : t;
             },
             activate () {
                 e = document.getElementById("topo-canvas"), p = document.getElementById("topo-info"), l = document.getElementById("topo-error"), n = V(e), o = me(e, ()=>n), t = Z(), g = he(()=>{
-                    t = Z(), i = [], s = [], r = null, m = null, a();
+                    t = Z(), i = [], s = [], a = null, m = null, r();
                 }), o.setOnChange(()=>h()), o.setOnComplete((_)=>{
                     o.clear(), R(_);
                 }), o.enable(), document.getElementById("topo-preset").addEventListener("change", (_)=>{
                     const B = _.target.value;
                     if (B.startsWith("topo:")) {
                         const v = B.slice(5), b = qe.find((I)=>I.name === v);
-                        b && (o.clear(), m = b.parts.map((I)=>I.slice()), t = [], a());
+                        b && (o.clear(), m = b.parts.map((I)=>I.slice()), t = [], r());
                     } else {
                         m = null;
                         const v = G.find((b)=>b.name === B);
                         v && (o.clear(), R(v.points.slice()));
                     }
                 }), document.getElementById("topo-clear").addEventListener("click", ()=>{
-                    i = [], s = [], r = null, m = null, o.clear(), l.textContent = "", document.getElementById("topo-preset").value = "", R([]);
+                    i = [], s = [], a = null, m = null, o.clear(), l.textContent = "", document.getElementById("topo-preset").value = "", R([]);
                 }), document.getElementById("topo-vertex-contact").addEventListener("change", (_)=>{
-                    d = _.target.checked, t.length >= 3 && a();
+                    d = _.target.checked, t.length >= 3 && r();
                 }), c = We(()=>{
-                    t.length >= 3 && a();
-                }), t.length >= 3 ? a() : h();
+                    t.length >= 3 && r();
+                }), t.length >= 3 ? r() : h();
             },
             deactivate () {
                 o?.disable(), g?.(), g = null, c?.(), c = null;
             }
         };
     }
-    function ci() {
+    function ti() {
         let e, n, o = "orientation", t = [], i;
         function s() {
             const p = [];
             if (o === "orientation") if (t.length >= 3) {
-                const [l, g, c] = t, a = Ke(BigInt(l[0]), BigInt(l[1]), BigInt(g[0]), BigInt(g[1]), BigInt(c[0]), BigInt(c[1])), u = vt(BigInt(l[0]), BigInt(l[1]), BigInt(g[0]), BigInt(g[1]), BigInt(c[0]), BigInt(c[1])), w = xt(BigInt(l[0]), BigInt(l[1]), BigInt(g[0]), BigInt(g[1]), BigInt(c[0]), BigInt(c[1])), h = Bt(BigInt(l[0]), BigInt(l[1]), BigInt(g[0]), BigInt(g[1]), BigInt(c[0]), BigInt(c[1]));
-                p.push(r("A", `(${l[0]}, ${l[1]})`)), p.push(r("B", `(${g[0]}, ${g[1]})`)), p.push(r("C", `(${c[0]}, ${c[1]})`)), p.push('<div style="border-top:1px solid #222;margin:8px 0;"></div>'), p.push(r("Orientation", a)), p.push(r("Cross2D", u)), p.push(r("C is left of AB", w ? "Yes" : "No", w ? "ok" : "")), p.push(r("C is right of AB", h ? "Yes" : "No", h ? "ok" : ""));
-            } else p.push(r("Click", `${3 - t.length} more point(s)`));
+                const [l, g, c] = t, r = Ke(BigInt(l[0]), BigInt(l[1]), BigInt(g[0]), BigInt(g[1]), BigInt(c[0]), BigInt(c[1])), u = vt(BigInt(l[0]), BigInt(l[1]), BigInt(g[0]), BigInt(g[1]), BigInt(c[0]), BigInt(c[1])), w = xt(BigInt(l[0]), BigInt(l[1]), BigInt(g[0]), BigInt(g[1]), BigInt(c[0]), BigInt(c[1])), h = Bt(BigInt(l[0]), BigInt(l[1]), BigInt(g[0]), BigInt(g[1]), BigInt(c[0]), BigInt(c[1]));
+                p.push(a("A", `(${l[0]}, ${l[1]})`)), p.push(a("B", `(${g[0]}, ${g[1]})`)), p.push(a("C", `(${c[0]}, ${c[1]})`)), p.push('<div style="border-top:1px solid #222;margin:8px 0;"></div>'), p.push(a("Orientation", r)), p.push(a("Cross2D", u)), p.push(a("C is left of AB", w ? "Yes" : "No", w ? "ok" : "")), p.push(a("C is right of AB", h ? "Yes" : "No", h ? "ok" : ""));
+            } else p.push(a("Click", `${3 - t.length} more point(s)`));
             else if (t.length >= 4) {
-                const [l, g, c, a] = t, u = Ge(BigInt(l[0]), BigInt(l[1]), BigInt(g[0]), BigInt(g[1]), BigInt(c[0]), BigInt(c[1]), BigInt(a[0]), BigInt(a[1])), w = Lt(BigInt(l[0]), BigInt(l[1]), BigInt(g[0]), BigInt(g[1]), BigInt(c[0]), BigInt(c[1]), BigInt(a[0]), BigInt(a[1]));
-                p.push(r("Seg A", `(${l[0]},${l[1]}) → (${g[0]},${g[1]})`)), p.push(r("Seg B", `(${c[0]},${c[1]}) → (${a[0]},${a[1]})`)), p.push('<div style="border-top:1px solid #222;margin:8px 0;"></div>'), p.push(r("Intersects", u ? "Yes" : "No", u ? "error" : "ok")), p.push(r("Properly", w ? "Yes" : "No", w ? "error" : "ok"));
-            } else p.push(r("Click", `${4 - t.length} more point(s)`)), t.length < 2 ? p.push(r("", "Click 2 pts for segment A")) : p.push(r("", "Click 2 pts for segment B"));
+                const [l, g, c, r] = t, u = Ge(BigInt(l[0]), BigInt(l[1]), BigInt(g[0]), BigInt(g[1]), BigInt(c[0]), BigInt(c[1]), BigInt(r[0]), BigInt(r[1])), w = Lt(BigInt(l[0]), BigInt(l[1]), BigInt(g[0]), BigInt(g[1]), BigInt(c[0]), BigInt(c[1]), BigInt(r[0]), BigInt(r[1]));
+                p.push(a("Seg A", `(${l[0]},${l[1]}) → (${g[0]},${g[1]})`)), p.push(a("Seg B", `(${c[0]},${c[1]}) → (${r[0]},${r[1]})`)), p.push('<div style="border-top:1px solid #222;margin:8px 0;"></div>'), p.push(a("Intersects", u ? "Yes" : "No", u ? "error" : "ok")), p.push(a("Properly", w ? "Yes" : "No", w ? "error" : "ok"));
+            } else p.push(a("Click", `${4 - t.length} more point(s)`)), t.length < 2 ? p.push(a("", "Click 2 pts for segment A")) : p.push(a("", "Click 2 pts for segment B"));
             i.innerHTML = `<h3>Result</h3>${p.join("")}`;
         }
-        function r(p, l, g = "") {
+        function a(p, l, g = "") {
             return `<div class="info-row"><span class="info-label">${p}</span><span class="info-value ${g}">${l}</span></div>`;
         }
         function d() {
@@ -2778,19 +2770,19 @@ ${e.stack}` : t;
                     "C"
                 ];
                 for(let g = 0; g < t.length; g++)ne(n, t[g][0], t[g][1], p[g], 6), K(n, t[g][0], t[g][1], l[g], p[g]);
-                if (t.length >= 2 && re(n, t[0], t[1], "#4a9eff", 2), t.length >= 3) {
-                    re(n, t[1], t[2], "#51cf66", 2, !0);
+                if (t.length >= 2 && ae(n, t[0], t[1], "#4a9eff", 2), t.length >= 3) {
+                    ae(n, t[1], t[2], "#51cf66", 2, !0);
                     const g = Ke(BigInt(t[0][0]), BigInt(t[0][1]), BigInt(t[1][0]), BigInt(t[1][1]), BigInt(t[2][0]), BigInt(t[2][1]));
                     let c = "#555";
                     g === "CounterClockwise" ? c = "#51cf6630" : g === "Clockwise" && (c = "#ff6b6b30");
-                    const { ctx: a } = n, [u, w] = W(n, t[0][0], t[0][1]), [h, _] = W(n, t[1][0], t[1][1]), [B, v] = W(n, t[2][0], t[2][1]);
-                    a.beginPath(), a.moveTo(u, w), a.lineTo(h, _), a.lineTo(B, v), a.closePath(), a.fillStyle = c, a.fill();
+                    const { ctx: r } = n, [u, w] = W(n, t[0][0], t[0][1]), [h, _] = W(n, t[1][0], t[1][1]), [B, v] = W(n, t[2][0], t[2][1]);
+                    r.beginPath(), r.moveTo(u, w), r.lineTo(h, _), r.lineTo(B, v), r.closePath(), r.fillStyle = c, r.fill();
                 }
-            } else t.length >= 1 && ne(n, t[0][0], t[0][1], "#4a9eff", 6), t.length >= 2 && (ne(n, t[1][0], t[1][1], "#4a9eff", 6), re(n, t[0], t[1], "#4a9eff", 2), K(n, t[0][0], t[0][1], "A1", "#4a9eff"), K(n, t[1][0], t[1][1], "A2", "#4a9eff")), t.length >= 3 && ne(n, t[2][0], t[2][1], "#51cf66", 6), t.length >= 4 && (ne(n, t[3][0], t[3][1], "#51cf66", 6), re(n, t[2], t[3], "#51cf66", 2), K(n, t[2][0], t[2][1], "B1", "#51cf66"), K(n, t[3][0], t[3][1], "B2", "#51cf66"), Ge(BigInt(t[0][0]), BigInt(t[0][1]), BigInt(t[1][0]), BigInt(t[1][1]), BigInt(t[2][0]), BigInt(t[2][1]), BigInt(t[3][0]), BigInt(t[3][1])) && (re(n, t[0], t[1], "#ff6b6b", 3), re(n, t[2], t[3], "#ff6b6b", 3)));
+            } else t.length >= 1 && ne(n, t[0][0], t[0][1], "#4a9eff", 6), t.length >= 2 && (ne(n, t[1][0], t[1][1], "#4a9eff", 6), ae(n, t[0], t[1], "#4a9eff", 2), K(n, t[0][0], t[0][1], "A1", "#4a9eff"), K(n, t[1][0], t[1][1], "A2", "#4a9eff")), t.length >= 3 && ne(n, t[2][0], t[2][1], "#51cf66", 6), t.length >= 4 && (ne(n, t[3][0], t[3][1], "#51cf66", 6), ae(n, t[2], t[3], "#51cf66", 2), K(n, t[2][0], t[2][1], "B1", "#51cf66"), K(n, t[3][0], t[3][1], "B2", "#51cf66"), Ge(BigInt(t[0][0]), BigInt(t[0][1]), BigInt(t[1][0]), BigInt(t[1][1]), BigInt(t[2][0]), BigInt(t[2][1]), BigInt(t[3][0]), BigInt(t[3][1])) && (ae(n, t[0], t[1], "#ff6b6b", 3), ae(n, t[2], t[3], "#ff6b6b", 3)));
         }
         function m(p) {
-            const l = e.getBoundingClientRect(), [g, c] = ze(n, p.clientX - l.left, p.clientY - l.top), a = o === "orientation" ? 3 : 4;
-            t.length >= a && (t = []), t.push([
+            const l = e.getBoundingClientRect(), [g, c] = ze(n, p.clientX - l.left, p.clientY - l.top), r = o === "orientation" ? 3 : 4;
+            t.length >= r && (t = []), t.push([
                 g,
                 c
             ]), s(), d();
@@ -2831,8 +2823,8 @@ ${e.stack}` : t;
                 e = document.getElementById("prim-canvas"), i = document.getElementById("prim-info"), n = V(e), e.addEventListener("click", m);
                 function p(l) {
                     o = l, t = [];
-                    const g = document.getElementById("prim-mode-orient"), c = document.getElementById("prim-mode-seg"), a = document.getElementById("prim-status");
-                    l === "orientation" ? (g.classList.add("btn-primary"), c.classList.remove("btn-primary"), a.textContent = "Click 3 points: A, B, C. Tests orientation of C relative to AB.") : (c.classList.add("btn-primary"), g.classList.remove("btn-primary"), a.textContent = "Click 4 points: A1, A2 (segment A), B1, B2 (segment B). Tests intersection."), s(), d();
+                    const g = document.getElementById("prim-mode-orient"), c = document.getElementById("prim-mode-seg"), r = document.getElementById("prim-status");
+                    l === "orientation" ? (g.classList.add("btn-primary"), c.classList.remove("btn-primary"), r.textContent = "Click 3 points: A, B, C. Tests orientation of C relative to AB.") : (c.classList.add("btn-primary"), g.classList.remove("btn-primary"), r.textContent = "Click 4 points: A1, A2 (segment A), B1, B2 (segment B). Tests intersection."), s(), d();
                 }
                 document.getElementById("prim-mode-orient").addEventListener("click", ()=>p("orientation")), document.getElementById("prim-mode-seg").addEventListener("click", ()=>p("segments")), document.getElementById("prim-clear").addEventListener("click", ()=>{
                     t = [], s(), d();
@@ -2844,33 +2836,33 @@ ${e.stack}` : t;
         };
     }
     const xe = [
-        Zo(),
+        Wo(),
+        Uo(),
+        Xo(),
+        qo(),
+        Jo(),
         ei(),
-        ti(),
-        ni(),
-        oi(),
-        li(),
-        ci()
+        ti()
     ];
     let Ne = null;
-    function di() {
-        const e = document.getElementById("config-toggle"), n = document.getElementById("config-panel"), o = document.getElementById("config-preset"), t = document.getElementById("config-max-parts"), i = document.getElementById("config-max-verts"), s = document.getElementById("config-min-edge"), r = document.getElementById("config-min-compact"), d = document.getElementById("config-area-div");
+    function ni() {
+        const e = document.getElementById("config-toggle"), n = document.getElementById("config-panel"), o = document.getElementById("config-preset"), t = document.getElementById("config-max-parts"), i = document.getElementById("config-max-verts"), s = document.getElementById("config-min-edge"), a = document.getElementById("config-min-compact"), d = document.getElementById("config-area-div");
         function m(g) {
-            t.value = String(g.max_parts), i.value = String(g.max_vertices_per_part), s.value = String(g.min_edge_length_squared), r.value = String(g.min_compactness_ppm), d.value = String(g.area_divisor);
+            t.value = String(g.max_parts), i.value = String(g.max_vertices_per_part), s.value = String(g.min_edge_length_squared), a.value = String(g.min_compactness_ppm), d.value = String(g.area_divisor);
         }
         function p() {
             return {
                 max_parts: Number(t.value) || 1,
                 max_vertices_per_part: Number(i.value) || 3,
                 min_edge_length_squared: Number(s.value) || 0,
-                min_compactness_ppm: Number(r.value) || 0,
+                min_compactness_ppm: Number(a.value) || 0,
                 area_divisor: Number(d.value) || 1
             };
         }
         function l(g) {
             return JSON.stringify(g) === JSON.stringify(Be) ? "merca" : JSON.stringify(g) === JSON.stringify(Pe) ? "permissive" : "custom";
         }
-        m(rt()), e.addEventListener("click", ()=>{
+        m(at()), e.addEventListener("click", ()=>{
             const g = n.style.display !== "none";
             n.style.display = g ? "none" : "block", e.classList.toggle("active", !g);
         }), o.addEventListener("change", ()=>{
@@ -2880,29 +2872,29 @@ ${e.stack}` : t;
             t,
             i,
             s,
-            r,
+            a,
             d
         ])g.addEventListener("change", ()=>{
             const c = p();
             o.value = l(c), Oe(c);
         });
     }
-    function ui() {
+    function oi() {
         const e = document.getElementById("tabs"), n = document.getElementById("content");
         for (const t of xe){
             const i = document.createElement("button");
             i.className = "tab-btn", i.textContent = t.label, i.dataset.tabId = t.id, i.addEventListener("click", ()=>o(t.id)), e.appendChild(i);
         }
-        di(), xe.length > 0 && o(xe[0].id);
+        ni(), xe.length > 0 && o(xe[0].id);
         function o(t) {
-            const i = xe.find((r)=>r.id === t);
+            const i = xe.find((a)=>a.id === t);
             if (!i) return;
-            Ne && Ne.deactivate(), e.querySelectorAll(".tab-btn").forEach((r)=>{
-                r.classList.toggle("active", r.dataset.tabId === t);
+            Ne && Ne.deactivate(), e.querySelectorAll(".tab-btn").forEach((a)=>{
+                a.classList.toggle("active", a.dataset.tabId === t);
             }), n.innerHTML = "";
             const s = i.create();
             n.appendChild(s), i.activate(), Ne = i;
         }
     }
-    ui();
+    oi();
 })();

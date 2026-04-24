@@ -21,19 +21,20 @@ import {
   optimize_partition,
   toFlat,
   fromFlat,
-  twice_area_ring,
-  is_ccw_ring,
-  ensure_ccw_ring,
-  is_simple_ring,
-  is_convex_ring,
-  validate_part_ring,
-  perimeter_l1_ring,
-  validate_compactness_values,
-  validate_edge_lengths_ring,
-  remove_collinear_ring,
+  twice_area,
+  is_ccw,
+  ensure_ccw,
+  is_simple,
+  is_convex,
+  validate_part,
+  perimeter_l1,
+  validate_compactness,
+  validate_edge_lengths,
+  remove_collinear,
   validate_decomposition,
   type DecomposeResult,
   type DecomposeTraceEntry,
+  type DecomposeStrategy,
   type ValidationReport,
 } from "../wasm";
 import { getPolygon, setPolygon, onPolygonChange } from "../state";
@@ -75,7 +76,7 @@ export function createDecompositionTab(): Tab {
   let parts: [number, number][][] = [];
   let rawTriangles: [number, number][][] = [];
   let steinerPoints: [number, number][] = [];
-  let strategy: DecomposeResult["strategy"];
+  let strategy: DecomposeStrategy | undefined;
   let trace: DecomposeTraceEntry[] | undefined;
   /** True if the last runDecompose() flipped the drawn polygon to CCW
    *  before handing it to the algorithms. Surfaced in the debug panel so
@@ -100,19 +101,19 @@ export function createDecompositionTab(): Tab {
     if (pts.length < 3) return {};
     const flat = toFlat(pts);
     const info: Record<string, string> = {};
-    try { info["2x area"] = twice_area_ring(flat); } catch {}
-    try { info["CCW"] = String(is_ccw_ring(flat)); } catch {}
-    try { info["Simple"] = String(is_simple_ring(flat)); } catch {}
-    try { info["Convex"] = String(is_convex_ring(flat)); } catch {}
-    try { info["Perimeter L1"] = perimeter_l1_ring(flat); } catch {}
+    try { info["2x area"] = twice_area(flat); } catch {}
+    try { info["CCW"] = String(is_ccw(flat)); } catch {}
+    try { info["Simple"] = String(is_simple(flat)); } catch {}
+    try { info["Convex"] = String(is_convex(flat)); } catch {}
+    try { info["Perimeter L1"] = perimeter_l1(flat); } catch {}
     try {
-      const edgeErr = validate_edge_lengths_ring(flat, getConfigForWasm());
+      const edgeErr = validate_edge_lengths(flat, getConfigForWasm());
       info["Edge lengths"] = edgeErr ?? "OK";
     } catch {}
     try {
-      const area = twice_area_ring(flat);
-      const perim = perimeter_l1_ring(flat);
-      const compErr = validate_compactness_values(area, perim, getConfigForWasm());
+      const area = twice_area(flat);
+      const perim = perimeter_l1(flat);
+      const compErr = validate_compactness(area, perim, getConfigForWasm());
       // Compactness is a boundary property. When this ring IS the polygon
       // boundary (whole polygon, or a single-part polygon), the result matches
       // on-chain. When the ring is an individual part of a multipart polygon
@@ -121,11 +122,11 @@ export function createDecompositionTab(): Tab {
       info["Compactness (boundary)"] = compErr ?? "OK";
     } catch {}
     try {
-      const partErr = validate_part_ring(flat, getConfigForWasm());
+      const partErr = validate_part(flat, getConfigForWasm());
       info["Validate part (structural)"] = partErr ?? "OK";
     } catch {}
     try {
-      const cleaned = fromFlat(remove_collinear_ring(flat) as bigint[]);
+      const cleaned = fromFlat(remove_collinear(flat) as bigint[]);
       if (cleaned.length < pts.length) {
         info["Collinear removed"] = `${pts.length} → ${cleaned.length}`;
       }
@@ -355,11 +356,11 @@ export function createDecompositionTab(): Tab {
       // map through BigInt() explicitly (the `typeof` guard is for the
       // future in case serde_wasm_bindgen gets configured to emit bigints).
       const rawFlat = toFlat(polygon);
-      const ccwOriginally = is_ccw_ring(rawFlat);
+      const ccwOriginally = is_ccw(rawFlat);
       wasNormalizedToCcw = !ccwOriginally;
       const flat = wasNormalizedToCcw
         ? BigInt64Array.from(
-            ensure_ccw_ring(rawFlat) as Array<number | bigint>,
+            ensure_ccw(rawFlat) as Array<number | bigint>,
             (v) => (typeof v === "bigint" ? v : BigInt(v)),
           )
         : rawFlat;

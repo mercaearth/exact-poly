@@ -15,10 +15,10 @@ import { PRESETS } from "../canvas/presets";
 import { getPolygon, setPolygon, onPolygonChange } from "../state";
 import { getConfigForWasm, onConfigChange } from "../config";
 import {
-  twice_area_ring,
-  signed_area_2x_ring,
+  twice_area,
+  signed_area_2x,
   area_display_from_twice_area,
-  perimeter_l1_ring,
+  perimeter_l1,
   decompose_polygon,
   areas_conserved_values,
   toFlat,
@@ -48,10 +48,10 @@ export function createAreaTab(): Tab {
 
     try {
       const flat = toFlat(polygon);
-      const twiceArea = twice_area_ring(flat);
-      const signedArea = signed_area_2x_ring(flat);
+      const twiceArea = twice_area(flat);
+      const signedArea = signed_area_2x(flat);
       const displayArea = area_display_from_twice_area(twiceArea, getConfigForWasm());
-      const perimeter = perimeter_l1_ring(flat);
+      const perimeter = perimeter_l1(flat);
 
       let conserved: boolean | null = null;
       const partAreas: string[] = [];
@@ -62,7 +62,7 @@ export function createAreaTab(): Tab {
 
         for (const part of parts) {
           const pFlat = toFlat(part);
-          partAreas.push(twice_area_ring(pFlat));
+          partAreas.push(twice_area(pFlat));
         }
         conserved = areas_conserved_values(twiceArea, partAreas);
       } catch (_) { /* decomposition optional */ }

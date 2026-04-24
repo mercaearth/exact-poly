@@ -14,10 +14,10 @@ import { createDrawingTool, type DrawingTool } from "../canvas/drawing";
 import { PRESETS } from "../canvas/presets";
 import { getPolygon, setPolygon, onPolygonChange } from "../state";
 import {
-  point_inside_or_on_boundary_ring,
-  point_on_polygon_boundary_ring,
-  point_strictly_inside_convex_ring,
-  is_convex_ring,
+  point_inside_or_on_boundary,
+  point_on_polygon_boundary,
+  point_strictly_inside_convex,
+  is_convex,
   toFlat,
 } from "../wasm";
 
@@ -50,12 +50,12 @@ export function createSpatialTab(): Tab {
       const flat = toFlat(polygon);
       const px = BigInt(Math.round(x * SCALE));
       const py = BigInt(Math.round(y * SCALE));
-      const inside = point_inside_or_on_boundary_ring(px, py, flat);
-      const boundary = point_on_polygon_boundary_ring(px, py, flat);
+      const inside = point_inside_or_on_boundary(px, py, flat);
+      const boundary = point_on_polygon_boundary(px, py, flat);
       let strictlyInside = false;
 
       if (isConvex) {
-        strictlyInside = point_strictly_inside_convex_ring(px, py, flat);
+        strictlyInside = point_strictly_inside_convex(px, py, flat);
       }
 
       testPoints.push({ x, y, inside, boundary, strictlyInside });
@@ -178,7 +178,7 @@ export function createSpatialTab(): Tab {
         polygon = getPolygon();
         testPoints = [];
         try {
-          isConvex = polygon.length >= 3 ? is_convex_ring(toFlat(polygon)) : false;
+          isConvex = polygon.length >= 3 ? is_convex(toFlat(polygon)) : false;
         } catch (_) {
           isConvex = false;
         }
@@ -215,7 +215,7 @@ export function createSpatialTab(): Tab {
       }
 
       if (polygon.length >= 3) {
-        try { isConvex = is_convex_ring(toFlat(polygon)); } catch (_) { isConvex = false; }
+        try { isConvex = is_convex(toFlat(polygon)); } catch (_) { isConvex = false; }
         setMode("test");
         updateInfo();
       } else {
