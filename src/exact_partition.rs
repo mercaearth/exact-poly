@@ -321,6 +321,16 @@ mod tests {
     }
 
     #[test]
+    fn only_original_vertices_matches_exact_partition_and_rejects_new_points() {
+        let ring = l_shape();
+        let parts = exact_vertex_partition(&ring).unwrap();
+        assert!(only_original_vertices(&ring, &parts));
+
+        let bad_parts = vec![vec![ring[0], [10 * M, 0], ring[1], ring[2], ring[3]]];
+        assert!(!only_original_vertices(&ring, &bad_parts));
+    }
+
+    #[test]
     fn u_shape_decomposes() {
         // U-shape: two reflex vertices
         let ring = vec![

@@ -152,7 +152,12 @@ fn candidate_key(c: &Candidate) -> (usize, usize, usize, u8) {
         Strategy::EarClipMerge => 3,
         Strategy::Rotation { .. } => 4, // shouldn't appear pre-wrap, defensive
     };
-    (c.parts.len(), c.steiner_points.len(), c.rotation, strategy_rank)
+    (
+        c.parts.len(),
+        c.steiner_points.len(),
+        c.rotation,
+        strategy_rank,
+    )
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -791,8 +796,8 @@ mod tests {
     #[test]
     fn comb_polygon_decomposes_and_passes_topology() {
         let ring = comb_twelve_vertices();
-        let result = decompose(&ring, &default_opts(), &merca_config())
-            .expect("comb must decompose");
+        let result =
+            decompose(&ring, &default_opts(), &merca_config()).expect("comb must decompose");
 
         assert!(!result.parts.is_empty());
         assert!(result.parts.len() <= crate::constants::MAX_PARTS);
@@ -801,11 +806,7 @@ mod tests {
         // — finalize_parts guarantees this, but we double-check here because
         // this is the regression anchor for the bug.
         assert_eq!(
-            crate::topology::validate_multipart_topology(
-                &result.parts,
-                false,
-                &merca_config()
-            ),
+            crate::topology::validate_multipart_topology(&result.parts, false, &merca_config()),
             Ok(())
         );
     }
@@ -1104,6 +1105,32 @@ mod tests {
     }
 
     #[test]
+    fn collect_steiner_points_from_bayazit_parts_stays_within_bounds() {
+        let ring = comb_twelve_vertices();
+        let midpoint = [6 * M, 0];
+        let parts = vec![
+            vec![ring[0], midpoint, ring[5]],
+            vec![midpoint, ring[1], ring[2], ring[3], ring[4], ring[5]],
+        ];
+
+        let steiner = collect_steiner_points(&ring, &parts);
+        assert_eq!(steiner, vec![midpoint]);
+
+        let (min_x, max_x) = ring.iter().fold((i64::MAX, i64::MIN), |(min_x, max_x), v| {
+            (min_x.min(v[0]), max_x.max(v[0]))
+        });
+        let (min_y, max_y) = ring.iter().fold((i64::MAX, i64::MIN), |(min_y, max_y), v| {
+            (min_y.min(v[1]), max_y.max(v[1]))
+        });
+
+        for point in steiner {
+            assert!(!ring.contains(&point), "{point:?} should be new");
+            assert!(point[0] >= min_x && point[0] <= max_x);
+            assert!(point[1] >= min_y && point[1] <= max_y);
+        }
+    }
+
+    #[test]
     fn hertel_mehlhorn_optimizes_ear_clip_fallback() {
         let ring = vec![
             [0, 0],
@@ -1215,7 +1242,11 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(result.parts.len(), 2, "minimize_parts should pick the 2-part split");
+        assert_eq!(
+            result.parts.len(),
+            2,
+            "minimize_parts should pick the 2-part split"
+        );
         assert!(matches!(
             result.strategy,
             Strategy::Bayazit | Strategy::Rotation { inner: _, .. }

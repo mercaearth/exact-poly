@@ -1,0 +1,55 @@
+   Compiling exact-poly v0.1.0 (/Users/fefa4ka/Documents/My/merca/exact-poly)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.12s
+     Running unittests src/lib.rs (target/debug/deps/exact_poly-2f32831be56f8539)
+
+running 18 tests
+test area::tests::area_display_converts_correctly ... ok
+test area::tests::area_display_zero_area_is_zero ... ok
+test area::tests::area_display_scales_large_values ... ok
+test area::tests::area_is_order_independent_for_ccw_and_cw ... ok
+test area::tests::area_display_1m_x_1m_is_1_m2 ... ok
+test area::tests::areas_conserved_accepts_exact_sum ... ok
+test area::tests::degenerate_ring_returns_zero ... ok
+test area::tests::areas_conserved_rejects_overage ... ok
+test area::tests::area_conservation_check ... ok
+test area::tests::cw_and_ccw_negative_polygon_match ... ok
+test area::tests::matches_move_on_u64_domain ... ok
+test area::tests::negative_coords_are_handled_correctly ... ok
+test area::tests::square_10m_twice_area_matches_move ... ok
+test area::tests::triangle_twice_area_correct ... ok
+test area::tests::twice_area_fp2_degenerate_two_vertices_is_zero ... ok
+test area::tests::twice_area_fp2_l_shape_matches_ring_wrapper ... ok
+test area::tests::twice_area_fp2_ring_wrapper_matches ... ok
+test area::tests::twice_area_fp2_triangle_with_diagonal_edge ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 230 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/exact_poly-2f32831be56f8539)
+
+running 22 tests
+test validation::tests::is_convex_accepts_weakly_convex_with_collinear ... ok
+test validation::tests::is_convex_accepts_convex_pentagon ... ok
+test validation::tests::is_convex_accepts_square ... ok
+test validation::tests::is_convex_accepts_triangle ... ok
+test validation::tests::is_convex_rejects_l_shape ... ok
+test validation::tests::is_convex_rejects_two_points ... ok
+test validation::tests::perimeter_l1_handles_negative_coordinates ... ok
+test validation::tests::perimeter_l1_large_square_does_not_overflow ... ok
+test validation::tests::perimeter_l1_not_euclidean ... ok
+test validation::tests::perimeter_l1_uses_manhattan ... ok
+test validation::tests::validate_compactness_compact_square_passes ... ok
+test validation::tests::validate_compactness_uses_checked_mul ... ok
+test validation::tests::validate_edge_lengths_accepts_large_negative_coordinates ... ok
+test validation::tests::validate_edge_lengths_exact_threshold ... ok
+test validation::tests::validate_edge_lengths_rejects_short_edge ... ok
+test validation::tests::validate_edge_lengths_rejects_unit_edge ... ok
+test validation::tests::validate_edge_lengths_valid ... ok
+test validation::tests::validate_part_rejects_l_shape ... ok
+test validation::tests::validate_part_rejects_too_few_vertices ... ok
+test validation::tests::validate_part_short_square_fails_merca_but_passes_permissive ... ok
+test validation::tests::validate_part_square_passes_both_configs ... ok
+test validation::tests::validate_part_valid_square ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 226 filtered out; finished in 0.00s
+

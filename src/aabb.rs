@@ -19,7 +19,7 @@ impl Aabb {
     }
 
     pub fn from_vertices(xs: &[i64], ys: &[i64]) -> Self {
-        assert!(xs.len() >= 3, "AABB requires at least 3 vertices");
+        assert!(!xs.is_empty(), "AABB requires at least 1 vertex");
         assert_eq!(xs.len(), ys.len(), "xs and ys must have same length");
 
         let mut min_x = xs[0];
@@ -97,6 +97,30 @@ mod tests {
     }
 
     #[test]
+    fn from_vertices_handles_single_vertex() {
+        let xs = vec![5];
+        let ys = vec![3];
+        let aabb = Aabb::from_vertices(&xs, &ys);
+
+        assert_eq!(aabb.min_x, 5);
+        assert_eq!(aabb.max_x, 5);
+        assert_eq!(aabb.min_y, 3);
+        assert_eq!(aabb.max_y, 3);
+    }
+
+    #[test]
+    fn from_vertices_handles_negative_coordinates() {
+        let xs = vec![-10, 10];
+        let ys = vec![-5, 5];
+        let aabb = Aabb::from_vertices(&xs, &ys);
+
+        assert_eq!(aabb.min_x, -10);
+        assert_eq!(aabb.max_x, 10);
+        assert_eq!(aabb.min_y, -5);
+        assert_eq!(aabb.max_y, 5);
+    }
+
+    #[test]
     fn intersects_overlapping_returns_true() {
         let a = Aabb::new(0, 0, 2 * M, 2 * M);
         let b = Aabb::new(M, M, 3 * M, 3 * M);
@@ -155,6 +179,37 @@ mod tests {
         assert_eq!(merged.max_x, 3 * M);
         assert_eq!(merged.min_y, 0);
         assert_eq!(merged.max_y, 3 * M);
+    }
+
+    #[test]
+    fn merge_disjoint_boxes_contains_both() {
+        let a = Aabb::new(-3 * M, -2 * M, -M, -M);
+        let b = Aabb::new(2 * M, M, 4 * M, 3 * M);
+        let merged = a.merge(&b);
+
+        assert_eq!(merged.min_x, -3 * M);
+        assert_eq!(merged.min_y, -2 * M);
+        assert_eq!(merged.max_x, 4 * M);
+        assert_eq!(merged.max_y, 3 * M);
+        assert!(merged.contains_point(a.min_x, a.min_y));
+        assert!(merged.contains_point(b.max_x, b.max_y));
+    }
+
+    #[test]
+    fn merge_nested_boxes_equals_outer_box() {
+        let outer = Aabb::new(0, 0, 10 * M, 10 * M);
+        let inner = Aabb::new(2 * M, 3 * M, 4 * M, 5 * M);
+
+        assert_eq!(outer.merge(&inner), outer);
+        assert_eq!(inner.merge(&outer), outer);
+    }
+
+    #[test]
+    fn contains_point_includes_corner_and_excludes_outside() {
+        let aabb = Aabb::new(-M, -2 * M, M, 2 * M);
+
+        assert!(aabb.contains_point(-M, -2 * M));
+        assert!(!aabb.contains_point(M + 1, 2 * M));
     }
 
     #[test]

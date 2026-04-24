@@ -50,8 +50,7 @@ pub fn validate_multipart_topology(
                     return Err(TopologyError::UnsupportedContact {
                         part_a: i,
                         part_b: j,
-                        reason: "collinear overlap without exact shared edge (T-junction)"
-                            .into(),
+                        reason: "collinear overlap without exact shared edge (T-junction)".into(),
                     });
                 }
                 ContactKind::None => {}
@@ -338,6 +337,10 @@ mod tests {
         ]
     }
 
+    fn permissive_config() -> ProtocolConfig {
+        ProtocolConfig::permissive()
+    }
+
     #[test]
     fn topology_single_part_is_valid() {
         let parts = vec![square(0, 0, 10 * M)];
@@ -380,11 +383,30 @@ mod tests {
     #[test]
     fn topology_two_parts_forming_l_shape_valid() {
         let parts = vec![
-            vec![[0, 0], [20 * M, 0], [20 * M, 10 * M], [10 * M, 10 * M], [0, 10 * M]],
+            vec![
+                [0, 0],
+                [20 * M, 0],
+                [20 * M, 10 * M],
+                [10 * M, 10 * M],
+                [0, 10 * M],
+            ],
             vec![[0, 10 * M], [10 * M, 10 * M], [10 * M, 20 * M], [0, 20 * M]],
         ];
         assert_eq!(
             validate_multipart_topology(&parts, false, &merca_config()),
+            Ok(())
+        );
+    }
+
+    #[test]
+    fn topology_three_part_l_shape_valid() {
+        let parts = vec![
+            square(0, 0, 10 * M),
+            square(10 * M, 0, 10 * M),
+            square(0, 10 * M, 10 * M),
+        ];
+        assert_eq!(
+            validate_multipart_topology(&parts, true, &merca_config()),
             Ok(())
         );
     }
@@ -413,6 +435,15 @@ mod tests {
         assert!(matches!(
             validate_multipart_topology(&parts, false, &merca_config()),
             Err(TopologyError::TooManyParts { .. })
+        ));
+    }
+
+    #[test]
+    fn topology_eleven_parts_exceed_merca_limit() {
+        let parts: Vec<Vec<Vertex>> = (0..11).map(|i| square(i * 2 * M, 0, M)).collect();
+        assert!(matches!(
+            validate_multipart_topology(&parts, false, &merca_config()),
+            Err(TopologyError::TooManyParts { count: 11, max: 10 })
         ));
     }
 
@@ -456,6 +487,22 @@ mod tests {
         if let Err(TopologyError::VertexOnlyContact { .. }) = result {
             panic!("allow_vertex_contact=true should not reject vertex-only contact");
         }
+    }
+
+    #[test]
+    fn topology_corner_touching_squares_toggle_vertex_contact() {
+        let parts = vec![square(0, 0, M), square(M, M, M)];
+        assert_eq!(
+            validate_multipart_topology(&parts, true, &merca_config()),
+            Ok(())
+        );
+        assert!(matches!(
+            validate_multipart_topology(&parts, false, &merca_config()),
+            Err(TopologyError::VertexOnlyContact {
+                part_a: 0,
+                part_b: 1
+            })
+        ));
     }
 
     #[test]
@@ -512,21 +559,16 @@ mod tests {
     /// On-chain aborts EInvalidMultipartContact; Rust must emit UnsupportedContact.
     #[test]
     fn t_junction_partial_edge_rejected() {
-        let base = vec![
-            [0, 0],
-            [4 * M, 0],
-            [4 * M, M],
-            [0, M],
-        ];
-        let roof = vec![
-            [M, M],
-            [3 * M, M],
-            [2 * M, 2 * M],
-        ];
+        let base = vec![[0, 0], [4 * M, 0], [4 * M, M], [0, M]];
+        let roof = vec![[M, M], [3 * M, M], [2 * M, 2 * M]];
         let parts = vec![base, roof];
         assert!(matches!(
             validate_multipart_topology(&parts, false, &merca_config()),
-            Err(TopologyError::UnsupportedContact { part_a: 0, part_b: 1, .. })
+            Err(TopologyError::UnsupportedContact {
+                part_a: 0,
+                part_b: 1,
+                ..
+            })
         ));
     }
 
@@ -536,15 +578,19 @@ mod tests {
     /// compactness was removed.
     #[test]
     fn needle_like_single_part_rejected_by_boundary_compactness() {
-        let parts = vec![vec![
-            [0, 0],
-            [100 * M, 0],
-            [100 * M, M],
-            [0, M],
-        ]];
+        let parts = vec![vec![[0, 0], [100 * M, 0], [100 * M, M], [0, M]]];
         assert!(matches!(
             validate_multipart_topology(&parts, false, &merca_config()),
             Err(TopologyError::NotCompact { .. })
         ));
+    }
+
+    #[test]
+    fn permissive_config_accepts_many_connected_parts() {
+        let parts: Vec<Vec<Vertex>> = (0..20).map(|i| square(i * M, 0, M)).collect();
+        assert_eq!(
+            validate_multipart_topology(&parts, false, &permissive_config()),
+            Ok(())
+        );
     }
 }

@@ -100,6 +100,51 @@ mod tests {
     }
 
     #[test]
+    fn twice_area_fp2_triangle_with_diagonal_edge() {
+        let xs = vec![0, 3, 0];
+        let ys = vec![0, 0, 4];
+        assert_eq!(twice_area_fp2(&xs, &ys), 12);
+    }
+
+    #[test]
+    fn twice_area_fp2_l_shape_matches_ring_wrapper() {
+        let xs = vec![0, 4, 4, 2, 2, 0];
+        let ys = vec![0, 0, 2, 2, 4, 4];
+        let ring = vec![[0, 0], [4, 0], [4, 2], [2, 2], [2, 4], [0, 4]];
+        assert_eq!(twice_area_fp2(&xs, &ys), twice_area_fp2_ring(&ring));
+    }
+
+    #[test]
+    fn twice_area_fp2_degenerate_two_vertices_is_zero() {
+        let xs = vec![0, 10];
+        let ys = vec![0, 0];
+        assert_eq!(twice_area_fp2(&xs, &ys), 0);
+    }
+
+    #[test]
+    fn area_display_scales_large_values() {
+        assert_eq!(
+            area_display(2_000_000_000_000_000_000, 2_000_000_000_000),
+            1_000_000
+        );
+    }
+
+    #[test]
+    fn area_display_zero_area_is_zero() {
+        assert_eq!(area_display(0, 1), 0);
+    }
+
+    #[test]
+    fn areas_conserved_accepts_exact_sum() {
+        assert!(areas_conserved(30, &[10, 20]));
+    }
+
+    #[test]
+    fn areas_conserved_rejects_overage() {
+        assert!(!areas_conserved(30, &[10, 21]));
+    }
+
+    #[test]
     fn area_conservation_check() {
         let square_xs = vec![0, 10 * M, 10 * M, 0];
         let square_ys = vec![0, 0, 10 * M, 10 * M];

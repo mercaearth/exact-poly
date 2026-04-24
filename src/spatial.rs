@@ -147,6 +147,14 @@ mod tests {
         vec![0, 0, M, M]
     }
 
+    fn rhombus_xs() -> Vec<i64> {
+        vec![0, 2 * M, 0, -2 * M]
+    }
+
+    fn rhombus_ys() -> Vec<i64> {
+        vec![4 * M, 0, -4 * M, 0]
+    }
+
     #[test]
     fn point_strictly_inside() {
         assert!(point_strictly_inside_convex(
@@ -154,6 +162,29 @@ mod tests {
             M / 2,
             &square_xs(),
             &square_ys()
+        ));
+    }
+
+    #[test]
+    fn point_strictly_inside_convex_rhombus_centroid_and_edge_neighbors() {
+        let xs = rhombus_xs();
+        let ys = rhombus_ys();
+
+        assert!(point_strictly_inside_convex(0, 0, &xs, &ys));
+
+        let edge_mid_x = M;
+        let edge_mid_y = 2 * M;
+        assert!(point_strictly_inside_convex(
+            edge_mid_x - 2,
+            edge_mid_y - 1,
+            &xs,
+            &ys
+        ));
+        assert!(!point_strictly_inside_convex(
+            edge_mid_x + 2,
+            edge_mid_y + 1,
+            &xs,
+            &ys
         ));
     }
 
@@ -226,6 +257,26 @@ mod tests {
             &square_xs(),
             &square_ys()
         ));
+    }
+
+    #[test]
+    fn point_on_polygon_boundary_edge_midpoint_and_off_edge() {
+        let xs = rhombus_xs();
+        let ys = rhombus_ys();
+
+        assert!(point_on_polygon_boundary(M, 2 * M, &xs, &ys));
+        assert!(!point_on_polygon_boundary(M + 2, 2 * M + 1, &xs, &ys));
+    }
+
+    #[test]
+    fn point_inside_or_on_boundary_inclusive_cases() {
+        let xs = rhombus_xs();
+        let ys = rhombus_ys();
+
+        assert!(point_inside_or_on_boundary(0, 4 * M, &xs, &ys));
+        assert!(point_inside_or_on_boundary(M, 2 * M, &xs, &ys));
+        assert!(point_inside_or_on_boundary(0, 0, &xs, &ys));
+        assert!(!point_inside_or_on_boundary(3 * M, 3 * M, &xs, &ys));
     }
 
     #[test]

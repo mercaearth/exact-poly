@@ -1,0 +1,45 @@
+   Compiling exact-poly v0.1.0 (/Users/fefa4ka/Documents/My/merca/exact-poly)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.85s
+     Running unittests src/lib.rs (target/debug/deps/exact_poly-2f32831be56f8539)
+
+running 16 tests
+test sat::tests::aabb_pipeline_rejects_far_polygons ... ok
+test sat::tests::sat_gap_detected ... ok
+test sat::tests::sat_corner_touching_does_not_overlap ... ok
+test sat::tests::right_triangles_sharing_hypotenuse_do_not_overlap ... ok
+test sat::tests::contained_square_overlaps ... ok
+test sat::tests::identical_squares_overlap ... ok
+test sat::tests::aabb_prefilter_allows_sat_for_overlapping ... ok
+test sat::tests::sat_handles_world_extreme_coordinates ... ok
+test sat::tests::sat_micro_overlap_detected ... ok
+test sat::tests::sat_is_symmetric ... ok
+test sat::tests::sat_overlap_detected ... ok
+test sat::tests::sat_touching_edges_do_not_overlap ... ok
+test sat::tests::sat_triangle_touching_does_not_overlap ... ok
+test sat::tests::sat_with_aabb_rejects_far_apart_polygons ... ok
+test sat::tests::triangle_fully_inside_another_overlaps ... ok
+test sat::tests::triangles_overlap_correctly ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 243 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/exact_poly-2f32831be56f8539)
+
+running 14 tests
+test aabb::tests::contains_point_works ... ok
+test aabb::tests::contains_point_includes_corner_and_excludes_outside ... ok
+test aabb::tests::from_vertices_handles_negative_coordinates ... ok
+test aabb::tests::from_vertices_handles_single_vertex ... ok
+test aabb::tests::from_vertices_tracks_extrema ... ok
+test aabb::tests::intersects_contained_returns_true ... ok
+test aabb::tests::intersects_is_symmetric ... ok
+test aabb::tests::intersects_overlapping_returns_true ... ok
+test aabb::tests::intersects_separated_returns_false ... ok
+test aabb::tests::intersects_touching_corner_returns_false ... ok
+test aabb::tests::intersects_touching_edge_returns_false ... ok
+test aabb::tests::merge_covers_both ... ok
+test aabb::tests::merge_disjoint_boxes_contains_both ... ok
+test aabb::tests::merge_nested_boxes_equals_outer_box ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 245 filtered out; finished in 0.00s
+

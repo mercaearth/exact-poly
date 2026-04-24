@@ -1,0 +1,7 @@
+Test suite: 222 passed, 0 failed, 0 ignored.
+WASM build: success.
+Demo build: success (built in 206ms).
+pkg/exact_poly.d.ts any-count: 23.
+bayazit.rs hardcoded ProtocolConfig::merca() sites: line 41 (production) and line 533 (test code).
+move_style_twice_area_u64 status: exists in src/area.rs test module only; used only by the parity test at line 191, no non-test callers found.
+ProtocolConfig::default(): returns ProtocolConfig::merca() in src/types.rs:50-54.

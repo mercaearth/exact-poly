@@ -501,6 +501,23 @@ mod tests {
         vec![[0, 0], [10 * M, 0], [5 * M, 8 * M]]
     }
 
+    fn comb_shape() -> Vec<[i64; 2]> {
+        vec![
+            [0, 0],
+            [10 * M, 0],
+            [10 * M, 10 * M],
+            [8 * M, 10 * M],
+            [8 * M, 4 * M],
+            [6 * M, 4 * M],
+            [6 * M, 10 * M],
+            [4 * M, 10 * M],
+            [4 * M, 4 * M],
+            [2 * M, 4 * M],
+            [2 * M, 10 * M],
+            [0, 10 * M],
+        ]
+    }
+
     #[test]
     fn bayazit_triangle_returns_single_part() {
         let parts = bayazit_decompose(&triangle(), false).unwrap();
@@ -558,5 +575,22 @@ mod tests {
         let parts = bayazit_decompose(&ring, false).unwrap();
         let steiner = find_steiner_points(&ring, &parts);
         assert!(steiner.is_empty(), "unexpected steiner points: {steiner:?}");
+    }
+
+    #[test]
+    fn bayazit_find_steiner_points_reports_new_vertices() {
+        let ring = comb_shape();
+        let steiner_vertex = [5 * M, 5 * M];
+        let parts = vec![
+            vec![ring[0], ring[1], ring[2], steiner_vertex],
+            vec![steiner_vertex, ring[2], ring[3], ring[4], ring[5]],
+            vec![
+                ring[5], ring[6], ring[7], ring[8], ring[9], ring[10], ring[11],
+            ],
+        ];
+        let steiner = find_steiner_points(&ring, &parts);
+
+        assert_eq!(steiner, vec![steiner_vertex]);
+        assert!(steiner.iter().all(|point| !ring.contains(point)));
     }
 }

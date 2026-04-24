@@ -136,6 +136,17 @@ mod tests {
     }
 
     #[test]
+    fn one_pixel_penetration_is_overlap() {
+        let (a_xs, a_ys) = (sq_xs(0, M), sq_ys(0, M));
+        let (b_xs, b_ys) = (sq_xs(M - 1, M), sq_ys(0, M));
+
+        assert!(
+            convex_parts_overlap(&a_xs, &a_ys, &b_xs, &b_ys),
+            "a 1-unit interior intersection must count as overlap"
+        );
+    }
+
+    #[test]
     fn overlapping_squares_overlap() {
         // Squares overlapping by 1M in each direction
         let (a_xs, a_ys) = (sq_xs(0, 3 * M), sq_ys(0, 3 * M));
@@ -182,5 +193,90 @@ mod tests {
         ]];
         assert!(parts_overlap(&a_parts, &b_parts_overlap));
         assert!(!parts_overlap(&a_parts, &b_parts_adjacent));
+    }
+
+    #[test]
+    fn find_overlapping_parts_returns_empty_when_disjoint() {
+        let a_parts = vec![
+            vec![[0, 0], [M, 0], [M, M], [0, M]],
+            vec![[3 * M, 0], [4 * M, 0], [4 * M, M], [3 * M, M]],
+            vec![[6 * M, 0], [7 * M, 0], [7 * M, M], [6 * M, M]],
+        ];
+        let b_parts = vec![
+            vec![[0, 3 * M], [M, 3 * M], [M, 4 * M], [0, 4 * M]],
+            vec![
+                [3 * M, 3 * M],
+                [4 * M, 3 * M],
+                [4 * M, 4 * M],
+                [3 * M, 4 * M],
+            ],
+            vec![
+                [6 * M, 3 * M],
+                [7 * M, 3 * M],
+                [7 * M, 4 * M],
+                [6 * M, 4 * M],
+            ],
+        ];
+
+        assert!(find_overlapping_parts(&a_parts, &b_parts).is_empty());
+    }
+
+    #[test]
+    fn find_overlapping_parts_returns_matching_indices() {
+        let a_parts = vec![
+            vec![[0, 0], [M, 0], [M, M], [0, M]],
+            vec![[3 * M, 0], [4 * M, 0], [4 * M, M], [3 * M, M]],
+            vec![[6 * M, 0], [7 * M, 0], [7 * M, M], [6 * M, M]],
+        ];
+        let b_parts = vec![
+            vec![[0, 3 * M], [M, 3 * M], [M, 4 * M], [0, 4 * M]],
+            vec![
+                [3 * M, 3 * M],
+                [4 * M, 3 * M],
+                [4 * M, 4 * M],
+                [3 * M, 4 * M],
+            ],
+            vec![
+                [6 * M - 1, 0],
+                [7 * M - 1, 0],
+                [7 * M - 1, M],
+                [6 * M - 1, M],
+            ],
+        ];
+
+        assert_eq!(find_overlapping_parts(&a_parts, &b_parts), vec![(2, 2)]);
+    }
+
+    #[test]
+    fn parts_overlap_false_when_all_pairs_separated() {
+        let a_parts = vec![
+            vec![[0, 0], [M, 0], [M, M], [0, M]],
+            vec![[3 * M, 0], [4 * M, 0], [4 * M, M], [3 * M, M]],
+        ];
+        let b_parts = vec![
+            vec![[0, 3 * M], [M, 3 * M], [M, 4 * M], [0, 4 * M]],
+            vec![
+                [3 * M, 3 * M],
+                [4 * M, 3 * M],
+                [4 * M, 4 * M],
+                [3 * M, 4 * M],
+            ],
+        ];
+
+        assert!(!parts_overlap(&a_parts, &b_parts));
+    }
+
+    #[test]
+    fn parts_overlap_true_when_one_pair_overlaps() {
+        let a_parts = vec![
+            vec![[0, 0], [M, 0], [M, M], [0, M]],
+            vec![[3 * M, 0], [4 * M, 0], [4 * M, M], [3 * M, M]],
+        ];
+        let b_parts = vec![
+            vec![[0, 3 * M], [M, 3 * M], [M, 4 * M], [0, 4 * M]],
+            vec![[M - 1, 0], [2 * M - 1, 0], [2 * M - 1, M], [M - 1, M]],
+        ];
+
+        assert!(parts_overlap(&a_parts, &b_parts));
     }
 }

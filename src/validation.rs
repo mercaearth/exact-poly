@@ -267,6 +267,20 @@ mod tests {
     }
 
     #[test]
+    fn is_convex_rejects_two_points() {
+        let xs = vec![0, 1];
+        let ys = vec![0, 0];
+        assert!(!is_convex(&xs, &ys));
+    }
+
+    #[test]
+    fn is_convex_accepts_convex_pentagon() {
+        let xs = vec![0, 2 * M, 3 * M, 2 * M, 0];
+        let ys = vec![0, 0, M, 2 * M, 2 * M];
+        assert!(is_convex(&xs, &ys));
+    }
+
+    #[test]
     fn validate_edge_lengths_valid() {
         // All edges 10M each (= (10M)^2 = 1e14 >> 1e12 threshold)
         let xs = vec![0, 10 * M, 10 * M, 0];
@@ -292,6 +306,20 @@ mod tests {
     }
 
     #[test]
+    fn validate_edge_lengths_accepts_large_negative_coordinates() {
+        let xs = vec![-1_000_000, 1_000_000];
+        let ys = vec![0, 0];
+        assert!(validate_edge_lengths(&xs, &ys, &merca_config()).is_none());
+    }
+
+    #[test]
+    fn validate_edge_lengths_rejects_unit_edge() {
+        let xs = vec![0, 1, 1];
+        let ys = vec![0, 1, 0];
+        assert!(validate_edge_lengths(&xs, &ys, &merca_config()).is_some());
+    }
+
+    #[test]
     fn perimeter_l1_uses_manhattan() {
         // Square 10M x 10M: L1 perimeter = 4 * (|10M| + |0|) = 4 * 10M = 40M
         let xs = vec![0, 10 * M, 10 * M, 0];
@@ -309,6 +337,30 @@ mod tests {
                                     // Edge 0→1: |3M|+|0|=3M, Edge 1→2: |3M|+|4M|=7M, Edge 2→0: |0|+|4M|=4M
         let p = perimeter_l1(&xs, &ys);
         assert_eq!(p, (3 + 7 + 4) * M as u128);
+    }
+
+    #[test]
+    fn perimeter_l1_handles_negative_coordinates() {
+        let xs = vec![-1, -1, 1, 1];
+        let ys = vec![-1, 1, 1, -1];
+        assert_eq!(perimeter_l1(&xs, &ys), 8);
+    }
+
+    #[test]
+    fn perimeter_l1_large_square_does_not_overflow() {
+        let xs = vec![
+            10_000_000 * M,
+            11_000_000 * M,
+            11_000_000 * M,
+            10_000_000 * M,
+        ];
+        let ys = vec![
+            10_000_000 * M,
+            10_000_000 * M,
+            11_000_000 * M,
+            11_000_000 * M,
+        ];
+        assert_eq!(perimeter_l1(&xs, &ys), 4 * 1_000_000_000_000u128);
     }
 
     #[test]
@@ -337,6 +389,24 @@ mod tests {
         let xs = vec![0, 10 * M, 10 * M, 0];
         let ys = vec![0, 0, 10 * M, 10 * M];
         assert!(validate_part(&xs, &ys, &merca_config()).is_none());
+    }
+
+    #[test]
+    fn validate_part_square_passes_both_configs() {
+        let xs = vec![0, 10 * M, 10 * M, 0];
+        let ys = vec![0, 0, 10 * M, 10 * M];
+        let permissive = ProtocolConfig::permissive();
+        assert!(validate_part(&xs, &ys, &merca_config()).is_none());
+        assert!(validate_part(&xs, &ys, &permissive).is_none());
+    }
+
+    #[test]
+    fn validate_part_short_square_fails_merca_but_passes_permissive() {
+        let xs = vec![0, M / 2, M / 2, 0];
+        let ys = vec![0, 0, M / 2, M / 2];
+        let permissive = ProtocolConfig::permissive();
+        assert!(validate_part(&xs, &ys, &merca_config()).is_some());
+        assert!(validate_part(&xs, &ys, &permissive).is_none());
     }
 
     #[test]

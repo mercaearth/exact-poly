@@ -129,6 +129,14 @@ mod tests {
     }
 
     #[test]
+    fn touching_outer_boundary_is_not_contained() {
+        let outer = vec![square(0, 0, 5 * M), square(7 * M, 0, 5 * M)];
+        let inner = vec![square(5 * M, 2 * M, 4 * M)];
+
+        assert!(!contains_polygon(&outer, &inner));
+    }
+
+    #[test]
     fn partially_outside_returns_false() {
         let outer = vec![square(0, 0, 10 * M)];
         let inner = vec![square(8 * M, 8 * M, 5 * M)]; // extends beyond outer
@@ -202,10 +210,15 @@ mod tests {
 
     #[test]
     fn point_inside_any_part_works() {
-        let parts = vec![square(0, 0, 10 * M), square(10 * M, 0, 10 * M)];
-        assert!(point_inside_any_part(&parts, 5 * M, 5 * M)); // inside left
-        assert!(point_inside_any_part(&parts, 15 * M, 5 * M)); // inside right
-        assert!(!point_inside_any_part(&parts, 25 * M, 5 * M)); // outside
+        let parts = vec![
+            square(0, 0, 10 * M),
+            square(12 * M, 0, 10 * M),
+            square(24 * M, 0, 10 * M),
+        ];
+        assert!(point_inside_any_part(&parts, 5 * M, 5 * M));
+        assert!(point_inside_any_part(&parts, 17 * M, 5 * M));
+        assert!(point_inside_any_part(&parts, 12 * M, 5 * M));
+        assert!(!point_inside_any_part(&parts, 35 * M, 5 * M));
     }
 
     #[test]

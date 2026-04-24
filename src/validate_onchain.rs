@@ -117,7 +117,10 @@ pub fn validate_decomposition(
             format!("{n} parts exceeds max {}", config.max_parts),
         ));
     } else {
-        push(check_ok("part_count", format!("{n} (max {})", config.max_parts)));
+        push(check_ok(
+            "part_count",
+            format!("{n} (max {})", config.max_parts),
+        ));
     }
 
     // 2. Per-part validation
@@ -169,10 +172,7 @@ pub fn validate_decomposition(
         if area == 0 {
             push(check_err(format!("part_{i}_area"), "zero area"));
         } else {
-            push(check_ok(
-                format!("part_{i}_area"),
-                format!("2A = {area}"),
-            ));
+            push(check_ok(format!("part_{i}_area"), format!("2A = {area}")));
         }
 
         // Coordinate range (MAX_WORLD = 40_075_017_000_000)
@@ -189,7 +189,7 @@ pub fn validate_decomposition(
     }
 
     // Total vertex count
-    let max_total = config.max_vertices_per_part * n.max(1);
+    let max_total = config.max_vertices_per_part.saturating_mul(n.max(1));
     if total_vertices > max_total {
         push(check_err(
             "total_vertices",
@@ -225,9 +225,7 @@ pub fn validate_decomposition(
         };
         push(check_err(
             "area_conservation",
-            format!(
-                "MISMATCH: original={original_area}, sum={parts_area_sum}, diff={diff}"
-            ),
+            format!("MISMATCH: original={original_area}, sum={parts_area_sum}, diff={diff}"),
         ));
     }
 
@@ -321,12 +319,24 @@ mod tests {
         ProtocolConfig::merca()
     }
 
+    fn permissive() -> ProtocolConfig {
+        ProtocolConfig::permissive()
+    }
+
     #[test]
     fn valid_single_convex_part() {
         let ring = vec![[0, 0], [10 * M, 0], [10 * M, 10 * M], [0, 10 * M]];
         let parts = vec![ring.clone()];
         let report = validate_decomposition(&ring, &parts, &merca());
-        assert!(report.valid, "errors: {:?}", report.checks.iter().filter(|c| !c.passed).collect::<Vec<_>>());
+        assert!(
+            report.valid,
+            "errors: {:?}",
+            report
+                .checks
+                .iter()
+                .filter(|c| !c.passed)
+                .collect::<Vec<_>>()
+        );
     }
 
     #[test]
@@ -340,11 +350,57 @@ mod tests {
             [0, 20 * M],
         ];
         let parts = vec![
-            vec![[0, 0], [20 * M, 0], [20 * M, 10 * M], [10 * M, 10 * M], [0, 10 * M]],
+            vec![
+                [0, 0],
+                [20 * M, 0],
+                [20 * M, 10 * M],
+                [10 * M, 10 * M],
+                [0, 10 * M],
+            ],
             vec![[0, 10 * M], [10 * M, 10 * M], [10 * M, 20 * M], [0, 20 * M]],
         ];
         let report = validate_decomposition(&ring, &parts, &merca());
-        assert!(report.valid, "errors: {:?}", report.checks.iter().filter(|c| !c.passed).collect::<Vec<_>>());
+        assert!(
+            report.valid,
+            "errors: {:?}",
+            report
+                .checks
+                .iter()
+                .filter(|c| !c.passed)
+                .collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn valid_two_part_l_shape_permissive_config() {
+        let ring = vec![
+            [0, 0],
+            [20 * M, 0],
+            [20 * M, 10 * M],
+            [10 * M, 10 * M],
+            [10 * M, 20 * M],
+            [0, 20 * M],
+        ];
+        let parts = vec![
+            vec![
+                [0, 0],
+                [20 * M, 0],
+                [20 * M, 10 * M],
+                [10 * M, 10 * M],
+                [0, 10 * M],
+            ],
+            vec![[0, 10 * M], [10 * M, 10 * M], [10 * M, 20 * M], [0, 20 * M]],
+        ];
+        let report = validate_decomposition(&ring, &parts, &permissive());
+        assert!(
+            report.valid,
+            "errors: {:?}",
+            report
+                .checks
+                .iter()
+                .filter(|c| !c.passed)
+                .collect::<Vec<_>>()
+        );
     }
 
     #[test]
@@ -353,11 +409,39 @@ mod tests {
         // Two overlapping squares
         let parts = vec![
             vec![[0, 0], [15 * M, 0], [15 * M, 15 * M], [0, 15 * M]],
-            vec![[5 * M, 5 * M], [20 * M, 5 * M], [20 * M, 20 * M], [5 * M, 20 * M]],
+            vec![
+                [5 * M, 5 * M],
+                [20 * M, 5 * M],
+                [20 * M, 20 * M],
+                [5 * M, 20 * M],
+            ],
         ];
         let report = validate_decomposition(&ring, &parts, &merca());
         assert!(!report.valid);
-        assert!(report.checks.iter().any(|c| c.name.starts_with("parts_overlap")));
+        assert!(report
+            .checks
+            .iter()
+            .any(|c| c.name.starts_with("parts_overlap")));
+    }
+
+    #[test]
+    fn rejects_overlapping_parts_permissive_config() {
+        let ring = vec![[0, 0], [20 * M, 0], [20 * M, 20 * M], [0, 20 * M]];
+        let parts = vec![
+            vec![[0, 0], [15 * M, 0], [15 * M, 15 * M], [0, 15 * M]],
+            vec![
+                [5 * M, 5 * M],
+                [20 * M, 5 * M],
+                [20 * M, 20 * M],
+                [5 * M, 20 * M],
+            ],
+        ];
+        let report = validate_decomposition(&ring, &parts, &permissive());
+        assert!(!report.valid);
+        assert!(report
+            .checks
+            .iter()
+            .any(|c| c.name == "parts_overlap_0_1" && !c.passed));
     }
 
     #[test]
@@ -367,14 +451,40 @@ mod tests {
         let parts = vec![vec![[0, 0], [5 * M, 0], [5 * M, 5 * M], [0, 5 * M]]];
         let report = validate_decomposition(&ring, &parts, &merca());
         assert!(!report.valid);
-        assert!(report.checks.iter().any(|c| c.name == "area_conservation" && !c.passed));
+        assert!(report
+            .checks
+            .iter()
+            .any(|c| c.name == "area_conservation" && !c.passed));
+    }
+
+    #[test]
+    fn rejects_area_mismatch_with_connected_parts() {
+        let ring = vec![[0, 0], [20 * M, 0], [20 * M, 20 * M], [0, 20 * M]];
+        let parts = vec![
+            vec![[0, 0], [20 * M, 0], [20 * M, 10 * M], [0, 10 * M]],
+            vec![[0, 10 * M], [10 * M, 10 * M], [10 * M, 20 * M], [0, 20 * M]],
+        ];
+        let report = validate_decomposition(&ring, &parts, &permissive());
+        assert!(!report.valid);
+        assert!(report
+            .checks
+            .iter()
+            .any(|c| c.name == "area_conservation" && !c.passed));
     }
 
     #[test]
     fn warns_negative_coords() {
-        let ring = vec![[-5 * M, -5 * M], [5 * M, -5 * M], [5 * M, 5 * M], [-5 * M, 5 * M]];
+        let ring = vec![
+            [-5 * M, -5 * M],
+            [5 * M, -5 * M],
+            [5 * M, 5 * M],
+            [-5 * M, 5 * M],
+        ];
         let parts = vec![ring.clone()];
         let report = validate_decomposition(&ring, &parts, &merca());
-        assert!(report.checks.iter().any(|c| c.name.contains("coords") && c.severity == "warn"));
+        assert!(report
+            .checks
+            .iter()
+            .any(|c| c.name.contains("coords") && c.severity == "warn"));
     }
 }

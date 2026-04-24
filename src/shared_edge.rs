@@ -126,12 +126,7 @@ pub enum ContactKind {
 /// Note: Move also performs `aabbs_may_contact` + SAT overlap checks before
 /// this point, but those are orthogonal (overlap → `EPartOverlap`). This
 /// function only classifies boundary contact.
-pub fn classify_contact(
-    a_xs: &[i64],
-    a_ys: &[i64],
-    b_xs: &[i64],
-    b_ys: &[i64],
-) -> ContactKind {
+pub fn classify_contact(a_xs: &[i64], a_ys: &[i64], b_xs: &[i64], b_ys: &[i64]) -> ContactKind {
     if has_exact_shared_edge(a_xs, a_ys, b_xs, b_ys) {
         return ContactKind::SharedEdge;
     }
@@ -306,6 +301,24 @@ mod tests {
     }
 
     #[test]
+    fn shared_edge_no_match_partial_overlap_subsegment() {
+        let a_xs = vec![M, 2 * M, 2 * M, M];
+        let a_ys = vec![0, 0, M, M];
+        let b_xs = vec![0, 4 * M, 4 * M, 0];
+        let b_ys = vec![0, 0, M, M];
+        assert!(!has_exact_shared_edge(&a_xs, &a_ys, &b_xs, &b_ys));
+    }
+
+    #[test]
+    fn shared_edge_no_match_collinear_but_disjoint_edges() {
+        let a_xs = vec![0, M, M, 0];
+        let a_ys = vec![0, 0, M, M];
+        let b_xs = vec![2 * M, 3 * M, 3 * M, 2 * M];
+        let b_ys = vec![0, 0, M, M];
+        assert!(!has_exact_shared_edge(&a_xs, &a_ys, &b_xs, &b_ys));
+    }
+
+    #[test]
     fn classify_contact_none_for_separated_squares() {
         let a_xs = vec![0, M, M, 0];
         let a_ys = vec![0, 0, M, M];
@@ -369,6 +382,30 @@ mod tests {
         assert_eq!(
             classify_contact(&a_xs, &a_ys, &b_xs, &b_ys),
             ContactKind::None
+        );
+    }
+
+    #[test]
+    fn classify_contact_vertex_only_sharing_one_corner_is_none() {
+        let a_xs = vec![0, 2 * M, 2 * M, 0];
+        let a_ys = vec![0, 0, 2 * M, 2 * M];
+        let b_xs = vec![2 * M, 4 * M, 4 * M, 2 * M];
+        let b_ys = vec![2 * M, 2 * M, 4 * M, 4 * M];
+        assert_eq!(
+            classify_contact(&a_xs, &a_ys, &b_xs, &b_ys),
+            ContactKind::None
+        );
+    }
+
+    #[test]
+    fn classify_contact_t_junction_returns_partial_contact() {
+        let a_xs = vec![0, 4 * M, 4 * M, 0];
+        let a_ys = vec![0, 0, M, M];
+        let b_xs = vec![M, 3 * M, 3 * M, M];
+        let b_ys = vec![M, M, 2 * M, 2 * M];
+        assert_eq!(
+            classify_contact(&a_xs, &a_ys, &b_xs, &b_ys),
+            ContactKind::PartialContact
         );
     }
 }

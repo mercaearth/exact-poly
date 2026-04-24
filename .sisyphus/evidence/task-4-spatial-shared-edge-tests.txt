@@ -1,0 +1,55 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/exact_poly-2f32831be56f8539)
+
+running 14 tests
+test spatial::tests::non_collinear_segments_return_false ... ok
+test spatial::tests::adjacent_polygons_opposite_sides_no_overlap ... ok
+test spatial::tests::collinear_overlap_same_side_returns_true ... ok
+test spatial::tests::point_inside_or_on_boundary_edge ... ok
+test spatial::tests::point_at_vertex_not_strictly_inside ... ok
+test spatial::tests::point_inside_or_on_boundary_inclusive_cases ... ok
+test spatial::tests::point_inside_or_on_boundary_interior ... ok
+test spatial::tests::point_inside_or_on_boundary_outside ... ok
+test spatial::tests::point_inside_or_on_boundary_vertex ... ok
+test spatial::tests::point_on_boundary_not_strictly_inside ... ok
+test spatial::tests::point_on_polygon_boundary_edge_midpoint_and_off_edge ... ok
+test spatial::tests::point_outside ... ok
+test spatial::tests::point_strictly_inside ... ok
+test spatial::tests::point_strictly_inside_convex_rhombus_centroid_and_edge_neighbors ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 234 filtered out; finished in 0.00s
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running unittests src/lib.rs (target/debug/deps/exact_poly-2f32831be56f8539)
+
+running 27 tests
+test shared_edge::tests::classify_contact_partial_edge_is_t_junction ... ok
+test shared_edge::tests::classify_contact_none_for_separated_squares ... ok
+test shared_edge::tests::classify_contact_symmetric_shared_edge ... ok
+test shared_edge::tests::classify_contact_t_junction_symmetric ... ok
+test shared_edge::tests::classify_contact_vertex_only_is_none ... ok
+test shared_edge::tests::classify_contact_t_junction_returns_partial_contact ... ok
+test shared_edge::tests::classify_contact_via_exact_edge ... ok
+test shared_edge::tests::classify_contact_vertex_only_sharing_one_corner_is_none ... ok
+test shared_edge::tests::shared_edge_exact_detected ... ok
+test shared_edge::tests::shared_edge_exact_direction_independent ... ok
+test shared_edge::tests::shared_edge_no_match_collinear_but_disjoint_edges ... ok
+test shared_edge::tests::shared_edge_no_match_partial_overlap_subsegment ... ok
+test shared_edge::tests::shared_edge_no_match_separated_squares ... ok
+test shared_edge::tests::shared_edge_no_match_vertex_only_contact ... ok
+test shared_edge::tests::shared_edge_normalize_degenerate_point ... ok
+test shared_edge::tests::shared_edge_normalize_orders_lexicographically ... ok
+test shared_edge::tests::shared_edge_normalize_same_x_sorts_by_y ... ok
+test shared_edge::tests::shared_edge_segments_collinear_overlap ... ok
+test shared_edge::tests::shared_edge_segments_collinear_overlap_diagonal ... ok
+test shared_edge::tests::shared_edge_segments_collinear_overlap_vertical ... ok
+test shared_edge::tests::shared_edge_segments_degenerate_point ... ok
+test shared_edge::tests::shared_edge_segments_no_overlap_gap ... ok
+test shared_edge::tests::shared_edge_segments_not_collinear ... ok
+test shared_edge::tests::shared_edge_segments_parallel_not_collinear ... ok
+test shared_edge::tests::shared_edge_segments_reversed_direction ... ok
+test shared_edge::tests::shared_edge_segments_touching_endpoint_no_overlap ... ok
+test shared_edge::tests::shared_edge_triangles_sharing_hypotenuse ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 221 filtered out; finished in 0.00s
+

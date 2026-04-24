@@ -237,4 +237,19 @@ mod tests {
         let merged = merge_convex_pair(&a, &b);
         assert!(merged.is_none());
     }
+
+    #[test]
+    fn hertel_mehlhorn_merge_convex_pair_edge_cases() {
+        let disjoint_a = vec![[0, 0], [10 * M, 0], [5 * M, 8 * M]];
+        let disjoint_b = vec![[20 * M, 0], [30 * M, 0], [25 * M, 8 * M]];
+        assert!(merge_convex_pair(&disjoint_a, &disjoint_b).is_none());
+
+        let a = vec![[0, 0], [10 * M, 0], [10 * M, 10 * M]];
+        let b = vec![[0, 0], [10 * M, 10 * M], [0, 10 * M]];
+        let merged = merge_convex_pair(&a, &b).expect("square triangles should merge");
+        assert_eq!(merged.len(), 4);
+        let xs: Vec<i64> = merged.iter().map(|v| v[0]).collect();
+        let ys: Vec<i64> = merged.iter().map(|v| v[1]).collect();
+        assert!(is_convex(&xs, &ys));
+    }
 }

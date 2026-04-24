@@ -205,4 +205,44 @@ mod tests {
 
         assert!(sat_overlaps(&a_xs, &a_ys, &b_xs, &b_ys));
     }
+
+    #[test]
+    fn right_triangles_sharing_hypotenuse_do_not_overlap() {
+        let a_xs = vec![0, 2 * M, 2 * M];
+        let a_ys = vec![0, 0, 2 * M];
+        let b_xs = vec![0, 0, 2 * M];
+        let b_ys = vec![0, 2 * M, 2 * M];
+
+        assert!(!sat_overlaps(&a_xs, &a_ys, &b_xs, &b_ys));
+    }
+
+    #[test]
+    fn triangle_fully_inside_another_overlaps() {
+        let outer_xs = vec![0, 4 * M, 0];
+        let outer_ys = vec![0, 0, 4 * M];
+        let inner_xs = vec![M, 2 * M, M];
+        let inner_ys = vec![M, M, 2 * M];
+
+        assert!(sat_overlaps(&outer_xs, &outer_ys, &inner_xs, &inner_ys));
+    }
+
+    #[test]
+    fn sat_handles_world_extreme_coordinates() {
+        const MAX_WORLD: i64 = 40_075_017_000_000;
+
+        let a_xs = vec![-MAX_WORLD, -MAX_WORLD + M, -MAX_WORLD + M, -MAX_WORLD];
+        let a_ys = vec![-MAX_WORLD, -MAX_WORLD, -MAX_WORLD + M, -MAX_WORLD + M];
+        let b_xs = vec![MAX_WORLD, MAX_WORLD + M, MAX_WORLD + M, MAX_WORLD];
+        let b_ys = vec![MAX_WORLD, MAX_WORLD, MAX_WORLD + M, MAX_WORLD + M];
+
+        assert!(!sat_overlaps(&a_xs, &a_ys, &b_xs, &b_ys));
+    }
+
+    #[test]
+    fn sat_with_aabb_rejects_far_apart_polygons() {
+        let (a_xs, a_ys) = square(0, 0, M);
+        let (b_xs, b_ys) = square(100 * M, 100 * M, M);
+
+        assert!(!sat_overlaps_with_aabb(&a_xs, &a_ys, &b_xs, &b_ys));
+    }
 }
