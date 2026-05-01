@@ -41,10 +41,41 @@ pub fn point_on_polygon_boundary(px: i64, py: i64, ring: &[[i64; 2]]) -> bool {
     false
 }
 
-/// True if point is strictly inside OR on the boundary of a convex polygon.
-/// Matches polygon.move::point_inside_convex_part_or_on_boundary.
+/// Ray-casting point-in-polygon for general (including non-convex) polygons.
+/// Counts how many times a rightward ray from (px, py) crosses the polygon edges.
+/// Odd count = inside. Uses exact integer arithmetic — no division, no float.
+fn point_inside_polygon_ray_cast(px: i64, py: i64, ring: &[[i64; 2]]) -> bool {
+    let n = ring.len();
+    if n < 3 {
+        return false;
+    }
+    let mut crossings = 0i32;
+    for i in 0..n {
+        let j = (i + 1) % n;
+        let ax = ring[i][0];
+        let ay = ring[i][1];
+        let bx = ring[j][0];
+        let by = ring[j][1];
+        // Edge crosses the ray's horizontal level (asymmetric to handle vertices correctly)
+        if (ay > py) != (by > py) {
+            // x_intersect = ax + (py - ay) * (bx - ax) / (by - ay)
+            // x_intersect > px  without division:
+            //   (py - ay) * (bx - ax) [vs] (px - ax) * (by - ay)
+            //   flip inequality when (by - ay) < 0
+            let lhs = (py as i128 - ay as i128) * (bx as i128 - ax as i128);
+            let rhs = (px as i128 - ax as i128) * (by as i128 - ay as i128);
+            let to_right = if by > ay { lhs > rhs } else { lhs < rhs };
+            if to_right {
+                crossings += 1;
+            }
+        }
+    }
+    crossings % 2 == 1
+}
+
+/// True if point is inside OR on the boundary of a polygon (convex or non-convex).
 pub fn point_inside_or_on_boundary(px: i64, py: i64, ring: &[[i64; 2]]) -> bool {
-    point_strictly_inside_convex(px, py, ring) || point_on_polygon_boundary(px, py, ring)
+    point_on_polygon_boundary(px, py, ring) || point_inside_polygon_ray_cast(px, py, ring)
 }
 
 /// Collinear segment overlap: true if two collinear segments share more than a point.
@@ -220,6 +251,38 @@ mod tests {
         assert!(point_inside_or_on_boundary(M, 2 * M, &ring));
         assert!(point_inside_or_on_boundary(0, 0, &ring));
         assert!(!point_inside_or_on_boundary(3 * M, 3 * M, &ring));
+    }
+
+    // L-shape: non-convex polygon — the original convex algorithm failed here
+    fn l_shape() -> Vec<[i64; 2]> {
+        vec![
+            [0, 0], [60 * M, 0], [60 * M, 40 * M], [30 * M, 40 * M],
+            [30 * M, 80 * M], [0, 80 * M],
+        ]
+    }
+
+    #[test]
+    fn point_inside_or_on_boundary_non_convex_l_shape_interior() {
+        let ring = l_shape();
+        // Bottom-left interior
+        assert!(point_inside_or_on_boundary(15 * M, 20 * M, &ring));
+        // Upper-left interior (above the step)
+        assert!(point_inside_or_on_boundary(15 * M, 60 * M, &ring));
+        // Outside: inside the "missing" rectangle top-right
+        assert!(!point_inside_or_on_boundary(45 * M, 60 * M, &ring));
+    }
+
+    #[test]
+    fn ray_cast_non_convex_star_interior() {
+        // Simple concave shape: arrow-like [[0,30],[60,30],[60,0],[100,50],[60,100],[60,70],[0,70]]
+        let arrow: Vec<[i64; 2]> = vec![
+            [0, 30 * M], [60 * M, 30 * M], [60 * M, 0],
+            [100 * M, 50 * M], [60 * M, 100 * M], [60 * M, 70 * M], [0, 70 * M],
+        ];
+        // Interior of the shaft
+        assert!(point_inside_or_on_boundary(30 * M, 50 * M, &arrow));
+        // Outside (above shaft, left of arrowhead)
+        assert!(!point_inside_or_on_boundary(30 * M, 90 * M, &arrow));
     }
 
     #[test]
