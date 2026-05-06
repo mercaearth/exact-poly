@@ -69,20 +69,38 @@ Floating-point polygon math is nondeterministic across architectures. On-chain l
 npm install exact-poly
 ```
 
+Package ships three wasm-bindgen targets — picked automatically via conditional `exports`:
+
+| Runtime | Resolved entry | Notes |
+|---|---|---|
+| Node.js (`import`/`require`) | `pkg/node/` | Sync init, works out of the box |
+| Bundlers (Vite, webpack, Rollup) | `pkg/bundler/` | Vite needs [`vite-plugin-wasm`](https://www.npmjs.com/package/vite-plugin-wasm) + [`vite-plugin-top-level-await`](https://www.npmjs.com/package/vite-plugin-top-level-await); webpack 5 supports WASM natively |
+| Browser direct (no bundler) | `import "exact-poly/web"` | Returns an `init()` you must `await` before calling exports |
+
 All functions accept `BigInt64Array` for polygon rings encoded as flat `[x0, y0, x1, y1, ...]`.
 
+**Node / bundler:**
 ```js
-import { decompose_polygon, twice_area_ring, is_convex_ring } from "exact-poly";
+import { decompose_polygon, twice_area, is_convex } from "exact-poly";
 
 const ring = BigInt64Array.from([0n, 0n, 60n, 0n, 60n, 40n, 30n, 40n, 30n, 80n, 0n, 80n]);
 
 const result = decompose_polygon(ring, true);
 console.log(result.parts.length); // convex parts
 
-const area = twice_area_ring(ring);
-console.log(area); // "4800" (2× the actual area)
+const area = twice_area(ring);
+console.log(area); // "7200" (2× the actual area)
 
-console.log(is_convex_ring(ring)); // false (L-shape)
+console.log(is_convex(ring)); // false (L-shape)
+```
+
+**Browser direct:**
+```js
+import init, { twice_area } from "exact-poly/web";
+
+await init();
+const ring = BigInt64Array.from([0n, 0n, 60n, 0n, 60n, 40n, 30n, 40n, 30n, 80n, 0n, 80n]);
+console.log(twice_area(ring)); // "7200"
 ```
 
 ### Rust (crate)
@@ -106,10 +124,10 @@ println!("{} parts", result.parts.len());
 Requires [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/):
 
 ```
-wasm-pack build --target bundler --release
+bash build.sh
 ```
 
-Output goes to `pkg/`. Run tests with:
+Builds three wasm-bindgen targets in parallel — `pkg/bundler/`, `pkg/node/`, `pkg/web/`. Run tests with:
 
 ```
 cargo test

@@ -469,7 +469,7 @@
                 ]
             ]
         }
-    ], qe = [
+    ], Xe = [
         {
             name: "Needle (compactness)",
             points: [
@@ -675,7 +675,7 @@
                 ]
             ]
         }
-    ], Xe = [
+    ], qe = [
         {
             name: "T-junction (partial edge)",
             parts: [
@@ -993,7 +993,7 @@
                 ]
             ]
         }
-    ], _t = "/assets/exact_poly_bg-UZ7nssqo.wasm", pt = async (e = {}, n)=>{
+    ], _t = "/assets/exact_poly_bg-C7v-_mof.wasm", pt = async (e = {}, n)=>{
         let o;
         if (n.startsWith("data:")) {
             const t = n.replace(/^data:.*?base64,/, "");
@@ -1034,7 +1034,7 @@
         let a, d;
         try {
             const m = f.cross2d(e, n, o, t, i, s);
-            return a = m[0], d = m[1], X(m[0], m[1]);
+            return a = m[0], d = m[1], q(m[0], m[1]);
         } finally{
             f.__wbindgen_free(a, d, 1);
         }
@@ -1102,7 +1102,7 @@
         let a, d;
         try {
             const m = f.orientation(e, n, o, t, i, s);
-            return a = m[0], d = m[1], X(m[0], m[1]);
+            return a = m[0], d = m[1], q(m[0], m[1]);
         } finally{
             f.__wbindgen_free(a, d, 1);
         }
@@ -1113,7 +1113,7 @@
             const s = O(e, f.__wbindgen_malloc), a = T, d = f.perimeter_l1(s, a);
             var t = d[0], i = d[1];
             if (d[3]) throw t = 0, i = 0, S(d[2]);
-            return n = t, o = i, X(t, i);
+            return n = t, o = i, q(t, i);
         } finally{
             f.__wbindgen_free(n, o, 1);
         }
@@ -1160,7 +1160,7 @@
             const s = O(e, f.__wbindgen_malloc), a = T, d = f.signed_area_2x(s, a);
             var t = d[0], i = d[1];
             if (d[3]) throw t = 0, i = 0, S(d[2]);
-            return n = t, o = i, X(t, i);
+            return n = t, o = i, q(t, i);
         } finally{
             f.__wbindgen_free(n, o, 1);
         }
@@ -1171,7 +1171,7 @@
             const s = O(e, f.__wbindgen_malloc), a = T, d = f.twice_area(s, a);
             var t = d[0], i = d[1];
             if (d[3]) throw t = 0, i = 0, S(d[2]);
-            return n = t, o = i, X(t, i);
+            return n = t, o = i, q(t, i);
         } finally{
             f.__wbindgen_free(n, o, 1);
         }
@@ -1180,7 +1180,7 @@
         const t = le(e, f.__wbindgen_malloc, f.__wbindgen_realloc), i = T, s = le(n, f.__wbindgen_malloc, f.__wbindgen_realloc), a = T, d = f.validate_compactness(t, i, s, a, F(o) ? 0 : oe(o));
         if (d[3]) throw S(d[2]);
         let m;
-        return d[0] !== 0 && (m = X(d[0], d[1]).slice(), f.__wbindgen_free(d[0], d[1] * 1, 1)), m;
+        return d[0] !== 0 && (m = q(d[0], d[1]).slice(), f.__wbindgen_free(d[0], d[1] * 1, 1)), m;
     }
     function Ot(e, n, o) {
         const t = O(e, f.__wbindgen_malloc), i = T, s = f.validate_decomposition(t, i, n, F(o) ? 0 : oe(o));
@@ -1191,7 +1191,7 @@
         const o = O(e, f.__wbindgen_malloc), t = T, i = f.validate_edge_lengths(o, t, F(n) ? 0 : oe(n));
         if (i[3]) throw S(i[2]);
         let s;
-        return i[0] !== 0 && (s = X(i[0], i[1]).slice(), f.__wbindgen_free(i[0], i[1] * 1, 1)), s;
+        return i[0] !== 0 && (s = q(i[0], i[1]).slice(), f.__wbindgen_free(i[0], i[1] * 1, 1)), s;
     }
     function Dt(e, n, o) {
         const t = f.validate_multipart_topology(e, F(n) ? 16777215 : n ? 1 : 0, F(o) ? 0 : oe(o));
@@ -1202,10 +1202,10 @@
         const o = O(e, f.__wbindgen_malloc), t = T, i = f.validate_part(o, t, F(n) ? 0 : oe(n));
         if (i[3]) throw S(i[2]);
         let s;
-        return i[0] !== 0 && (s = X(i[0], i[1]).slice(), f.__wbindgen_free(i[0], i[1] * 1, 1)), s;
+        return i[0] !== 0 && (s = q(i[0], i[1]).slice(), f.__wbindgen_free(i[0], i[1] * 1, 1)), s;
     }
     function Ft(e, n) {
-        return Error(X(e, n));
+        return Error(q(e, n));
     }
     function jt(e) {
         return Number(e);
@@ -1232,10 +1232,10 @@
     function Ut(e) {
         return typeof e == "bigint";
     }
-    function qt(e) {
+    function Xt(e) {
         return typeof e == "function";
     }
-    function Xt(e) {
+    function qt(e) {
         const n = e;
         return typeof n == "object" && n !== null;
     }
@@ -1261,7 +1261,7 @@
         Q().setInt32(e + 4, s, !0), Q().setInt32(e + 0, i, !0);
     }
     function tn(e, n) {
-        throw new Error(X(e, n));
+        throw new Error(q(e, n));
     }
     function nn() {
         return Ye(function(e, n) {
@@ -1351,7 +1351,7 @@
         return e;
     }
     function En(e, n) {
-        return X(e, n);
+        return q(e, n);
     }
     function Cn(e, n) {
         return BigInt.asUintN(64, e) | BigInt.asUintN(64, n) << BigInt(64);
@@ -1409,7 +1409,7 @@ ${e.stack}` : t;
     function Q() {
         return (ue === null || ue.buffer.detached === !0 || ue.buffer.detached === void 0 && ue.buffer !== f.memory.buffer) && (ue = new DataView(f.memory.buffer)), ue;
     }
-    function X(e, n) {
+    function q(e, n) {
         return e = e >>> 0, Pn(e, n);
     }
     let we = null;
@@ -1514,9 +1514,9 @@ ${e.stack}` : t;
             __wbg_Number_32bf70a599af1d4b: jt,
             __wbg_Error_960c155d3d49e4c2: Ft,
             __wbg___wbindgen_is_bigint_ec25c7f91b4d9e93: Ut,
-            __wbg___wbindgen_is_object_63322ec0cd6ea4ef: Xt,
+            __wbg___wbindgen_is_object_63322ec0cd6ea4ef: qt,
             __wbg___wbindgen_boolean_get_6ea149f0a8dcc5ff: Ht,
-            __wbg___wbindgen_is_function_3baa9db1a987f47d: qt,
+            __wbg___wbindgen_is_function_3baa9db1a987f47d: Xt,
             __wbg___wbindgen_is_undefined_29a43b4d42920abd: Jt,
             __wbg___wbindgen_jsval_loose_eq_cac3565e89b4134c: Gt,
             __wbg___wbindgen_bigint_get_as_i64_3d3aba5d616c6a51: zt,
@@ -1528,7 +1528,7 @@ ${e.stack}` : t;
             __wbindgen_cast_0000000000000004: Cn,
             __wbindgen_cast_0000000000000005: Sn
         }
-    }, _t), { memory: Nn, bayazit_decompose_polygon: Dn, classify_contact: Rn, collect_steiner_points: Fn, collinear_segments_overlap_area: jn, contains_polygon: Vn, decompose_polygon: zn, ear_clip_triangulate_polygon: Hn, exact_partition_only_original_vertices: Yn, exact_vertex_partition_polygon: Wn, has_exact_shared_edge: Un, point_inside_any_part: qn, point_inside_or_on_boundary: Xn, point_on_polygon_boundary: Jn, point_strictly_inside_convex: Kn, segments_contact: Gn, validate_decomposition: Qn, validate_multipart_topology: Zn, is_convex: eo, perimeter_l1: to, validate_compactness: no, validate_edge_lengths: oo, validate_part: io, cross2d: so, edge_squared_length: ao, is_collinear_pts: ro, is_left: lo, is_left_or_on: co, is_reflex: uo, is_right_or_on: fo, orientation: go, point_on_segment: _o, segments_intersect: po, segments_properly_intersect: bo, is_right: mo, ensure_ccw: ho, is_ccw: vo, is_simple: yo, normalize_polygon: wo, remove_collinear: xo, rotate_polygon: Io, merge_convex_pair: Bo, optimize_partition: $o, area_display_from_twice_area: Eo, areas_conserved_values: Co, convex_parts_overlap: So, find_overlapping_parts: ko, parts_overlap: To, sat_overlap: Ao, sat_overlap_with_aabb: Lo, signed_area_2x: Po, twice_area: Mo, __wbindgen_malloc: Oo, __wbindgen_realloc: No, __wbindgen_exn_store: Do, __externref_table_alloc: Ro, __wbindgen_externrefs: Fo, __externref_table_dealloc: jo, __wbindgen_free: Vo, __wbindgen_start: it } = On, zo = Object.freeze(Object.defineProperty({
+    }, _t), { memory: Nn, bayazit_decompose_polygon: Dn, classify_contact: Rn, collect_steiner_points: Fn, collinear_segments_overlap_area: jn, contains_polygon: Vn, decompose_polygon: zn, ear_clip_triangulate_polygon: Hn, exact_partition_only_original_vertices: Yn, exact_vertex_partition_polygon: Wn, has_exact_shared_edge: Un, point_inside_any_part: Xn, point_inside_or_on_boundary: qn, point_on_polygon_boundary: Jn, point_strictly_inside_convex: Kn, segments_contact: Gn, validate_decomposition: Qn, validate_multipart_topology: Zn, is_convex: eo, perimeter_l1: to, validate_compactness: no, validate_edge_lengths: oo, validate_part: io, cross2d: so, edge_squared_length: ao, is_collinear_pts: ro, is_left: lo, is_left_or_on: co, is_reflex: uo, is_right_or_on: fo, orientation: go, point_on_segment: _o, segments_intersect: po, segments_properly_intersect: bo, is_right: mo, ensure_ccw: ho, is_ccw: vo, is_simple: yo, normalize_polygon: wo, remove_collinear: xo, rotate_polygon: Io, merge_convex_pair: Bo, optimize_partition: $o, area_display_from_twice_area: Eo, areas_conserved_values: Co, convex_parts_overlap: So, find_overlapping_parts: ko, parts_overlap: To, sat_overlap: Ao, sat_overlap_with_aabb: Lo, signed_area_2x: Po, twice_area: Mo, __wbindgen_malloc: Oo, __wbindgen_realloc: No, __wbindgen_exn_store: Do, __externref_table_alloc: Ro, __wbindgen_externrefs: Fo, __externref_table_dealloc: jo, __wbindgen_free: Vo, __wbindgen_start: it } = On, zo = Object.freeze(Object.defineProperty({
         __proto__: null,
         __externref_table_alloc: Ro,
         __externref_table_dealloc: jo,
@@ -1571,8 +1571,8 @@ ${e.stack}` : t;
         orientation: go,
         parts_overlap: To,
         perimeter_l1: to,
-        point_inside_any_part: qn,
-        point_inside_or_on_boundary: Xn,
+        point_inside_any_part: Xn,
+        point_inside_or_on_boundary: qn,
         point_on_polygon_boundary: Jn,
         point_on_segment: _o,
         point_strictly_inside_convex: Kn,
@@ -1601,7 +1601,7 @@ ${e.stack}` : t;
         for(let o = 0; o < e.length; o++)n[o * 2] = BigInt(Math.round(e[o][0] * Ce)), n[o * 2 + 1] = BigInt(Math.round(e[o][1] * Ce));
         return n;
     }
-    function q(e) {
+    function X(e) {
         const n = [];
         for(let o = 0; o < e.length; o += 2)n.push([
             Number(e[o]) / Ce,
@@ -1714,7 +1714,7 @@ ${e.stack}` : t;
                 x["Validate part (structural)"] = E ?? "OK";
             } catch  {}
             try {
-                const E = q(ot(y));
+                const E = X(ot(y));
                 E.length < $.length && (x["Collinear removed"] = `${$.length} → ${E.length}`);
             } catch  {}
             return x;
@@ -1863,15 +1863,15 @@ ${e.stack}` : t;
                     const x = p ? BigInt64Array.from(tt($), (E)=>typeof E == "bigint" ? E : BigInt(E)) : $;
                     if (l === "decompose") {
                         const E = He(x, g, c || void 0, r || void 0, ee());
-                        i = E.parts.map((C)=>q(C)), a = q(E.steiner_points), d = E.strategy, m = E.trace;
-                    } else if (l === "bayazit") i = ht(x, g).map((C)=>q(C));
-                    else if (l === "exact_partition") i = yt(x).map((C)=>q(C));
-                    else if (l === "ear_clip") i = Je(x).map((C)=>q(C));
+                        i = E.parts.map((C)=>X(C)), a = X(E.steiner_points), d = E.strategy, m = E.trace;
+                    } else if (l === "bayazit") i = ht(x, g).map((C)=>X(C));
+                    else if (l === "exact_partition") i = yt(x).map((C)=>X(C));
+                    else if (l === "ear_clip") i = Je(x).map((C)=>X(C));
                     else if (l === "hertel_mehlhorn") {
                         const E = Je(x);
-                        s = E.map((L)=>q(L));
+                        s = E.map((L)=>X(L));
                         const C = E.map((L)=>Array.from(L));
-                        i = Et(C).map((L)=>q(L));
+                        i = Et(C).map((L)=>X(L));
                     }
                 } catch ($) {
                     w.textContent = String($);
@@ -1967,7 +1967,7 @@ ${e.stack}` : t;
             <option value="">— Preset —</option>
             ${G.map((y)=>`<option value="${y.name}">${y.name}</option>`).join("")}
             <optgroup label="Invalid on-chain">
-              ${qe.map((y)=>`<option value="${y.name}">${y.name}</option>`).join("")}
+              ${Xe.map((y)=>`<option value="${y.name}">${y.name}</option>`).join("")}
             </optgroup>
           </select>
           <div class="sep"></div>
@@ -2013,7 +2013,7 @@ ${e.stack}` : t;
                 }), o.setOnChange(()=>ge()), o.setOnComplete((x)=>{
                     t = x, o.clear(), R(t);
                 }), o.enable(), document.getElementById("decomp-preset").addEventListener("change", (x)=>{
-                    const E = x.target.value, C = G.find((M)=>M.name === E) ?? qe.find((M)=>M.name === E);
+                    const E = x.target.value, C = G.find((M)=>M.name === E) ?? Xe.find((M)=>M.name === E);
                     C && (o.clear(), R(C.points.slice()));
                 }), document.getElementById("decomp-clear").addEventListener("click", ()=>{
                     i = [], s = [], a = [], o.clear(), w.textContent = "", h.innerHTML = "", h.style.display = "none", document.getElementById("decomp-preset").value = "", R([]);
@@ -2054,7 +2054,7 @@ ${e.stack}` : t;
                 let B = null;
                 const v = [];
                 try {
-                    i = He(r, !0, void 0, void 0, ee()).parts.map((I)=>q(I));
+                    i = He(r, !0, void 0, void 0, ee()).parts.map((I)=>X(I));
                     for (const I of i){
                         const k = D(I);
                         v.push(Ee(k));
@@ -2171,7 +2171,7 @@ ${e.stack}` : t;
             }
         };
     }
-    function qo() {
+    function Xo() {
         let e, n, o, t = [], i, s, a = null;
         function d() {
             if (s.textContent = "", t.length < 3) {
@@ -2251,7 +2251,7 @@ ${e.stack}` : t;
                             return;
                         }
                     }
-                    u && R(q(u));
+                    u && R(X(u));
                 } catch (r) {
                     s.textContent = String(r);
                 }
@@ -2309,7 +2309,7 @@ ${e.stack}` : t;
             }
         };
     }
-    function Xo() {
+    function qo() {
         let e, n, o, t = [], i = [], s = !1, a = "draw", d, m, p = null, l = null;
         function g(h, _) {
             if (!(t.length < 3)) try {
@@ -2579,7 +2579,7 @@ ${e.stack}` : t;
                 return;
             } else try {
                 const _ = D(t);
-                i = He(_, !0, void 0, void 0, ee()).parts.map((v)=>q(v));
+                i = He(_, !0, void 0, void 0, ee()).parts.map((v)=>X(v));
             } catch (_) {
                 l.textContent = String(_), u(), h();
                 return;
@@ -2689,7 +2689,7 @@ ${e.stack}` : t;
             <option value="">— Preset —</option>
             ${G.map((B)=>`<option value="${B.name}">${B.name}</option>`).join("")}
             <optgroup label="Manual parts (validation)">
-              ${Xe.map((B)=>`<option value="topo:${B.name}">${B.name}</option>`).join("")}
+              ${qe.map((B)=>`<option value="topo:${B.name}">${B.name}</option>`).join("")}
             </optgroup>
           </select>
           <div class="checkbox-row"><input type="checkbox" id="topo-vertex-contact" /><label for="topo-vertex-contact">Allow vertex contact</label></div>
@@ -2721,7 +2721,7 @@ ${e.stack}` : t;
                 }), o.enable(), document.getElementById("topo-preset").addEventListener("change", (_)=>{
                     const B = _.target.value;
                     if (B.startsWith("topo:")) {
-                        const v = B.slice(5), b = Xe.find((I)=>I.name === v);
+                        const v = B.slice(5), b = qe.find((I)=>I.name === v);
                         b && (o.clear(), m = b.parts.map((I)=>I.slice()), t = [], r());
                     } else {
                         m = null;
@@ -2838,8 +2838,8 @@ ${e.stack}` : t;
     const xe = [
         Wo(),
         Uo(),
-        qo(),
         Xo(),
+        qo(),
         Jo(),
         ei(),
         ti()

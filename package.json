@@ -1,24 +1,26 @@
 {
   "name": "exact-poly",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Integer polygon geometry library (Rust/WASM) — exact arithmetic, no float errors",
-  "main": "pkg/exact_poly.js",
-  "types": "pkg/exact_poly.d.ts",
+  "main": "./pkg/node/exact_poly.js",
+  "types": "./pkg/bundler/exact_poly.d.ts",
   "exports": {
     ".": {
-      "types": "./pkg/exact_poly.d.ts",
-      "import": "./pkg/exact_poly.js",
-      "default": "./pkg/exact_poly.js"
+      "types": "./pkg/bundler/exact_poly.d.ts",
+      "node": "./pkg/node/exact_poly.js",
+      "import": "./pkg/bundler/exact_poly.js",
+      "default": "./pkg/bundler/exact_poly.js"
     },
-    "./exact_poly_bg.js": "./pkg/exact_poly_bg.js",
-    "./exact_poly_bg.wasm": "./pkg/exact_poly_bg.wasm"
+    "./web": {
+      "types": "./pkg/web/exact_poly.d.ts",
+      "default": "./pkg/web/exact_poly.js"
+    }
   },
   "files": [
     "pkg/"
   ],
   "scripts": {
-    "build": "wasm-pack build --target bundler --release",
-    "build:dev": "wasm-pack build --target bundler",
+    "build": "bash build.sh",
     "test": "cargo test"
   },
   "keywords": [
