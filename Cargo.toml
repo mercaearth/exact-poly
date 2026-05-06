@@ -5,6 +5,20 @@ edition = "2021"
 license = "MIT"
 description = "Integer polygon geometry library — exact arithmetic, no float errors"
 repository = "https://github.com/mercaearth/exact-poly"
+homepage = "https://exact-poly.merca.earth"
+documentation = "https://docs.rs/exact-poly"
+readme = "README.md"
+keywords = ["polygon", "geometry", "wasm", "decomposition", "exact-arithmetic"]
+categories = ["algorithms", "mathematics", "wasm"]
+exclude = [
+    "demo/",
+    "pkg/",
+    ".github/",
+    "build.sh",
+    "package.json",
+    "package-lock.json",
+    "bun.lock",
+]
 
 [lib]
 crate-type = ["cdylib", "rlib"]
