@@ -1,6 +1,9 @@
 # exact-poly
 
 [![build](https://github.com/mercaearth/exact-poly/actions/workflows/build.yml/badge.svg)](https://github.com/mercaearth/exact-poly/actions/workflows/build.yml)
+[![crates.io](https://img.shields.io/crates/v/exact-poly.svg)](https://crates.io/crates/exact-poly)
+[![docs.rs](https://img.shields.io/docsrs/exact-poly)](https://docs.rs/exact-poly)
+[![npm](https://img.shields.io/npm/v/exact-poly.svg)](https://www.npmjs.com/package/exact-poly)
 
 **Live demo:** [exact-poly.merca.earth](https://exact-poly.merca.earth)
 
@@ -107,7 +110,7 @@ console.log(twice_area(ring)); // "7200"
 
 ```toml
 [dependencies]
-exact-poly = { git = "https://github.com/mercaearth/exact-poly" }
+exact-poly = "0.3"
 ```
 
 ```rust
