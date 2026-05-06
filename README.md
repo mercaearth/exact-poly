@@ -1,6 +1,15 @@
 # exact-poly
 
+[![build](https://github.com/mercaearth/exact-poly/actions/workflows/build.yml/badge.svg)](https://github.com/mercaearth/exact-poly/actions/workflows/build.yml)
+
+**Live demo:** [exact-poly.merca.earth](https://exact-poly.merca.earth)
+
 Integer polygon geometry for deterministic on-chain validation. Rust library compiled to WebAssembly.
+
+## Used by
+
+- [mercaearth/mercator](https://github.com/mercaearth/mercator) — reverse side, Move VM polygon validation on-chain
+- [merca.earth](https://merca.earth) — production land registry frontend
 
 All arithmetic uses `i64` coordinates in fixed-point representation (1 unit = 1 micrometer at SCALE = 1,000,000). No floats anywhere — results are bit-exact and reproducible across every platform.
 
@@ -245,4 +254,4 @@ src/
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
