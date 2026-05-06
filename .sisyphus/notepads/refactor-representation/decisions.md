@@ -1,3 +1,0 @@
-- Keep `pkg/exact_poly.d.ts.baseline` as the pre-refactor declaration snapshot.
-- Treat `src/bayazit.rs:41` as production hardcoded Merca config and `:533` as test-only parity coverage.
-- `move_style_twice_area_u64` is test-only baseline parity code, not production API.

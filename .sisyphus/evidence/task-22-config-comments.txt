@@ -1,7 +1,0 @@
-Task 22 evidence
-
-- ProtocolConfig::default() now returns permissive()
-- WASM parse_config(None) now returns permissive()
-- Removed internal deploy/ path references from src comments
-- cargo test summary: 270 passed; 0 failed
-- lsp diagnostics on src/: 0 errors, 0 warnings

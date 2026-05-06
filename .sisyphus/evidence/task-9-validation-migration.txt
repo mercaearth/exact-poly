@@ -1,9 +1,0 @@
-Task 9 (Wave 2A): validation.rs migration from (xs, ys) to &[[i64; 2]]
-
-Verification:
-- lsp_diagnostics: clean for changed files (src/validation.rs, src/bayazit.rs, src/exact_partition.rs, src/hertel_mehlhorn.rs, src/decompose.rs, src/lib.rs, src/validate_onchain.rs)
-- Command: cargo test 2>&1 | grep "test result"
-
-Output:
-test result: ok. 270 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

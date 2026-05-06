@@ -1,8 +1,0 @@
-Task 19 evidence
-
-- src/lib.rs reduced to minimal module shell with crate doc comment.
-- Remaining #[wasm_bindgen] exports removed from lib.rs; canonical WASM exports remain in src/wasm/.
-- cargo test: 270 passed
-- wasm-pack build --target bundler --release: succeeded
-- wc -l src/lib.rs: 25
-- lsp_diagnostics src/lib.rs: no diagnostics found

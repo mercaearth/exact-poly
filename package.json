@@ -30,5 +30,14 @@
     "convex-decomposition",
     "on-chain"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "homepage": "https://exact-poly.merca.earth",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mercaearth/exact-poly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mercaearth/exact-poly/issues"
+  },
+  "author": "Gerardus Cremer <dev@merca.earth>"
 }
